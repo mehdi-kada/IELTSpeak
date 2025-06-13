@@ -5,16 +5,17 @@ import Link from "next/link";
 import { useCurrentUserImage } from "@/hooks/use-current-user-image";
 import { useCurrentUserName } from "@/hooks/use-current-user-name";
 import { CurrentUserAvatar } from "./user-avatar";
-// --- Mock Data & Components (for standalone testing) ---
-// In your actual app, you would remove these and use your real hooks and components.
-
-// ---------------------------------------------------------
+import { usePathname } from "next/navigation";
+import { navItems } from "@/constants/constants";
+import { cn } from "@/lib/utils";
+import { LogoutButton } from "./logout-button";
 
 function NavBar() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const logoSrc = null; // Set to "/images/logo.png" to test your logo
+  const logoSrc = "/images/logo2.png"; // Set to "/images/logo.png" to test your logo
   const userAvatar = useCurrentUserImage();
   const userName = useCurrentUserName();
+  const path = usePathname();
 
   return (
     <nav className="bg-[#2F2F7F] border-b border-white/10 p-4 shadow-lg rounded-xl">
@@ -25,9 +26,9 @@ function NavBar() {
             <Image
               src={logoSrc}
               alt="ToIELIT Logo"
-              width={32}
-              height={32}
-              className="h-8 w-8"
+              width={60}
+              height={60}
+              className="h-10 w-10"
             />
           ) : (
             <svg
@@ -45,31 +46,28 @@ function NavBar() {
               />
             </svg>
           )}
-          <span className="text-xl font-bold text-white">ToIELIT</span>
+          <span className="hidden  md:block text-xl font-bold text-white">
+            ToIELIT
+          </span>
         </Link>
 
         {/* Navigation Links */}
-        <div className="hidden md:flex items-center space-x-8">
-          <Link
-            href="/dashboard"
-            className="text-gray-300 hover:text-[#E62136] font-medium transition-colors duration-300"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/practice"
-            className="text-gray-300 hover:text-[#E62136] font-medium transition-colors duration-300"
-          >
-            Practice
-          </Link>
-          <Link
-            href="/subscribe"
-            className="text-gray-300 hover:text-[#E62136] font-medium transition-colors duration-300"
-          >
-            Upgrade
-          </Link>
+        <div className="flex items-center space-x-8">
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={cn(
+                "text-gray-300 hover:text-[#E62136] font-medium transition-colors duration-300",
+                {
+                  "text-[#E62136]": path === item.href,
+                }
+              )}
+            >
+              {item.name}
+            </Link>
+          ))}
         </div>
-
         {/* User Profile Section */}
         <div
           className="relative"
@@ -78,9 +76,6 @@ function NavBar() {
         >
           {/* Profile Button */}
           <button className="flex items-center space-x-3 focus:outline-none">
-            <span className="text-white font-medium hidden sm:block">
-              {userName}
-            </span>
             {userAvatar ? (
               <CurrentUserAvatar />
             ) : (
@@ -123,9 +118,11 @@ function NavBar() {
                 Settings
               </Link>
               <div className="border-t border-gray-600 my-1"></div>
-              <button className="block w-full text-left px-4 py-2 text-red-400 rounded-md hover:bg-[#E62136]/20 transition-colors duration-300">
-                Logout
-              </button>
+              <LogoutButton
+                className={
+                  "block w-full text-left px-4 py-2 text-red-400 rounded-md hover:bg-[#E62136]/20 transition-colors duration-300"
+                }
+              />
             </div>
           </div>
         </div>

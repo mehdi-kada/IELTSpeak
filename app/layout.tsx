@@ -6,7 +6,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "LangAI - Master Your English Proficiency Exams",
-  description: "Ace IELTS & TOEFL Speaking with Your Personal AI Tutor",
+  description:
+    "Stop practicing alone. Get instant, realistic conversation practice and detailed feedback to boost your confidence and score higher on IELTS & TOEFL speaking tests.",
 };
 
 export default function RootLayout({

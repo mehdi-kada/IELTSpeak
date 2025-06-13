@@ -1,13 +1,54 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 body {
-  font-family: var(--font-inter);
-  margin: 0;
-  padding: 0;
+  background-color: #1a1a3a;
+  color: white;
 }
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+
+.hero-bg {
+  background-color: #2f2f7f;
+  background-image: radial-gradient(
+      circle at 15% 50%,
+      rgba(230, 33, 54, 0.1),
+      transparent 30%
+    ),
+    radial-gradient(circle at 85% 30%, rgba(47, 47, 127, 0.5), transparent 40%);
+}
+
+.cta-button {
+  background-color: #e62136;
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(230, 33, 54, 0.3);
+}
+
+.secondary-button {
+  border-color: #e62136;
+  color: #e62136;
+  transition: all 0.3s ease;
+}
+
+.secondary-button:hover {
+  background-color: rgba(230, 33, 54, 0.1);
+}
+
+.feature-card {
+  background-color: rgba(47, 47, 127, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  border-color: #e62136;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #ffffff, #d1d1f0);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
