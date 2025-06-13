@@ -1,0 +1,53 @@
+import Link from "next/link";
+
+interface PracticeSession {
+  id: string;
+  title: string;
+  date: string;
+  ieltsScore: number;
+  toeflScore: number;
+  transcriptUrl: string;
+}
+
+interface PracticeHistoryProps {
+  sessions: PracticeSession[];
+}
+
+export function PracticeHistory({ sessions }: PracticeHistoryProps) {
+  return (
+    <div className="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl">
+      <div className="p-6 border-b border-white/10">
+        <h2 className="text-xl font-bold text-center">Practice History</h2>
+      </div>
+      <div className="divide-y divide-white/10">
+        {sessions.map((session) => (
+          <div
+            key={session.id}
+            className="p-6 space-y-4 md:space-y-0 md:flex md:justify-between md:items-center hover:bg-white/5 transition-colors"
+          >
+            <div>
+              <p className="font-bold text-lg">{session.title}</p>
+              <p className="text-sm text-gray-400">{session.date}</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="text-center">
+                <p className="text-xs text-gray-400">IELTS</p>
+                <p className="font-bold text-lg">{session.ieltsScore}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-gray-400">TOEFL</p>
+                <p className="font-bold text-lg">{session.toeflScore}</p>
+              </div>
+              <Link
+                href={session.transcriptUrl}
+                className="bg-white/10 hover:bg-white/20 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors"
+              >
+                Transcript
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

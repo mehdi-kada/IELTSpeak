@@ -4,10 +4,10 @@ import React from "react";
 
 function Practice() {
   return (
-    <main className="py-12">
+    <div className="flex justify-center">
       <div className="container max-auto">
         <div className="text-center">
-          <h1 className="text-5xl font-bold ">Choose Your Level</h1>
+          <h1 className="text-4xl font-bold mt-6 ">Choose Your Level</h1>
           <p className="text-gray-400 ">
             Select a proficiency level to begin your targeted speaking practice.
           </p>
@@ -23,7 +23,7 @@ function Practice() {
           ))}
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 

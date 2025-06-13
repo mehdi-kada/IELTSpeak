@@ -16,9 +16,8 @@ function NavBar() {
   const userAvatar = useCurrentUserImage();
   const userName = useCurrentUserName();
   const path = usePathname();
-
   return (
-    <nav className="bg-[#2F2F7F] border-b border-white/10 p-4 shadow-lg rounded-xl">
+    <nav className="bg-[#2F2F7F] p-4 shadow-lg sticky top-0 z-40">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-3">
