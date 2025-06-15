@@ -40,7 +40,7 @@ export const levels = [
 ];
 
 export const navItems = [
-  { name: "practice", href: "/practice" },
+  { name: "levels", href: "/levels" },
   { name: "dashboard", href: "/dashboard" },
   { name: "upgrade", href: "/subscribe" },
 ];

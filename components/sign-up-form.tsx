@@ -30,7 +30,7 @@ export function SignUpForm({
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/oauth?next=/practice`,
+          redirectTo: `${window.location.origin}/auth/oauth?next=/dashboard`,
         },
       });
 
@@ -58,7 +58,7 @@ export function SignUpForm({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/practice`,
+          emailRedirectTo: `${window.location.origin}/dashboard`,
         },
       });
       if (error) throw error;

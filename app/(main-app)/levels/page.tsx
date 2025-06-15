@@ -1,8 +1,9 @@
+"use client";
 import LevelCard from "@/components/LevelCard";
 import { levels } from "@/constants/constants";
 import React from "react";
 
-function Practice() {
+function Levels() {
   return (
     <div className="flex justify-center">
       <div className="container max-auto">
@@ -27,4 +28,4 @@ function Practice() {
   );
 }
 
-export default Practice;
+export default Levels;
