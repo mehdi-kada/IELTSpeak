@@ -11,9 +11,8 @@ interface cardProps {
 
 function LevelCard({ level, title, description }: cardProps) {
   // here we will send the cliked data to the server action to insert it to the db
-  const handleSubmit = async (mode: "exam" | "practice") => {
-    const response = await insertSession({ mode, level });
-    console.log(response);
+  const handleSubmit = async () => {
+    const response = await insertSession({ level });
   };
 
   return (
@@ -28,16 +27,10 @@ function LevelCard({ level, title, description }: cardProps) {
       <div className="absolute inset-0 p-8 flex flex-col justify-end items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
         <div className="flex flex-col gap-4 w-full">
           <button
-            onClick={() => handleSubmit("exam")}
+            onClick={() => handleSubmit()}
             className="w-full text-center bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-3 px-4 rounded-lg"
           >
-            Exam Mode
-          </button>
-          <button
-            onClick={() => handleSubmit("practice")}
-            className="w-full text-center border-2 border-[#E62136] text-[#E62136] hover:bg-[#E62136]/10 transition-colors font-bold py-2.5 px-4 rounded-lg"
-          >
-            Practice Mode
+            Start Session
           </button>
         </div>
       </div>
