@@ -1,213 +1,11 @@
-"use client";
-/* import Session from "@/components/session";
+import Link from 'next/link'
+import React from 'react'
 
-import React from "react";
-
-interface PageProps {
-  params: Promise<{
-    sessionId: string;
-  }>;
-  searchParams: Promise<{
-    level?: string;
-  }>;
+interface sessionComponentProps{
+    level:string
 }
 
-async function ActualSession({ params, searchParams }: PageProps) {
-  const { sessionId } = await params;
-  const { level } = await searchParams;
-  console.log("search params : ", level);
-  return (
-    <>
-      <div>
-        <Session sessionID={sessionId} level={level || "B1"} />
-      </div>
-    </>
-  );
-}
-
-export default ActualSession;
- */
-
-interface PageProps {
-  params: Promise<{
-    sessionId: string;
-  }>;
-  searchParams: Promise<{
-    level?: string;
-  }>;
-}
-
-import { useState, useRef, useEffect } from "react";
-import Lottie, { LottieRefCurrentProps } from "lottie-react";
-import { vapi } from "@/lib/vapi.sdk";
-import Image from "next/image";
-import React from "react";
-import { configureAssistant } from "@/lib/utils";
-import Link from "next/link";
-import { redirect, useSearchParams, useParams } from "next/navigation";
-
-interface sessionComponentProps {
-  level: string;
-  sessionID: string;
-}
-
-enum CallStatus {
-  INACTIVE = "INACTIVE",
-  CONNECTING = "CONNECTING",
-  ACTIVE = "ACTIVE",
-  FINISHED = "FINISHED",
-}
-
-interface savedMessage {
-  role: string;
-  content: string;
-}
-
-function Session() {
-  const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
-  const lottieRef = useRef<LottieRefCurrentProps>(null);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [messages, setMessages] = useState<savedMessage[]>([]);
-  const [isMuted, setIsMuted] = useState(false);
-  const [sessionTime, setSessionTime] = useState(0);
-  const [suggestionsVisible, setSuggestionsVisible] = useState(true);
-
-  const params = useParams();
-  const searchParams = useSearchParams();
-  const sessionId = params.sessionId as string;
-  const level = searchParams.get("level");
-
-  const messagesContainerRef = useRef<HTMLDivElement>(null); // ref for scrllable container
-
-  // Timer effect
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (callStatus === CallStatus.ACTIVE) {
-      interval = setInterval(() => {
-        setSessionTime((prev) => prev + 1);
-      }, 1000);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [callStatus]);
-
-  // Format time helper
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs
-      .toString()
-      .padStart(2, "0")}`;
-  };
-
-  useEffect(() => {
-    if (lottieRef) {
-      if (isSpeaking) {
-        lottieRef.current?.play();
-      } else {
-        lottieRef.current?.stop();
-      }
-    }
-  }, [isSpeaking]);
-
-  //effect for the scroll
-  useEffect(() => {
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = 0;
-    }
-  }, [messages]);
-
-  // effect for vapi
-  useEffect(() => {
-    console.log("starting the vapi session");
-
-    const onCallStart = () => {
-      console.log("call started");
-      setCallStatus(CallStatus.ACTIVE);
-      // here we add to the session
-    };
-
-    const onCallEnd = () => {
-      console.log("call Ended");
-      setCallStatus(CallStatus.FINISHED);
-      // here we send the data for feedback ,mybe redirect as well ?
-      // send the data to the api which will handle data insertion to the db and redirect to the results
-      // maybe analyze the data for results as well there ? yes yes insert analyzed data to db and than display it in results
-    };
-
-    // here where i will send the messages to gemini
-    const onMessage = (message: Message) => {
-      if (message.type === "transcript" && message.transcriptType === "final") {
-        const newMessage = { role: message.role, content: message.transcript };
-        setMessages((prev) => [...prev, newMessage]);
-      } else {
-        console.log("message not processed", message.type);
-      }
-    };
-
-    setCallStatus(CallStatus.CONNECTING);
-
-    const onError = (error: Error) => {
-      console.error("vapi error : ", error);
-      setCallStatus(CallStatus.INACTIVE);
-    };
-
-    // function for lottie animations
-    // on ai speech end send data for suggestions
-    const onSpeechStart = () => setIsSpeaking(true);
-    const onSpeechEnd = () => setIsSpeaking(false);
-
-    vapi.on("call-start", onCallStart);
-    vapi.on("call-end", onCallEnd);
-    vapi.on("message", onMessage);
-    vapi.on("error", onError);
-    vapi.on("speech-start", onSpeechStart);
-    vapi.on("speech-end", onSpeechEnd);
-
-    const startVapiCall = async () => {
-      try {
-        setCallStatus(CallStatus.CONNECTING);
-
-        const assistantOverrides = {
-          variableValues: { level },
-          clientMessages: ["transcript"],
-          serverMessages: [],
-        };
-
-        // @ts-expect-error
-        await vapi.start(configureAssistant(), assistantOverrides);
-      } catch (error) {
-        console.log("error when connecting to vapi : ", error);
-        setCallStatus(CallStatus.INACTIVE);
-      }
-    };
-
-    startVapiCall();
-    // clean up function :
-
-    return () => {
-      vapi.off("call-start", onCallStart);
-      vapi.off("call-end", onCallEnd);
-      vapi.off("message", onMessage);
-      vapi.off("error", onError);
-      vapi.off("speech-start", onSpeechStart);
-      vapi.off("speech-end", onSpeechEnd);
-      vapi.stop();
-    };
-  }, [level, sessionId]);
-
-  const EndCall = () => {
-    setCallStatus(CallStatus.FINISHED);
-    vapi.stop();
-    redirect(`/results/${sessionId}`);
-  };
-
-  const toggleMicrophone = () => {
-    const isMuted = vapi.isMuted();
-    vapi.setMuted(!isMuted);
-    setIsMuted(!isMuted);
-  };
+function sessionComponent({level}: sessionComponentProps) {
   return (
     <div className="bg-[#1a1a3a] text-white flex flex-col h-screen overflow-hidden">
       {/* Session Navigation */}
@@ -379,10 +177,7 @@ function Session() {
             <h2 className="text-2xl font-bold mb-4 flex-shrink-0">
               Live Transcript
             </h2>
-            <div
-              ref={messagesContainerRef}
-              className="flex-grow overflow-y-auto pr-4 space-y-6 custom-scrollbar"
-            >
+            <div className="flex-grow overflow-y-auto pr-4 space-y-6 custom-scrollbar">
               {messages.length === 0 ? (
                 <div className="text-center text-gray-400 mt-8">
                   <p>
@@ -466,7 +261,7 @@ function Session() {
         }
       `}</style>
     </div>
-  );
+  )
 }
 
-export default Session;
+export default sessionComponent
