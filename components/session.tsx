@@ -4,10 +4,10 @@ import { useState, useRef, useEffect } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import { vapi } from "@/lib/vapi.sdk";
 import Image from "next/image";
-import { useParams } from "next/navigation";
 import React from "react";
 import { configureAssistant } from "@/lib/utils";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 interface sessionComponentProps {
   level: string;
@@ -31,6 +31,7 @@ function Session({ level, sessionID }: sessionComponentProps) {
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [messages, setMessages] = useState<savedMessage[]>([]);
+  const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {
     if (lottieRef) {
@@ -78,9 +79,17 @@ function Session({ level, sessionID }: sessionComponentProps) {
     const onSpeechStart = () => setIsSpeaking(true);
     const onSpeechEnd = () => setIsSpeaking(false);
 
+    vapi.on("call-start", onCallStart);
+    vapi.on("call-end", onCallEnd);
+    vapi.on("message", onMessage);
+    vapi.on("error", onError);
+    vapi.on("speech-start", onSpeechStart);
+    vapi.on("speech-end", onSpeechEnd);
+
     const startVapiCall = async () => {
       try {
         setCallStatus(CallStatus.CONNECTING);
+
         const assistantOverrides = {
           variableValues: { level },
           clientMessages: ["transcript"],
@@ -96,13 +105,6 @@ function Session({ level, sessionID }: sessionComponentProps) {
     };
 
     startVapiCall();
-    vapi.on("call-start", onCallStart);
-    vapi.on("call-end", onCallEnd);
-    vapi.on("message", onMessage);
-    vapi.on("error", onError);
-    vapi.on("speech-start", onSpeechStart);
-    vapi.on("speech-end", onSpeechEnd);
-
     // clean up function :
 
     return () => {
@@ -119,11 +121,21 @@ function Session({ level, sessionID }: sessionComponentProps) {
   const EndCall = () => {
     setCallStatus(CallStatus.FINISHED);
     vapi.stop();
+    redirect(`/results/${sessionID}`);
+  };
+
+  const toggleMicrophone = () => {
+    const isMuted = vapi.isMuted();
+    vapi.setMuted(!isMuted);
+    setIsMuted(!isMuted);
   };
 
   return (
     <>
-      <Link href={`/results/${sessionID}`}>End Session</Link>
+      <div>the session has begun</div>
+      <p>Call status : {callStatus} </p>
+      <button onClick={EndCall}> End Call </button>
+      <button onClick={toggleMicrophone}>Mute Mircophone</button>
     </>
   );
 }
