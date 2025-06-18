@@ -13,8 +13,8 @@ export const configureAssistant = () => {
     firstMessage:
       "Hello, I’m your AI examiner for this English speaking practice session. I’ll guide you through a simulation of the IELTS or TOEFL speaking test based on your level: {{level}}. I’ll ask you questions, listen to your responses, and give you brief feedback after each one. Let’s start with a quick introduction—what’s your name?",
     transcriber: {
-      provider: "deepgram",
-      model: "nova-3",
+      provider: "11labs",
+      model: "scribe_v1",
       language: "en",
     },
     voice: {

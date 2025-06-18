@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
-import { vapi } from "@/lib/vapi.sdk";
+import Vapi from "@vapi-ai/web";
 import Image from "next/image";
 import React from "react";
 import { configureAssistant } from "@/lib/utils";
@@ -34,6 +34,7 @@ function Session({ level, sessionID }: sessionComponentProps) {
   const [isMuted, setIsMuted] = useState(false);
   const [sessionTime, setSessionTime] = useState(0);
   const [suggestionsVisible, setSuggestionsVisible] = useState(true);
+  const vapiRef = useRef<any>(null);
 
   // Timer effect
   useEffect(() => {
@@ -103,6 +104,19 @@ function Session({ level, sessionID }: sessionComponentProps) {
     const onSpeechStart = () => setIsSpeaking(true);
     const onSpeechEnd = () => setIsSpeaking(false);
 
+    // Remove any lingering DailyIframe if present
+    const dailyIframes = document.querySelectorAll('iframe[src*="daily.co"]');
+    dailyIframes.forEach((iframe) => iframe.remove());
+
+    // Clean up previous instance
+    if (vapiRef.current) {
+      vapiRef.current.stop();
+      vapiRef.current = null;
+    }
+
+    vapiRef.current = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY!);
+    const vapi = vapiRef.current;
+
     vapi.on("call-start", onCallStart);
     vapi.on("call-end", onCallEnd);
     vapi.on("message", onMessage);
@@ -139,18 +153,19 @@ function Session({ level, sessionID }: sessionComponentProps) {
       vapi.off("speech-start", onSpeechStart);
       vapi.off("speech-end", onSpeechEnd);
       vapi.stop();
+      vapiRef.current = null;
     };
-  }, []);
+  }, [level, sessionID]);
 
   const EndCall = () => {
     setCallStatus(CallStatus.FINISHED);
-    vapi.stop();
+    vapiRef.current.stop();
     redirect(`/results/${sessionID}`);
   };
 
   const toggleMicrophone = () => {
-    const isMuted = vapi.isMuted();
-    vapi.setMuted(!isMuted);
+    const isMuted = vapiRef.current.isMuted();
+    vapiRef.current.setMuted(!isMuted);
     setIsMuted(!isMuted);
   };
   return (

@@ -1,32 +1,7 @@
 "use client";
-/* import Session from "@/components/session";
 
-import React from "react";
-
-interface PageProps {
-  params: Promise<{
-    sessionId: string;
-  }>;
-  searchParams: Promise<{
-    level?: string;
-  }>;
-}
-
-async function ActualSession({ params, searchParams }: PageProps) {
-  const { sessionId } = await params;
-  const { level } = await searchParams;
-  console.log("search params : ", level);
-  return (
-    <>
-      <div>
-        <Session sessionID={sessionId} level={level || "B1"} />
-      </div>
-    </>
-  );
-}
-
-export default ActualSession;
- */
+// Global variable to track VAPI instance and prevent duplicates
+let globalVapiInstance: any = null;
 
 interface PageProps {
   params: Promise<{
@@ -39,7 +14,8 @@ interface PageProps {
 
 import { useState, useRef, useEffect } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
-import { vapi } from "@/lib/vapi.sdk";
+
+import Vapi from "@vapi-ai/web";
 import Image from "next/image";
 import React from "react";
 import { configureAssistant } from "@/lib/utils";
@@ -78,8 +54,8 @@ function Session() {
   const level = searchParams.get("level");
 
   const messagesContainerRef = useRef<HTMLDivElement>(null); // ref for scrllable container
-
-  // Timer effect
+  const callStartRef = useRef(false);
+  const vapiRef = useRef<any>(null); // Timer effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (callStatus === CallStatus.ACTIVE) {
@@ -91,6 +67,22 @@ function Session() {
       if (interval) clearInterval(interval);
     };
   }, [callStatus]);
+
+  // Cleanup on page unload
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (globalVapiInstance) {
+        globalVapiInstance.stop();
+        globalVapiInstance = null;
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   // Format time helper
   const formatTime = (seconds: number) => {
@@ -116,96 +108,124 @@ function Session() {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = 0;
     }
-  }, [messages]);
-
-  // effect for vapi
+  }, [messages]); // effect for vapi
   useEffect(() => {
-    console.log("starting the vapi session");
+    // Prevent multiple instances globally
+    if (globalVapiInstance || vapiRef.current) {
+      return;
+    }
 
-    const onCallStart = () => {
-      console.log("call started");
-      setCallStatus(CallStatus.ACTIVE);
-      // here we add to the session
-    };
+    // Clean up any previous instance
+    callStartRef.current = false;
 
-    const onCallEnd = () => {
-      console.log("call Ended");
-      setCallStatus(CallStatus.FINISHED);
-      // here we send the data for feedback ,mybe redirect as well ?
-      // send the data to the api which will handle data insertion to the db and redirect to the results
-      // maybe analyze the data for results as well there ? yes yes insert analyzed data to db and than display it in results
-    };
+    // Add small delay to ensure any previous instance is fully cleaned up
+    const initializeVapi = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
-    // here where i will send the messages to gemini
-    const onMessage = (message: Message) => {
-      if (message.type === "transcript" && message.transcriptType === "final") {
-        const newMessage = { role: message.role, content: message.transcript };
-        setMessages((prev) => [...prev, newMessage]);
-      } else {
-        console.log("message not processed", message.type);
-      }
-    };
+      // Double check if another instance was created during the delay
+      if (globalVapiInstance || vapiRef.current) {
+        return;
+      } // Create a new Vapi instance for this session
+      const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY!);
+      vapiRef.current = vapi;
+      globalVapiInstance = vapi;
 
-    setCallStatus(CallStatus.CONNECTING);
+      const onCallStart = () => {
+        setCallStatus(CallStatus.ACTIVE);
+      };
 
-    const onError = (error: Error) => {
-      console.error("vapi error : ", error);
-      setCallStatus(CallStatus.INACTIVE);
-    };
+      const onCallEnd = () => {
+        setCallStatus(CallStatus.FINISHED);
+      };
 
-    // function for lottie animations
-    // on ai speech end send data for suggestions
-    const onSpeechStart = () => setIsSpeaking(true);
-    const onSpeechEnd = () => setIsSpeaking(false);
+      const onMessage = (message: Message) => {
+        if (
+          message.type === "transcript" &&
+          message.transcriptType === "final"
+        ) {
+          const newMessage = {
+            role: message.role,
+            content: message.transcript,
+          };
+          console.log(
+            "type of the message : ",
+            message.transcriptType,
+            " content of the message is : ",
+            newMessage.content
+          );
+          setMessages((prev) => [...prev, newMessage]);
+          console.log("messages : ", messages);
+        }
+      };
 
-    vapi.on("call-start", onCallStart);
-    vapi.on("call-end", onCallEnd);
-    vapi.on("message", onMessage);
-    vapi.on("error", onError);
-    vapi.on("speech-start", onSpeechStart);
-    vapi.on("speech-end", onSpeechEnd);
+      setCallStatus(CallStatus.CONNECTING);
 
-    const startVapiCall = async () => {
-      try {
-        setCallStatus(CallStatus.CONNECTING);
-
-        const assistantOverrides = {
-          variableValues: { level },
-          clientMessages: ["transcript"],
-          serverMessages: [],
-        };
-
-        // @ts-expect-error
-        await vapi.start(configureAssistant(), assistantOverrides);
-      } catch (error) {
-        console.log("error when connecting to vapi : ", error);
+      const onError = (error: Error) => {
         setCallStatus(CallStatus.INACTIVE);
-      }
+      };
+
+      const onSpeechStart = () => setIsSpeaking(true);
+      const onSpeechEnd = () => setIsSpeaking(false);
+
+      vapi.on("call-start", onCallStart);
+      vapi.on("call-end", onCallEnd);
+      vapi.on("message", onMessage);
+      vapi.on("error", onError);
+      vapi.on("speech-start", onSpeechStart);
+      vapi.on("speech-end", onSpeechEnd);
+
+      const startVapiCall = async () => {
+        if (callStartRef.current) return;
+        callStartRef.current = true;
+        try {
+          setCallStatus(CallStatus.CONNECTING);
+
+          const assistantOverrides = {
+            variableValues: { level },
+          };
+
+          await vapi.start(configureAssistant(), assistantOverrides);
+        } catch (error) {
+          setCallStatus(CallStatus.INACTIVE);
+          callStartRef.current = false;
+        }
+      };
+
+      startVapiCall();
     };
 
-    startVapiCall();
-    // clean up function :
-
+    initializeVapi();
     return () => {
-      vapi.off("call-start", onCallStart);
-      vapi.off("call-end", onCallEnd);
-      vapi.off("message", onMessage);
-      vapi.off("error", onError);
-      vapi.off("speech-start", onSpeechStart);
-      vapi.off("speech-end", onSpeechEnd);
-      vapi.stop();
+      if (vapiRef.current) {
+        vapiRef.current.off("call-start");
+        vapiRef.current.off("call-end");
+        vapiRef.current.off("message");
+        vapiRef.current.off("error");
+        vapiRef.current.off("speech-start");
+        vapiRef.current.off("speech-end");
+
+        // Stop the call and clean up
+        vapiRef.current.stop();
+        vapiRef.current = null;
+        globalVapiInstance = null;
+        callStartRef.current = false;
+      }
     };
   }, [level, sessionId]);
-
   const EndCall = () => {
     setCallStatus(CallStatus.FINISHED);
-    vapi.stop();
+    if (vapiRef.current) {
+      vapiRef.current.stop();
+      vapiRef.current = null;
+      globalVapiInstance = null;
+    }
     redirect(`/results/${sessionId}`);
   };
-
   const toggleMicrophone = () => {
-    const isMuted = vapi.isMuted();
-    vapi.setMuted(!isMuted);
+    if (!vapiRef.current) return;
+
+    const isMuted = vapiRef.current.isMuted();
+    vapiRef.current.setMuted(!isMuted);
     setIsMuted(!isMuted);
   };
   return (
@@ -228,7 +248,7 @@ function Session() {
                 d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
               />
             </svg>
-            <span className="text-xl font-bold text-white">ToEILET</span>
+            <span className="text-xl font-bold text-white">ToILET</span>
           </Link>
           <div>
             <span className="font-semibold text-lg">
