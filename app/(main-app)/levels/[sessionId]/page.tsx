@@ -21,6 +21,7 @@ import React from "react";
 import { configureAssistant } from "@/lib/utils";
 import Link from "next/link";
 import { redirect, useSearchParams, useParams } from "next/navigation";
+import { geminiPrompt } from "@/constants/constants";
 
 interface sessionComponentProps {
   level: string;
@@ -47,6 +48,42 @@ function Session() {
   const [isMuted, setIsMuted] = useState(false);
   const [sessionTime, setSessionTime] = useState(0);
   const [suggestionsVisible, setSuggestionsVisible] = useState(true);
+
+  // for the gemini messages suggestions
+  const [prompt, setPrompt] = useState("");
+  const [streamaedResponse, setStreamedResponse] = useState("");
+  const generateStreamedResponse = async () => {
+    setStreamedResponse("");
+    try {
+      const res = await fetch("/api/suggestions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!res.ok) throw new Error("failed to fetch streamed response ");
+      // get the readable stream from the body
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error("failed to get readable stream ");
+
+      const decoder = new TextDecoder();
+      //function to read the stream
+      const readStream = async () => {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break; // the stream is finished
+          // deconde the chuck of data and endcode it to the state
+          const chunk = decoder.decode(value, { stream: true });
+          setStreamedResponse((prev) => prev + chunk);
+        }
+      };
+      await readStream();
+    } catch (error) {
+      console.log("error in session page for streamed response : ", error);
+    }
+  };
 
   const params = useParams();
   const searchParams = useSearchParams();
@@ -83,6 +120,11 @@ function Session() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
+
+  // automatically call the prompt
+  useEffect(() => {
+    if (prompt) generateStreamedResponse();
+  }, [prompt]);
 
   // Format time helper
   const formatTime = (seconds: number) => {
@@ -134,8 +176,9 @@ function Session() {
         setCallStatus(CallStatus.ACTIVE);
       };
 
-      const onCallEnd = () => {
+      const onCallEnd = (info: any) => {
         setCallStatus(CallStatus.FINISHED);
+        console.log("call ended reason : ", info.endedReason);
       };
 
       const onMessage = (message: Message) => {
@@ -153,6 +196,10 @@ function Session() {
             " content of the message is : ",
             newMessage.content
           );
+          if (newMessage.role === "assistant") {
+            const promptText = geminiPrompt(level, newMessage.content);
+            setPrompt(promptText);
+          }
           setMessages((prev) => [...prev, newMessage]);
           console.log("messages : ", messages);
         }
@@ -162,13 +209,17 @@ function Session() {
 
       const onError = (error: Error) => {
         setCallStatus(CallStatus.INACTIVE);
+        console.error("error : ", error);
       };
 
       const onSpeechStart = () => setIsSpeaking(true);
       const onSpeechEnd = () => setIsSpeaking(false);
 
       vapi.on("call-start", onCallStart);
-      vapi.on("call-end", onCallEnd);
+      vapi.on("call-end", (info) => {
+        console.log("Call ended, reason:", info.endedReason);
+        setCallStatus(CallStatus.FINISHED);
+      });
       vapi.on("message", onMessage);
       vapi.on("error", onError);
       vapi.on("speech-start", onSpeechStart);
@@ -184,7 +235,10 @@ function Session() {
             variableValues: { level },
           };
 
-          await vapi.start(configureAssistant(), assistantOverrides);
+          await vapi.start(configureAssistant(), assistantOverrides, {
+            maxDurationSeconds: 1800,
+            silenceTimeoutSeconds: 300,
+          });
         } catch (error) {
           setCallStatus(CallStatus.INACTIVE);
           callStartRef.current = false;
@@ -364,32 +418,31 @@ function Session() {
             </div>
             {suggestionsVisible && (
               <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent hover:border-red-400 transition-colors">
-                  <h4 className="font-bold text-red-400">Expand Your Answer</h4>
-                  <p className="text-sm text-gray-300 mt-1">
-                    Good start! Try to add more details to your response.
-                  </p>
-                </div>
-                <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent hover:border-red-400 transition-colors">
-                  <h4 className="font-bold text-red-400">Vocabulary Boost</h4>
-                  <p className="text-sm text-gray-300 mt-1">
-                    Consider using more advanced vocabulary to enhance your
-                    response.
-                  </p>
-                </div>
-                <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent hover:border-red-400 transition-colors">
-                  <h4 className="font-bold text-red-400">Grammar Check</h4>
-                  <p className="text-sm text-gray-300 mt-1">
-                    Your grammar is good! Keep maintaining this level.
-                  </p>
-                </div>
-                <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent hover:border-red-400 transition-colors">
-                  <h4 className="font-bold text-red-400">Fluency Tip</h4>
-                  <p className="text-sm text-gray-300 mt-1">
-                    Try to connect your ideas with linking words for better
-                    flow.
-                  </p>
-                </div>
+                {streamaedResponse ? (
+                  <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-400 transition-colors">
+                    <h4 className="font-bold text-red-400">AI suggestions</h4>
+                    <p className="text-sm text-gray-400 mt-1">
+                      {streamaedResponse}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent">
+                    <h4 className="font-bold text-red-400">
+                      Generating suggestion...
+                    </h4>
+                    <div className="flex items-center space-x-2 mt-2">
+                      <div className="w-2 h-2 bg-red-400 rounded-full animate-bounce"></div>
+                      <div
+                        className="w-2 h-2 bg-red-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.1s" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 bg-red-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.2s" }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

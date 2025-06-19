@@ -49,3 +49,14 @@ export const voices = {
   male: { casual: "2BJW5coyhAzSr8STdHbE", formal: "c6SfcYrb2t09NHXiT80T" },
   female: { casual: "ZIlrSGI4jZqobxRKprJz", formal: "sarah" },
 };
+
+export const geminiPrompt = (level: string|null, message: string) => {
+  return `
+    you are an intermidary between the user an
+    d the examiner in an english speaking test ,
+     your job is to provide on what the user should say next 
+     in reponse to the examiner , just provide the answer , and make it a proper answer to an ielts and toefl tests , just provide the answer, (suggestion based on the user level ${level}) , make answers little bit short , 
+     exactely how the candidate should answer and make sure to make the answers fit the user's level ${level}
+    er in a real ielts and toefl interviews, this is the the examiner's message : ${message}
+  `;
+};
