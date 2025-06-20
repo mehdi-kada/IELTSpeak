@@ -1,32 +1,12 @@
 "use client";
 
-// Global variable to track VAPI instance and prevent duplicates
-let globalVapiInstance: any = null;
-
-interface PageProps {
-  params: Promise<{
-    sessionId: string;
-  }>;
-  searchParams: Promise<{
-    level?: string;
-  }>;
-}
-
 import { useState, useRef, useEffect } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
-
 import Vapi from "@vapi-ai/web";
-import Image from "next/image";
-import React from "react";
-import { configureAssistant } from "@/lib/utils";
+import { configureAssistant } from "@/lib/utils-new";
+import { geminiPrompt } from "@/constants/constants";
 import Link from "next/link";
 import { redirect, useSearchParams, useParams } from "next/navigation";
-import { geminiPrompt } from "@/constants/constants";
-
-interface sessionComponentProps {
-  level: string;
-  sessionID: string;
-}
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -35,237 +15,184 @@ enum CallStatus {
   FINISHED = "FINISHED",
 }
 
-interface savedMessage {
+interface SavedMessage {
   role: string;
   content: string;
 }
 
+let globalVapiInstance: Vapi | null = null;
+
 function Session() {
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
-  const lottieRef = useRef<LottieRefCurrentProps>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [messages, setMessages] = useState<savedMessage[]>([]);
+  const [messages, setMessages] = useState<SavedMessage[]>([]);
   const [isMuted, setIsMuted] = useState(false);
   const [sessionTime, setSessionTime] = useState(0);
-  const [suggestionsVisible, setSuggestionsVisible] = useState(true);
-
-  // for the gemini messages suggestions
   const [prompt, setPrompt] = useState("");
-  const [streamaedResponse, setStreamedResponse] = useState("");
-  const generateStreamedResponse = async () => {
-    setStreamedResponse("");
-    try {
-      const res = await fetch("/api/suggestions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt }),
-      });
-
-      if (!res.ok) throw new Error("failed to fetch streamed response ");
-      // get the readable stream from the body
-      const reader = res.body?.getReader();
-      if (!reader) throw new Error("failed to get readable stream ");
-
-      const decoder = new TextDecoder();
-      //function to read the stream
-      const readStream = async () => {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break; // the stream is finished
-          // deconde the chuck of data and endcode it to the state
-          const chunk = decoder.decode(value, { stream: true });
-          setStreamedResponse((prev) => prev + chunk);
-        }
-      };
-      await readStream();
-    } catch (error) {
-      console.log("error in session page for streamed response : ", error);
-    }
-  };
+  const [streamedResponse, setStreamedResponse] = useState("");
+  const [suggestionsVisible, setSuggestionsVisible] = useState(true);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const callStartRef = useRef(false);
+  const vapiRef = useRef<Vapi | null>(null);
 
   const params = useParams();
   const searchParams = useSearchParams();
   const sessionId = params.sessionId as string;
-  const level = searchParams.get("level");
+  const level = searchParams.get("level") || "1";
 
-  const messagesContainerRef = useRef<HTMLDivElement>(null); // ref for scrllable container
-  const callStartRef = useRef(false);
-  const vapiRef = useRef<any>(null); // Timer effect
+  // Timer
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (callStatus === CallStatus.ACTIVE) {
-      interval = setInterval(() => {
-        setSessionTime((prev) => prev + 1);
-      }, 1000);
+      interval = setInterval(() => setSessionTime((s) => s + 1), 1000);
     }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, [callStatus]);
 
-  // Cleanup on page unload
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      if (globalVapiInstance) {
-        globalVapiInstance.stop();
-        globalVapiInstance = null;
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
-
-  // automatically call the prompt
-  useEffect(() => {
-    if (prompt) generateStreamedResponse();
-  }, [prompt]);
-
-  // Format time helper
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs
-      .toString()
-      .padStart(2, "0")}`;
-  };
-
-  useEffect(() => {
-    if (lottieRef) {
-      if (isSpeaking) {
-        lottieRef.current?.play();
-      } else {
-        lottieRef.current?.stop();
-      }
-    }
-  }, [isSpeaking]);
-
-  //effect for the scroll
+  // Auto‑scroll transcript
   useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = 0;
     }
-  }, [messages]); // effect for vapi
+  }, [messages]);
+
+  // Lottie play/stop
   useEffect(() => {
-    // Prevent multiple instances globally
-    if (globalVapiInstance || vapiRef.current) {
-      return;
-    }
+    if (isSpeaking) lottieRef.current?.play();
+    else lottieRef.current?.stop();
+  }, [isSpeaking]);
 
-    // Clean up any previous instance
+  // Streamed suggestions
+  useEffect(() => {
+    if (!prompt) return;
+    const generate = async () => {
+      setStreamedResponse("");
+      try {
+        const res = await fetch("/api/suggestions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt }),
+        });
+        if (!res.ok) throw new Error("Bad status from suggestions API");
+        const reader = res.body!.getReader();
+        const dec = new TextDecoder();
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          setStreamedResponse((r) => r + dec.decode(value, { stream: true }));
+        }
+      } catch (err) {
+        console.error("Suggestions error:", err);
+      }
+    };
+    generate();
+  }, [prompt]);
+
+  // Vapi setup + cleanup
+  useEffect(() => {
+    let cancelled = false;
+    let vapi: Vapi | null = null;
+
+    if (globalVapiInstance || vapiRef.current) return;
     callStartRef.current = false;
+    const init = async () => {
+      await new Promise((r) => setTimeout(r, 100));
+      if (cancelled || globalVapiInstance || vapiRef.current) return;
 
-    // Add small delay to ensure any previous instance is fully cleaned up
-    const initializeVapi = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Double check if another instance was created during the delay
-      if (globalVapiInstance || vapiRef.current) {
+      // Validate API key
+      if (!process.env.NEXT_PUBLIC_VAPI_API_KEY) {
+        console.error("🔴 NEXT_PUBLIC_VAPI_API_KEY is not set");
+        setCallStatus(CallStatus.INACTIVE);
         return;
-      } // Create a new Vapi instance for this session
-      const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY!);
+      }
+
+      vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY);
       vapiRef.current = vapi;
-      globalVapiInstance = vapi;
-
-      const onCallStart = () => {
-        setCallStatus(CallStatus.ACTIVE);
-      };
-
-      const onCallEnd = (info: any) => {
+      globalVapiInstance = vapi; // Define handlers
+      const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
+      const onCallEnd = () => {
+        console.log("📞 call ended");
         setCallStatus(CallStatus.FINISHED);
-        console.log("call ended reason : ", info.endedReason);
       };
-
-      const onMessage = (message: Message) => {
-        if (
-          message.type === "transcript" &&
-          message.transcriptType === "final"
-        ) {
-          const newMessage = {
-            role: message.role,
-            content: message.transcript,
-          };
-          console.log(
-            "type of the message : ",
-            message.transcriptType,
-            " content of the message is : ",
-            newMessage.content
-          );
-          if (newMessage.role === "assistant") {
-            const promptText = geminiPrompt(level, newMessage.content);
-            setPrompt(promptText);
+      const onMessage = (msg: any) => {
+        if (msg.type === "transcript" && msg.transcriptType === "final") {
+          const m = { role: msg.role, content: msg.transcript };
+          setMessages((ms) => [...ms, m]);
+          if (m.role === "assistant") {
+            setPrompt(geminiPrompt(level, m.content));
           }
-          setMessages((prev) => [...prev, newMessage]);
-          console.log("messages : ", messages);
         }
       };
-
-      setCallStatus(CallStatus.CONNECTING);
-
-      const onError = (error: Error) => {
+      const onError = (err: any) => {
+        console.error("💥 Vapi SDK error event:", {
+          err,
+          name: err?.name,
+          message: err?.message,
+          stack: err?.stack,
+          code: err?.code,
+          info: err?.info,
+        });
         setCallStatus(CallStatus.INACTIVE);
-        console.error("error : ", error);
       };
-
       const onSpeechStart = () => setIsSpeaking(true);
       const onSpeechEnd = () => setIsSpeaking(false);
 
+      // Attach handlers
       vapi.on("call-start", onCallStart);
-      vapi.on("call-end", (info) => {
-        console.log("Call ended, reason:", info.endedReason);
-        setCallStatus(CallStatus.FINISHED);
-      });
+      vapi.on("call-end", onCallEnd);
       vapi.on("message", onMessage);
       vapi.on("error", onError);
       vapi.on("speech-start", onSpeechStart);
       vapi.on("speech-end", onSpeechEnd);
 
-      const startVapiCall = async () => {
+      // Kickoff
+      const startCall = async () => {
         if (callStartRef.current) return;
         callStartRef.current = true;
+        setCallStatus(CallStatus.CONNECTING);
+
+        const assistantConfig = configureAssistant();
+        const overrides = { variableValues: { level } };
+        console.log("▶️ Starting Vapi with:", { assistantConfig, overrides });
         try {
-          setCallStatus(CallStatus.CONNECTING);
-
-          const assistantOverrides = {
-            variableValues: { level },
-          };
-
-          await vapi.start(configureAssistant(), assistantOverrides, {
-            maxDurationSeconds: 1800,
-            silenceTimeoutSeconds: 300,
+          await vapi!.start(assistantConfig, overrides);
+        } catch (err: any) {
+          console.error("🔴 vapi.start() failed:", {
+            err,
+            name: err?.name,
+            message: err?.message,
+            stack: err?.stack,
+            ...err,
           });
-        } catch (error) {
           setCallStatus(CallStatus.INACTIVE);
           callStartRef.current = false;
         }
       };
 
-      startVapiCall();
+      startCall();
     };
 
-    initializeVapi();
-    return () => {
-      if (vapiRef.current) {
-        vapiRef.current.off("call-start");
-        vapiRef.current.off("call-end");
-        vapiRef.current.off("message");
-        vapiRef.current.off("error");
-        vapiRef.current.off("speech-start");
-        vapiRef.current.off("speech-end");
+    init();
 
-        // Stop the call and clean up
-        vapiRef.current.stop();
+    return () => {
+      cancelled = true;
+      const v = vapiRef.current;
+      if (v) {
+        try {
+          v.stop();
+        } catch (error) {
+          console.error("Error stopping Vapi:", error);
+        }
         vapiRef.current = null;
-        globalVapiInstance = null;
-        callStartRef.current = false;
       }
+      if (globalVapiInstance) {
+        globalVapiInstance = null;
+      }
+      callStartRef.current = false;
     };
   }, [level, sessionId]);
+
   const EndCall = () => {
     setCallStatus(CallStatus.FINISHED);
     if (vapiRef.current) {
@@ -275,13 +202,19 @@ function Session() {
     }
     redirect(`/results/${sessionId}`);
   };
+
   const toggleMicrophone = () => {
     if (!vapiRef.current) return;
-
-    const isMuted = vapiRef.current.isMuted();
-    vapiRef.current.setMuted(!isMuted);
-    setIsMuted(!isMuted);
+    const muted = vapiRef.current.isMuted();
+    vapiRef.current.setMuted(!muted);
+    setIsMuted(!muted);
   };
+
+  const formatTime = (s: number) =>
+    `${Math.floor(s / 60)
+      .toString()
+      .padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
+
   return (
     <div className="bg-[#1a1a3a] text-white flex flex-col h-screen overflow-hidden">
       {/* Session Navigation */}
@@ -418,11 +351,11 @@ function Session() {
             </div>
             {suggestionsVisible && (
               <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar">
-                {streamaedResponse ? (
+                {streamedResponse ? (
                   <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-400 transition-colors">
                     <h4 className="font-bold text-red-400">AI suggestions</h4>
                     <p className="text-sm text-gray-400 mt-1">
-                      {streamaedResponse}
+                      {streamedResponse}
                     </p>
                   </div>
                 ) : (

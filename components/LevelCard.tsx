@@ -1,6 +1,6 @@
 "use client";
 import { insertSession } from "@/lib/actions";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 interface cardProps {
@@ -10,9 +10,18 @@ interface cardProps {
 }
 
 function LevelCard({ level, title, description }: cardProps) {
-  // here we will send the cliked data to the server action to insert it to the db
+  const router = useRouter();
+
+  // Use client-side navigation instead of server action redirect
   const handleSubmit = async () => {
-    const response = await insertSession({ level });
+    try {
+      const result = await insertSession({ level });
+      if (result?.redirectUrl) {
+        router.push(result.redirectUrl);
+      }
+    } catch (error) {
+      console.error("Error starting session:", error);
+    }
   };
 
   return (

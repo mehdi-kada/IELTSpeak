@@ -34,7 +34,11 @@ export const insertSession = async ({ level }: sessionProps) => {
     throw new Error("error");
   }
 
-  redirect(`/levels/${newSession.id}?level=${level}`);
+  // Return the session data instead of redirecting
+  return {
+    sessionId: newSession.id,
+    redirectUrl: `/levels/${newSession.id}?level=${level}`,
+  };
 };
 
 // this doesnt include any ai logic just inserts the data,
