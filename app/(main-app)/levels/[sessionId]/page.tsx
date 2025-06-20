@@ -42,6 +42,8 @@ function Session() {
   const sessionId = params.sessionId as string;
   const level = searchParams.get("level") || "1";
 
+
+  // for updating session and processing conversation
   const [isSavingResults, setIsSavingResults] = useState(false);
   const sendCoversationToAPI = async () => {
     setIsSavingResults(true);

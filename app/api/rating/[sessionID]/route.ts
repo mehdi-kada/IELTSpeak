@@ -166,7 +166,6 @@ export async function POST(
       });
     }
 
-    console.log("updating database...");
     const supabase = await createClient();
     const { data, error: dbError } = await supabase
       .from("sessions")
@@ -178,12 +177,14 @@ export async function POST(
       .eq("id", sessionId)
       .single();
 
-    console.log("updating session completed : ", data);
-
     if (dbError) {
       throw new Error("error in session updating with ratings ", dbError);
     } // insert data to database
-    return NextResponse.json({ evaluation: parsedEvaluation });
+    return NextResponse.json({
+      evaluation: parsedEvaluation,
+      level: level,
+      sessionId: sessionId,
+    });
   } catch (error) {
     console.error("Error processing with model : ", error);
     return NextResponse.json(
