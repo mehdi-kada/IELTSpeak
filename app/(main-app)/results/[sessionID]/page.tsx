@@ -1,8 +1,12 @@
+import ResultsComponent from '@/components/session/resultsComponent'
 import React from 'react'
 
 function Practice() {
+  
   return (
-    <div>Results</div>
+    <div>
+      <ResultsComponent />
+    </div>
   )
 }
 

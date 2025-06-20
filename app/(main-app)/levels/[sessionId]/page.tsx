@@ -7,6 +7,7 @@ import { configureAssistant } from "@/lib/utils-new";
 import { geminiPrompt } from "@/constants/constants";
 import Link from "next/link";
 import { redirect, useSearchParams, useParams } from "next/navigation";
+import { Finlandica } from "next/font/google";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -40,6 +41,46 @@ function Session() {
   const searchParams = useSearchParams();
   const sessionId = params.sessionId as string;
   const level = searchParams.get("level") || "1";
+
+  const [isSavingResults, setIsSavingResults] = useState(false);
+  const sendCoversationToAPI = async () => {
+    setIsSavingResults(true);
+    try {
+      console.log("Sending messages to rating API:", messages);
+
+      const res = await fetch(`/api/rating/${sessionId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: messages,
+          level: level,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("API Error Response:", errorText);
+        throw new Error(
+          `API responded with status ${res.status}: ${errorText}`
+        );
+      }
+
+      const result = await res.json();
+      console.log("Rating API response:", result);
+
+      // Store result for results page
+      localStorage.setItem(`evaluation_${sessionId}`, JSON.stringify(result));
+
+      return result;
+    } catch (error) {
+      console.error("Error sending messages to rating api:", error);
+      throw error;
+    } finally {
+      setIsSavingResults(false);
+    }
+  };
 
   // Timer
   useEffect(() => {
@@ -119,6 +160,7 @@ function Session() {
         if (msg.type === "transcript" && msg.transcriptType === "final") {
           const m = { role: msg.role, content: msg.transcript };
           setMessages((ms) => [...ms, m]);
+
           if (m.role === "assistant") {
             setPrompt(geminiPrompt(level, m.content));
           }
@@ -192,15 +234,32 @@ function Session() {
       callStartRef.current = false;
     };
   }, [level, sessionId]);
-
-  const EndCall = () => {
+  const EndCall = async () => {
+    console.log("Ending call with messages:", messages);
     setCallStatus(CallStatus.FINISHED);
+
     if (vapiRef.current) {
       vapiRef.current.stop();
       vapiRef.current = null;
       globalVapiInstance = null;
     }
-    redirect(`/results/${sessionId}`);
+
+    // Send messages to rating API before redirecting
+    try {
+      if (messages.length > 0) {
+        console.log("Sending evaluation request...");
+        await sendCoversationToAPI();
+        console.log("Evaluation completed successfully");
+      } else {
+        console.warn("No messages to evaluate");
+      }
+    } catch (error) {
+      console.error("Failed to get evaluation:", error);
+      // Continue with redirect even if evaluation fails
+    }
+
+    // Use window.location.href instead of redirect
+    window.location.href = `/results/${sessionId}`;
   };
 
   const toggleMicrophone = () => {
@@ -241,12 +300,20 @@ function Session() {
             <span className="font-semibold text-lg">
               IELTS Speaking {level}
             </span>
-          </div>
+          </div>{" "}
           <button
             onClick={EndCall}
-            className="bg-red-600 hover:bg-red-700 transition-colors text-white font-bold py-2 px-4 rounded-lg"
+            disabled={isSavingResults}
+            className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed transition-colors text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2"
           >
-            End Session
+            {isSavingResults ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                Processing...
+              </>
+            ) : (
+              "End Session"
+            )}
           </button>
         </div>
       </nav>
