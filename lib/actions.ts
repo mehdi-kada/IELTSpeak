@@ -1,8 +1,7 @@
 "use server";
-import Vapi from "@vapi-ai/web";
 import { redirect } from "next/navigation";
 import { createClient } from "./server";
-import { randomUUID } from "crypto";
+
 
 interface sessionProps {
   level: string;

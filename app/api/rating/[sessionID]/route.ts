@@ -2,7 +2,10 @@
 // used to recieve the vapi transcribts
 // uses gemini and send back suggestions
 
+import { createClient } from "@/lib/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { error } from "console";
+import { Erica_One } from "next/font/google";
 import { NextRequest, NextResponse } from "next/server";
 
 const genAi = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
@@ -163,16 +166,24 @@ export async function POST(
       });
     }
 
-    // Prepare final result
-    const finalResult = {
-      sessionId,
-      messageCount: messages.length,
-      level,
-      evaluation: parsedEvaluation,
-      processedAt: new Date().toISOString(),
-    };
+    console.log("updating database...");
+    const supabase = await createClient();
+    const { data, error: dbError } = await supabase
+      .from("sessions")
+      .update({
+        ielts_rating: parsedEvaluation.ielts_ratings,
+        toefl_rating: parsedEvaluation.toefl_ratings,
+        feedback: parsedEvaluation.feedback,
+      })
+      .eq("id", sessionId)
+      .single();
 
-    return NextResponse.json(finalResult);
+    console.log("updating session completed : ", data);
+
+    if (dbError) {
+      throw new Error("error in session updating with ratings ", dbError);
+    } // insert data to database
+    return NextResponse.json({ evaluation: parsedEvaluation });
   } catch (error) {
     console.error("Error processing with model : ", error);
     return NextResponse.json(

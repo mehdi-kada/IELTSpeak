@@ -7,7 +7,7 @@ import { configureAssistant } from "@/lib/utils-new";
 import { geminiPrompt } from "@/constants/constants";
 import Link from "next/link";
 import { redirect, useSearchParams, useParams } from "next/navigation";
-import { Finlandica } from "next/font/google";
+
 
 enum CallStatus {
   INACTIVE = "INACTIVE",

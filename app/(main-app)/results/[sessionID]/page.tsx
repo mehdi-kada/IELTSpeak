@@ -1,11 +1,11 @@
 import ResultsComponent from '@/components/session/resultsComponent'
 import React from 'react'
 
-function Practice() {
+function Practice({params}: {params: Promise<{sessionID: string}>}) {
   
   return (
     <div>
-      <ResultsComponent />
+      
     </div>
   )
 }
