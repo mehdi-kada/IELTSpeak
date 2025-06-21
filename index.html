@@ -33,88 +33,45 @@
     <!-- Main Content Area -->
     <main class="container mx-auto p-4 sm:p-6 lg:p-8">
         <header class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-bold">Session Results</h1>
+            <h1 class="text-4xl md:text-5xl font-bold">Session Feedback</h1>
             <p class="text-gray-400 mt-2 max-w-2xl mx-auto">Here's a detailed breakdown of your performance for the "IELTS Speaking Part 2" session.</p>
         </header>
 
-        <!-- Overall Score Highlights -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-            <!-- IELTS Overall -->
-            <div class="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl p-8 text-center">
-                <h3 class="text-lg font-semibold text-gray-300">IELTS Overall Score</h3>
-                <p class="text-7xl font-black text-[#E62136] my-2">6.8</p>
-                <p class="font-medium">Competent User</p>
-            </div>
-            <!-- TOEFL Overall -->
-            <div class="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl p-8 text-center">
-                 <h3 class="text-lg font-semibold text-gray-300">TOEFL Overall Score</h3>
-                <p class="text-7xl font-black text-[#E62136] my-2">88</p>
-                <p class="font-medium">Good</p>
-            </div>
-        </div>
-
-        <!-- Detailed Score Breakdown -->
+        <!-- Scores Section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-            <!-- IELTS Breakdown -->
+            <!-- Left Column: IELTS Results -->
             <div class="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl p-6">
-                <h2 class="text-2xl font-bold mb-6">IELTS Score Details</h2>
-                <div class="space-y-5">
-                    <!-- Fluency -->
-                    <div class="flex items-center gap-4">
-                        <span class="font-semibold w-32">Fluency</span>
-                        <div class="w-full bg-black/20 rounded-full h-4"><div class="bg-[#E62136] h-4 rounded-full" style="width: 72.2%"></div></div>
-                        <span class="font-bold text-lg w-10 text-right">6.5</span>
-                    </div>
-                    <!-- Vocabulary -->
-                    <div class="flex items-center gap-4">
-                        <span class="font-semibold w-32">Vocabulary</span>
-                        <div class="w-full bg-black/20 rounded-full h-4"><div class="bg-[#E62136] h-4 rounded-full" style="width: 77.7%"></div></div>
-                        <span class="font-bold text-lg w-10 text-right">7.0</span>
-                    </div>
-                    <!-- Grammar -->
-                    <div class="flex items-center gap-4">
-                        <span class="font-semibold w-32">Grammar</span>
-                        <div class="w-full bg-black/20 rounded-full h-4"><div class="bg-[#E62136] h-4 rounded-full" style="width: 77.7%"></div></div>
-                        <span class="font-bold text-lg w-10 text-right">7.0</span>
-                    </div>
-                    <!-- Pronunciation -->
-                    <div class="flex items-center gap-4">
-                        <span class="font-semibold w-32">Pronunciation</span>
-                        <div class="w-full bg-black/20 rounded-full h-4"><div class="bg-[#E62136] h-4 rounded-full" style="width: 72.2%"></div></div>
-                        <span class="font-bold text-lg w-10 text-right">6.5</span>
-                    </div>
+                <h2 class="text-3xl font-bold mb-2">IELTS Results</h2>
+                <div class="flex items-baseline gap-2 mb-6">
+                    <p class="text-5xl font-black text-[#E62136]">6.8</p>
+                    <span class="font-medium text-gray-300">Overall</span>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4"><span class="font-semibold w-32">Fluency</span><div class="w-full bg-black/20 rounded-full h-3"><div class="bg-[#E62136] h-3 rounded-full" style="width: 72.2%"></div></div><span class="font-bold text-md w-10 text-right">6.5</span></div>
+                    <div class="flex items-center gap-4"><span class="font-semibold w-32">Vocabulary</span><div class="w-full bg-black/20 rounded-full h-3"><div class="bg-[#E62136] h-3 rounded-full" style="width: 77.7%"></div></div><span class="font-bold text-md w-10 text-right">7.0</span></div>
+                    <div class="flex items-center gap-4"><span class="font-semibold w-32">Grammar</span><div class="w-full bg-black/20 rounded-full h-3"><div class="bg-[#E62136] h-3 rounded-full" style="width: 77.7%"></div></div><span class="font-bold text-md w-10 text-right">7.0</span></div>
+                    <div class="flex items-center gap-4"><span class="font-semibold w-32">Pronunciation</span><div class="w-full bg-black/20 rounded-full h-3"><div class="bg-[#E62136] h-3 rounded-full" style="width: 72.2%"></div></div><span class="font-bold text-md w-10 text-right">6.5</span></div>
                 </div>
             </div>
 
-            <!-- TOEFL Breakdown -->
+            <!-- Right Column: TOEFL Results -->
             <div class="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl p-6">
-                <h2 class="text-2xl font-bold mb-6">TOEFL Score Details</h2>
-                <div class="space-y-5">
-                    <!-- Delivery -->
-                    <div class="flex items-center gap-4">
-                        <span class="font-semibold w-40">Delivery</span>
-                        <div class="w-full bg-black/20 rounded-full h-4"><div class="bg-[#E62136] h-4 rounded-full" style="width: 75%"></div></div>
-                        <span class="font-bold text-lg w-10 text-right">3/4</span>
-                    </div>
-                    <!-- Language Use -->
-                    <div class="flex items-center gap-4">
-                        <span class="font-semibold w-40">Language Use</span>
-                        <div class="w-full bg-black/20 rounded-full h-4"><div class="bg-[#E62136] h-4 rounded-full" style="width: 100%"></div></div>
-                        <span class="font-bold text-lg w-10 text-right">4/4</span>
-                    </div>
-                    <!-- Topic Development -->
-                    <div class="flex items-center gap-4">
-                        <span class="font-semibold w-40">Topic Development</span>
-                         <div class="w-full bg-black/20 rounded-full h-4"><div class="bg-[#E62136] h-4 rounded-full" style="width: 100%"></div></div>
-                        <span class="font-bold text-lg w-10 text-right">4/4</span>
-                    </div>
+                <h2 class="text-3xl font-bold mb-2">TOEFL Results</h2>
+                 <div class="flex items-baseline gap-2 mb-6">
+                    <p class="text-5xl font-black text-[#E62136]">88</p>
+                    <span class="font-medium text-gray-300">Overall</span>
+                </div>
+                 <div class="space-y-4">
+                    <div class="flex items-center gap-4"><span class="font-semibold w-40">Delivery</span><div class="w-full bg-black/20 rounded-full h-3"><div class="bg-[#E62136] h-3 rounded-full" style="width: 75%"></div></div><span class="font-bold text-md w-10 text-right">3/4</span></div>
+                    <div class="flex items-center gap-4"><span class="font-semibold w-40">Language Use</span><div class="w-full bg-black/20 rounded-full h-3"><div class="bg-[#E62136] h-3 rounded-full" style="width: 100%"></div></div><span class="font-bold text-md w-10 text-right">4/4</span></div>
+                    <div class="flex items-center gap-4"><span class="font-semibold w-40">Topic Development</span><div class="w-full bg-black/20 rounded-full h-3"><div class="bg-[#E62136] h-3 rounded-full" style="width: 100%"></div></div><span class="font-bold text-md w-10 text-right">4/4</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- Feedback Section -->
+        <!-- Consolidated Feedback Section -->
         <div>
-             <h2 class="text-3xl font-bold text-center mb-8">Detailed Feedback</h2>
+             <h2 class="text-3xl font-bold text-center mb-8">Overall Performance Feedback</h2>
              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Positives -->
                 <div class="bg-green-500/10 border border-green-500/30 rounded-2xl p-6">
@@ -127,7 +84,8 @@
                     <ul class="space-y-2 list-disc list-inside text-gray-300">
                         <li>Excellent use of advanced vocabulary like "picturesque" and "hospitable".</li>
                         <li>Good control over complex grammar structures.</li>
-                        <li>Your ideas were well-organized and easy to follow.</li>
+                        <li>Your topic development was strong and your ideas were well-supported.</li>
+                        <li>Language use was appropriate and effective for the task.</li>
                     </ul>
                 </div>
                 <!-- Negatives / Areas for Improvement -->
@@ -139,12 +97,25 @@
                         <h3 class="text-xl font-bold text-yellow-400">Areas for Improvement</h3>
                     </div>
                      <ul class="space-y-2 list-disc list-inside text-gray-300">
-                        <li>Some minor pronunciation errors on words like "coastal".</li>
-                        <li>Try to vary sentence openings to improve flow.</li>
-                        <li>Slight hesitation was noted between ideas, impacting fluency.</li>
+                        <li>Some minor pronunciation errors on words like "coastal". Work on clearer vowel sounds.</li>
+                        <li>Your delivery could be smoother. Try to speak at a more consistent pace to avoid hesitation.</li>
+                        <li>Vary sentence openings to improve overall flow and engagement.</li>
                     </ul>
                 </div>
              </div>
+        </div>
+        
+        <!-- Transcript and Next Steps -->
+        <div class="mt-10 text-center">
+             <h2 class="text-2xl font-bold text-center mb-4">Review and Continue</h2>
+             <div class="flex justify-center gap-4">
+                <a href="#" class="bg-white/10 hover:bg-white/20 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                    View Full Transcript
+                </a>
+                <a href="#" class="bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px text-white font-bold py-3 px-6 rounded-lg transition-all">
+                    Start a New Session
+                </a>
+            </div>
         </div>
 
     </main>
