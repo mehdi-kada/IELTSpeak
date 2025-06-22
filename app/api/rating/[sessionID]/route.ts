@@ -20,13 +20,6 @@ export async function POST(
     const sessionId = resolvedParams.sessionID; // sessionID matches folder name [sessionID]
     const { messages, level } = await req.json();
 
-    console.log("=== API DEBUG ===");
-    console.log("Session ID:", sessionId);
-    console.log("Messages count:", messages?.length);
-    console.log("Level:", level);
-    console.log("Raw params:", resolvedParams);
-    console.log("================");
-
     //validate the request
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json(
@@ -159,7 +152,6 @@ export async function POST(
       };
       return NextResponse.json({
         sessionId,
-        messageCount: messages.length,
         level,
         rawResponse: parsedEvaluation,
         processedAt: new Date().toISOString(),
@@ -195,5 +187,4 @@ export async function POST(
       { status: 500 }
     );
   }
-  // process and save in db
 }

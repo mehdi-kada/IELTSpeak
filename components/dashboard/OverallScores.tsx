@@ -14,13 +14,13 @@ export function OverallScores({
         <div className="flex justify-between items-center">
           <span className="font-medium text-gray-300">IELTS Average</span>
           <span className="text-2xl font-bold text-[#E62136]">
-            {ieltsAverage}
+            {Math.round(ieltsAverage*2)/2}
           </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="font-medium text-gray-300">TOEFL Average</span>
           <span className="text-2xl font-bold text-[#E62136]">
-            {toeflAverage}
+            {Math.round(toeflAverage)}
           </span>
         </div>
       </div>

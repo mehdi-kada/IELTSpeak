@@ -4,7 +4,7 @@ interface StartNewSessionProps {
   href: string;
 }
 
-export function StartNewSession({ href }: StartNewSessionProps) {
+export default function StartNewSession({ href }: StartNewSessionProps) {
   return (
     <Link
       href={href}
