@@ -3,11 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import Vapi from "@vapi-ai/web";
-import { configureAssistant } from "@/lib/utils-new";
+import { configureAssistant } from "@/lib/utils";
 import { geminiPrompt } from "@/constants/constants";
 import Link from "next/link";
 import { redirect, useSearchParams, useParams } from "next/navigation";
-
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -41,7 +40,6 @@ function Session() {
   const searchParams = useSearchParams();
   const sessionId = params.sessionId as string;
   const level = searchParams.get("level") || "1";
-
 
   // for updating session and processing conversation
   const [isSavingResults, setIsSavingResults] = useState(false);

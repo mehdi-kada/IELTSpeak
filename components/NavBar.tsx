@@ -7,8 +7,9 @@ import { useCurrentUserName } from "@/hooks/use-current-user-name";
 import { CurrentUserAvatar } from "./user-avatar";
 import { usePathname } from "next/navigation";
 import { navItems } from "@/constants/constants";
-import { cn } from "@/lib/utils";
+
 import { LogoutButton } from "./logout-button";
+import { cn } from "@/lib/utils";
 
 function NavBar() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
