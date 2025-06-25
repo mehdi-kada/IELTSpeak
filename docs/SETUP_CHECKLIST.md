@@ -17,6 +17,7 @@ Use this checklist to verify your Polar subscription system is properly configur
 - [ ] Dashboard accessible
 
 ### Product Configuration
+
 - [ ] Product created in Polar dashboard
 - [ ] Product type set to "Subscription"
 - [ ] Billing interval set to "Monthly"
@@ -24,6 +25,7 @@ Use this checklist to verify your Polar subscription system is properly configur
 - [ ] Product ID copied (UUID format)
 
 ### API Credentials
+
 - [ ] Access token generated (starts with `polar_pat_`)
 - [ ] Organization ID obtained
 - [ ] API keys are for correct environment (sandbox/production)
@@ -39,7 +41,7 @@ Create/update `.env.local` with all required variables:
 - [ ] POLAR_SERVER="sandbox"
 - [ ] POLAR_WEBHOOK_SECRET="your_random_secret"
 
-# App Configuration  
+# App Configuration
 - [ ] NEXT_PUBLIC_APP_URL="http://localhost:3000"
 - [ ] NEXT_PUBLIC_POLAR_PRODUCT_ID="your_product_uuid"
 
@@ -50,6 +52,7 @@ Create/update `.env.local` with all required variables:
 ```
 
 ### Verification
+
 - [ ] No placeholder values remaining
 - [ ] All values are real credentials
 - [ ] File saved and server restarted
@@ -57,6 +60,7 @@ Create/update `.env.local` with all required variables:
 ## ✅ Database Setup
 
 ### Table Creation
+
 - [ ] Opened Supabase SQL Editor
 - [ ] Ran complete SQL setup script
 - [ ] `user_subscriptions` table created
@@ -64,29 +68,35 @@ Create/update `.env.local` with all required variables:
 - [ ] All indexes created successfully
 
 ### Permissions & Security
+
 - [ ] Row Level Security (RLS) enabled
 - [ ] User policies created for `user_subscriptions`
 - [ ] Service role policy created for `payment_logs`
 - [ ] Triggers created for `updated_at` columns
 
 ### Verification
+
 ```sql
 -- Run this to verify tables exist
-SELECT table_name FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name FROM information_schema.tables
+WHERE table_schema = 'public'
 AND table_name IN ('user_subscriptions', 'payment_logs');
 ```
+
 - [ ] Both tables appear in results
 
 ## ✅ Application Setup
 
 ### Dependencies
+
 - [ ] `@polar-sh/sdk` installed
 - [ ] `@supabase/supabase-js` installed
 - [ ] No package installation errors
 
 ### File Structure
+
 Verify these files exist:
+
 - [ ] `lib/polar-client.ts`
 - [ ] `lib/subscription-helpers.ts`
 - [ ] `lib/subscription-guards.ts`
@@ -101,6 +111,7 @@ Verify these files exist:
 ## ✅ Testing Tools
 
 ### Setup Helper (`/polar-test`)
+
 - [ ] Page loads without errors
 - [ ] Environment variables show correct values
 - [ ] Product ID test passes
@@ -108,6 +119,7 @@ Verify these files exist:
 - [ ] No API errors in browser console
 
 ### Debug Panel (`/subscription-debug`)
+
 - [ ] Page loads without errors
 - [ ] User authentication works
 - [ ] Subscription status displays
@@ -117,22 +129,26 @@ Verify these files exist:
 ## ✅ Component Testing
 
 ### Subscribe Button
+
 ```tsx
 // Test in any page
 <SubscriptionButton productId={process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID}>
   Test Subscribe
 </SubscriptionButton>
 ```
+
 - [ ] Button renders without errors
 - [ ] Click creates checkout session
 - [ ] Redirects to Polar payment page
 - [ ] No console errors
 
 ### Subscription Hook
+
 ```tsx
 // Test in any component
 const { isSubscribed, loading, error } = useSubscriptionStatus();
 ```
+
 - [ ] Hook returns without errors
 - [ ] Loading state works
 - [ ] Subscription status accurate
@@ -141,6 +157,7 @@ const { isSubscribed, loading, error } = useSubscriptionStatus();
 ## ✅ Payment Flow Testing
 
 ### Test Payment
+
 - [ ] Subscribe button clicked
 - [ ] Redirected to Polar checkout
 - [ ] Test card accepted: `4242 4242 4242 4242`
@@ -148,6 +165,7 @@ const { isSubscribed, loading, error } = useSubscriptionStatus();
 - [ ] Redirected back to success page
 
 ### Subscription Verification
+
 - [ ] Subscription appears in debug panel
 - [ ] Status shows as "active" or "trialing"
 - [ ] User can access premium features
@@ -156,12 +174,14 @@ const { isSubscribed, loading, error } = useSubscriptionStatus();
 ## ✅ Webhook Testing (Optional for Development)
 
 ### Local Development (with ngrok)
+
 - [ ] ngrok installed and running
 - [ ] HTTPS URL obtained
 - [ ] Webhook configured in Polar dashboard
 - [ ] Test webhook delivery successful
 
 ### Webhook Verification
+
 - [ ] Webhook events appear in `payment_logs` table
 - [ ] Signature verification passes
 - [ ] Subscription status updates correctly
@@ -170,12 +190,14 @@ const { isSubscribed, loading, error } = useSubscriptionStatus();
 ## ✅ Error Handling
 
 ### Common Scenarios
+
 - [ ] Non-authenticated users handled gracefully
 - [ ] Invalid product IDs show clear errors
 - [ ] Network failures display user-friendly messages
 - [ ] Duplicate subscriptions prevented/cleaned
 
 ### Error Logging
+
 - [ ] Server errors logged appropriately
 - [ ] Client errors captured in console
 - [ ] Webhook errors stored in database
@@ -184,12 +206,14 @@ const { isSubscribed, loading, error } = useSubscriptionStatus();
 ## ✅ Security Verification
 
 ### Environment Security
+
 - [ ] Service role key not exposed to client
 - [ ] API keys not committed to git
 - [ ] Webhook secrets properly secured
 - [ ] Production keys different from development
 
 ### Database Security
+
 - [ ] RLS policies prevent unauthorized access
 - [ ] Users can only see their own subscriptions
 - [ ] Service role required for admin operations
@@ -198,12 +222,14 @@ const { isSubscribed, loading, error } = useSubscriptionStatus();
 ## ✅ Production Readiness (When Ready)
 
 ### Configuration
+
 - [ ] `POLAR_SERVER="production"`
 - [ ] Production product ID configured
 - [ ] Production webhook URL set
 - [ ] Production domain in `NEXT_PUBLIC_APP_URL`
 
 ### Testing
+
 - [ ] Full payment flow tested in production
 - [ ] Webhook delivery verified
 - [ ] Database operations working
@@ -212,13 +238,16 @@ const { isSubscribed, loading, error } = useSubscriptionStatus();
 ## 🎯 Final Verification
 
 ### User Experience Test
+
 1. **As a new user**:
+
    - [ ] Can view pricing page
    - [ ] Can click subscribe button
    - [ ] Can complete payment
    - [ ] Gets access to premium features
 
 2. **As a subscribed user**:
+
    - [ ] Can view subscription status
    - [ ] Can access premium features
    - [ ] Can cancel subscription (if implemented)
@@ -245,11 +274,11 @@ If any checklist item fails:
 ✅ **All checklist items completed**  
 ✅ **End-to-end payment flow working**  
 ✅ **No errors in production testing**  
-✅ **Documentation reviewed and understood**  
+✅ **Documentation reviewed and understood**
 
 **Congratulations!** Your Polar subscription system is ready for production use! 🚀
 
 ---
 
-*Last updated: [Current Date]*  
-*For detailed help, see: `docs/SUBSCRIPTION_IMPLEMENTATION_GUIDE.md`*
+_Last updated: [Current Date]_  
+_For detailed help, see: `docs/SUBSCRIPTION_IMPLEMENTATION_GUIDE.md`_

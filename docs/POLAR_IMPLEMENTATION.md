@@ -5,6 +5,7 @@ This implementation provides a complete monthly subscription system using Polar 
 ## 🎯 What You'll Build
 
 By the end of this guide, you'll have:
+
 - A working monthly subscription system
 - Secure payment processing with Polar
 - Automatic subscription management
@@ -15,6 +16,7 @@ By the end of this guide, you'll have:
 ## 📋 Prerequisites
 
 Before starting, make sure you have:
+
 - A Next.js 13+ application (you already have this)
 - A Supabase account and project
 - A Polar account (sign up at [polar.sh](https://polar.sh))
@@ -25,10 +27,12 @@ Before starting, make sure you have:
 ### Step 1: Create Your Polar Account and Product
 
 1. **Sign up for Polar**:
+
    - Go to [polar.sh](https://polar.sh) and create an account
    - Use the sandbox environment for testing
 
 2. **Create a Product**:
+
    - In your Polar dashboard, go to "Products"
    - Click "Create Product"
    - Set up your monthly subscription:
@@ -74,16 +78,16 @@ Run this SQL in your Supabase SQL Editor (Dashboard → SQL Editor → New Query
 CREATE TABLE IF NOT EXISTS user_subscriptions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  
+
   -- Polar identifiers
   polar_customer_id TEXT NOT NULL,
   polar_subscription_id TEXT UNIQUE,
   polar_checkout_id TEXT,
-  
+
   -- Product information
   polar_product_id TEXT NOT NULL,
   polar_product_type TEXT,
-  
+
   -- Subscription status and timing
   status TEXT NOT NULL DEFAULT 'incomplete',
   current_period_start TIMESTAMP,
@@ -92,7 +96,7 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
   canceled_at TIMESTAMP,
   started_at TIMESTAMP,
   ends_at TIMESTAMP,
-  
+
   -- Pricing information
   amount INTEGER, -- Amount in cents
   currency TEXT DEFAULT 'usd',
@@ -168,6 +172,7 @@ npm install @polar-sh/sdk @polar-sh/nextjs @supabase/supabase-js
 ### Step 5: Webhook Setup in Polar
 
 1. **Get your webhook URL**:
+
    - For development: Use ngrok or similar tool
    - For production: `https://yourdomain.com/api/webhooks/polar`
 
@@ -233,7 +238,7 @@ import { SubscriptionButton } from "@/components/payments/SubscriptionButton";
 
 function MyPricingPage() {
   return (
-    <SubscriptionButton 
+    <SubscriptionButton
       productId={process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID}
       className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg"
     >
@@ -244,6 +249,7 @@ function MyPricingPage() {
 ```
 
 **What it does**:
+
 - When clicked, calls `/api/subscriptions/create`
 - Redirects user to Polar checkout
 - Handles loading states and errors
@@ -273,6 +279,7 @@ function MyComponent() {
 ```
 
 **What it does**:
+
 - Automatically fetches subscription status
 - Updates when subscription changes
 - Provides loading and error states
@@ -295,6 +302,7 @@ function PricingPage() {
 ```
 
 **What it shows**:
+
 - Free vs Premium plans
 - Current subscription status
 - Subscribe or manage buttons
@@ -304,16 +312,19 @@ function PricingPage() {
 Here's exactly what happens when a user subscribes:
 
 1. **User clicks "Subscribe"**
+
    - `SubscriptionButton` calls `/api/subscriptions/create`
    - Server creates Polar checkout session
    - User redirected to Polar payment page
 
 2. **User pays on Polar**
+
    - Polar processes payment
    - Polar sends webhook to `/api/webhooks/polar`
    - Webhook creates/updates subscription in database
 
 3. **User returns to your app**
+
    - Redirected to `/subscribe/success`
    - Success page calls `/api/subscriptions/success`
    - Subscription is confirmed and active
@@ -330,13 +341,15 @@ Here's exactly what happens when a user subscribes:
 2. **Check for issues**: Click "Fetch Debug Data"
 3. **Clean up duplicates**: If you have multiple subscriptions, clean them up
 
-### Test the Polar helper page**: `http://localhost:3000/polar-test`
+### Test the Polar helper page\*\*: `http://localhost:3000/polar-test`
+
 2. **Enter your product ID**: Use the real UUID from Polar
 3. **Test checkout creation**: Should create a working checkout URL
 
 ### Test the Complete Flow
 
 1. **Add a subscribe button to any page**:
+
 ```tsx
 import { SubscriptionButton } from "@/components/payments/SubscriptionButton";
 
@@ -344,9 +357,7 @@ export default function TestPage() {
   return (
     <div className="p-8">
       <h1>Test Subscription</h1>
-      <SubscriptionButton 
-        productId={process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID}
-      >
+      <SubscriptionButton productId={process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID}>
         Test Subscribe
       </SubscriptionButton>
     </div>
@@ -380,22 +391,27 @@ export default function TestPage() {
 ## 🚨 Common Issues & Solutions
 
 ### "Product does not exist" Error
+
 - **Problem**: Using wrong product ID
 - **Solution**: Get correct UUID from Polar dashboard
 
-### "Invalid URL" Error  
+### "Invalid URL" Error
+
 - **Problem**: `NEXT_PUBLIC_APP_URL` not set
 - **Solution**: Add correct URL to `.env.local`
 
 ### "Multiple subscriptions" Error
+
 - **Problem**: Duplicate subscription records
 - **Solution**: Use debug panel to clean up duplicates
 
 ### Webhook Not Working
+
 - **Problem**: Webhook signature verification failing
 - **Solution**: Check webhook secret in environment variables
 
 ### "Unauthorized" Error
+
 - **Problem**: User not logged in or wrong API keys
 - **Solution**: Verify authentication and API keys
 
@@ -404,6 +420,7 @@ export default function TestPage() {
 ### Using the Debug Panel
 
 Visit `/subscription-debug` to:
+
 - See all subscription records for a user
 - Check subscription status
 - Clean up duplicate records
@@ -412,12 +429,14 @@ Visit `/subscription-debug` to:
 ### Database Monitoring
 
 Check these tables in Supabase:
+
 - `user_subscriptions`: All subscription data
 - `payment_logs`: Webhook events and errors
 
 ### Polar Dashboard
 
 Monitor in Polar:
+
 - Payment events
 - Subscription status changes
 - Webhook delivery status
@@ -436,6 +455,7 @@ After setup, your subscription system will:
 ## 🎓 Advanced Features (Future)
 
 Once you're comfortable with the basics, you can add:
+
 - Multiple subscription tiers
 - Annual billing options
 - Trial periods

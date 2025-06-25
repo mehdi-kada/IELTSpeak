@@ -18,6 +18,7 @@ A comprehensive, beginner-friendly guide for implementing a robust monthly subsc
 ## 🚀 Quick Start
 
 **Already have everything set up?** Jump to:
+
 - [Testing Tools](#testing-tools): `/subscription-debug` and `/polar-test`
 - [Component Usage](#-component-usage): How to use the subscription system
 - [Troubleshooting](#-troubleshooting): Fix common issues
@@ -30,18 +31,20 @@ Before starting, ensure you have:
 ✅ **Supabase account and project** with authentication set up  
 ✅ **Polar account** (sign up at [polar.sh](https://polar.sh))  
 ✅ **Basic React/Next.js knowledge**  
-✅ **Node.js 18+** installed  
+✅ **Node.js 18+** installed
 
 ## 🛠 Step-by-Step Setup
 
 ### Step 1: Create Polar Account & Product
 
 #### 1.1 Sign Up for Polar
+
 1. Go to [polar.sh](https://polar.sh) and create an account
 2. **Important**: Use the **sandbox environment** for testing
 3. Verify your email and complete account setup
 
 #### 1.2 Create Your Product
+
 1. In Polar dashboard, navigate to **Products**
 2. Click **"Create Product"**
 3. Configure your subscription:
@@ -55,6 +58,7 @@ Before starting, ensure you have:
 4. **Copy the Product ID** (UUID format: `123e4567-e89b-12d3-a456-426614174000`)
 
 #### 1.3 Get API Credentials
+
 1. Go to **Settings → API Keys**
 2. Copy your **Access Token** (starts with `polar_pat_`)
 3. Copy your **Organization ID** (found in dashboard URL or settings)
@@ -100,16 +104,16 @@ SUPABASE_SERVICE_ROLE_KEY="your_supabase_service_role_key"
 CREATE TABLE IF NOT EXISTS user_subscriptions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  
+
   -- Polar identifiers
   polar_customer_id TEXT NOT NULL,
   polar_subscription_id TEXT UNIQUE,
   polar_checkout_id TEXT,
-  
+
   -- Product information
   polar_product_id TEXT NOT NULL,
   polar_product_type TEXT,
-  
+
   -- Subscription status and timing
   status TEXT NOT NULL DEFAULT 'incomplete',
   current_period_start TIMESTAMP,
@@ -118,7 +122,7 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
   canceled_at TIMESTAMP,
   started_at TIMESTAMP,
   ends_at TIMESTAMP,
-  
+
   -- Pricing information
   amount INTEGER, -- Amount in cents
   currency TEXT DEFAULT 'usd',
@@ -200,11 +204,13 @@ The required packages are already installed in your project:
 ### Step 5: Webhook Setup (For Production)
 
 #### 5.1 For Local Development
+
 1. Install ngrok: `npm install -g ngrok`
 2. In a new terminal: `ngrok http 3000`
 3. Copy the HTTPS URL (e.g., `https://abc123.ngrok.io`)
 
 #### 5.2 Configure Webhook in Polar
+
 1. Go to **Polar Dashboard → Settings → Webhooks**
 2. Click **"Add Endpoint"**
 3. Configure:
@@ -272,7 +278,7 @@ import { SubscriptionButton } from "@/components/payments/SubscriptionButton";
 
 function MyPage() {
   return (
-    <SubscriptionButton 
+    <SubscriptionButton
       productId={process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID}
       className="bg-blue-600 text-white px-6 py-3 rounded-lg"
     >
@@ -297,7 +303,7 @@ function PremiumFeature() {
       <div className="text-center p-8 border rounded-lg">
         <h3 className="text-xl font-bold mb-4">Premium Feature</h3>
         <p className="mb-4">Subscribe to access this feature.</p>
-        <SubscriptionButton 
+        <SubscriptionButton
           productId={process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID}
         >
           Subscribe Now
@@ -354,6 +360,7 @@ export default async function PremiumPage() {
 ### Testing Tools
 
 #### 1. Debug Panel: `/subscription-debug`
+
 - View all subscription records for the current user
 - Check for duplicate subscriptions
 - Clean up old/duplicate records
@@ -361,6 +368,7 @@ export default async function PremiumPage() {
 - Monitor webhook events
 
 #### 2. Polar Setup Helper: `/polar-test`
+
 - Test your Polar API connection
 - Verify environment variables
 - Test product ID validity
@@ -370,6 +378,7 @@ export default async function PremiumPage() {
 ### Manual Testing Steps
 
 1. **Environment Verification**:
+
    ```bash
    # Check all environment variables are set
    npm run dev
@@ -377,6 +386,7 @@ export default async function PremiumPage() {
    ```
 
 2. **Database Verification**:
+
    ```bash
    # Visit: http://localhost:3000/subscription-debug
    # Should show no errors and current subscription status
@@ -406,33 +416,35 @@ Any 3-digit CVC
 
 ### Common Error Messages & Solutions
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| "Failed to fetch subscription status" | Database table missing | Run the SQL setup script |
-| "Product does not exist" | Wrong product ID | Get correct UUID from Polar dashboard |
-| "Input should be a valid URL" | Missing `NEXT_PUBLIC_APP_URL` | Add correct URL to `.env.local` |
-| "Multiple rows returned" | Duplicate subscriptions | Use debug panel to clean up |
-| "Unauthorized" | User not logged in or wrong API keys | Check authentication and API keys |
-| "Invalid signature" | Wrong webhook secret | Check `POLAR_WEBHOOK_SECRET` |
+| Error                                 | Cause                                | Solution                              |
+| ------------------------------------- | ------------------------------------ | ------------------------------------- |
+| "Failed to fetch subscription status" | Database table missing               | Run the SQL setup script              |
+| "Product does not exist"              | Wrong product ID                     | Get correct UUID from Polar dashboard |
+| "Input should be a valid URL"         | Missing `NEXT_PUBLIC_APP_URL`        | Add correct URL to `.env.local`       |
+| "Multiple rows returned"              | Duplicate subscriptions              | Use debug panel to clean up           |
+| "Unauthorized"                        | User not logged in or wrong API keys | Check authentication and API keys     |
+| "Invalid signature"                   | Wrong webhook secret                 | Check `POLAR_WEBHOOK_SECRET`          |
 
 ### Detailed Troubleshooting Steps
 
 #### 1. Database Issues
+
 ```sql
 -- Check if tables exist
-SELECT table_name FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name FROM information_schema.tables
+WHERE table_schema = 'public'
 AND table_name IN ('user_subscriptions', 'payment_logs');
 
 -- Check for duplicate subscriptions
-SELECT user_id, COUNT(*) as count 
-FROM user_subscriptions 
+SELECT user_id, COUNT(*) as count
+FROM user_subscriptions
 WHERE status IN ('active', 'trialing')
-GROUP BY user_id 
+GROUP BY user_id
 HAVING COUNT(*) > 1;
 ```
 
 #### 2. Environment Variable Issues
+
 ```bash
 # Create .env.example for reference
 echo "POLAR_ACCESS_TOKEN=polar_pat_your_token
@@ -444,6 +456,7 @@ NEXT_PUBLIC_POLAR_PRODUCT_ID=your_product_uuid" > .env.example
 ```
 
 #### 3. Webhook Issues
+
 - **Local Development**: Use ngrok to expose localhost
 - **Production**: Ensure HTTPS and correct webhook URL
 - **Verification**: Check `payment_logs` table for webhook events
@@ -451,17 +464,20 @@ NEXT_PUBLIC_POLAR_PRODUCT_ID=your_product_uuid" > .env.example
 ### Debug Checklist
 
 ✅ **Environment Setup**
+
 - [ ] All environment variables set with real values
 - [ ] No placeholder values remaining
 - [ ] Development server restarted after env changes
 
 ✅ **Database Setup**
+
 - [ ] `user_subscriptions` table exists
-- [ ] `payment_logs` table exists  
+- [ ] `payment_logs` table exists
 - [ ] RLS policies enabled
 - [ ] No duplicate subscription records
 
 ✅ **Polar Configuration**
+
 - [ ] Sandbox account verified
 - [ ] Product created with monthly billing
 - [ ] Correct product ID copied
@@ -469,6 +485,7 @@ NEXT_PUBLIC_POLAR_PRODUCT_ID=your_product_uuid" > .env.example
 - [ ] Webhook endpoint configured (production)
 
 ✅ **Testing**
+
 - [ ] Debug panel shows no errors
 - [ ] Polar test helper works
 - [ ] Subscribe button creates checkout URL
@@ -483,7 +500,7 @@ NEXT_PUBLIC_POLAR_PRODUCT_ID=your_product_uuid" > .env.example
 ✅ **Service Role Authentication**: Admin operations use secure service key  
 ✅ **Input Validation**: All API endpoints validate inputs  
 ✅ **Error Handling**: Comprehensive logging and user feedback  
-✅ **Environment Security**: Sensitive keys are server-side only  
+✅ **Environment Security**: Sensitive keys are server-side only
 
 ### Security Guidelines
 
@@ -554,21 +571,21 @@ Once your basic subscription system is working, you can add:
 ```typescript
 // Create different products in Polar for each tier
 const subscriptionTiers = [
-  { 
-    name: "Basic", 
-    productId: "basic-product-id", 
-    price: "$4.99/month" 
+  {
+    name: "Basic",
+    productId: "basic-product-id",
+    price: "$4.99/month",
   },
-  { 
-    name: "Premium", 
-    productId: "premium-product-id", 
-    price: "$9.99/month" 
+  {
+    name: "Premium",
+    productId: "premium-product-id",
+    price: "$9.99/month",
   },
-  { 
-    name: "Pro", 
-    productId: "pro-product-id", 
-    price: "$19.99/month" 
-  }
+  {
+    name: "Pro",
+    productId: "pro-product-id",
+    price: "$19.99/month",
+  },
 ];
 ```
 
@@ -580,7 +597,7 @@ const annualProduct = {
   name: "Premium Annual",
   productId: "premium-annual-id",
   price: "$99.99/year",
-  savings: "Save 17%"
+  savings: "Save 17%",
 };
 ```
 
@@ -590,11 +607,11 @@ const annualProduct = {
 // Track feature usage
 async function trackFeatureUsage(userId: string, feature: string) {
   const { data: subscription } = await getUserSubscription(userId);
-  
-  if (!subscription || subscription.status !== 'active') {
-    throw new Error('Active subscription required');
+
+  if (!subscription || subscription.status !== "active") {
+    throw new Error("Active subscription required");
   }
-  
+
   // Log usage, check limits, etc.
 }
 ```
@@ -605,12 +622,12 @@ async function trackFeatureUsage(userId: string, feature: string) {
 // Add customer management portal
 async function createCustomerPortalSession(userId: string) {
   const { data: subscription } = await getUserSubscription(userId);
-  
+
   // Use Polar's customer portal API
   const portalSession = await polar.customers.createPortalSession({
-    customerId: subscription.polar_customer_id
+    customerId: subscription.polar_customer_id,
   });
-  
+
   return portalSession.url;
 }
 ```
@@ -620,6 +637,7 @@ async function createCustomerPortalSession(userId: string) {
 ### Key Metrics to Track
 
 1. **Subscription Metrics**:
+
    - Monthly Recurring Revenue (MRR)
    - Churn rate
    - Customer lifetime value
@@ -637,18 +655,16 @@ async function createCustomerPortalSession(userId: string) {
 // Create analytics dashboard
 async function getSubscriptionAnalytics() {
   const supabase = await createAdminClient();
-  
-  const { data: metrics } = await supabase
-    .from('user_subscriptions')
-    .select(`
+
+  const { data: metrics } = await supabase.from("user_subscriptions").select(`
       status,
       amount,
       created_at,
       current_period_end
     `);
-  
+
   return {
-    totalSubscribers: metrics?.filter(s => s.status === 'active').length,
+    totalSubscribers: metrics?.filter((s) => s.status === "active").length,
     mrr: calculateMRR(metrics),
     churnRate: calculateChurnRate(metrics),
     // ... other metrics
@@ -661,7 +677,7 @@ async function getSubscriptionAnalytics() {
 You now have a complete, production-ready subscription system with:
 
 - ✅ Secure payment processing
-- ✅ Automatic subscription management  
+- ✅ Automatic subscription management
 - ✅ Real-time webhook handling
 - ✅ Comprehensive error handling
 - ✅ User-friendly interfaces

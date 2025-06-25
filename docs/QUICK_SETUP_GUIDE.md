@@ -5,6 +5,7 @@ This is a condensed version of the complete implementation guide. Use this for q
 ## ⚡ 5-Minute Setup
 
 ### 1. Get Polar Credentials
+
 ```bash
 # Visit https://polar.sh → Create Account → Sandbox Mode
 # Create Product → Copy Product ID
@@ -12,10 +13,11 @@ This is a condensed version of the complete implementation guide. Use this for q
 ```
 
 ### 2. Environment Variables
+
 ```bash
 # Add to .env.local
 POLAR_ACCESS_TOKEN="polar_pat_your_token"
-POLAR_ORGANIZATION_ID="your_org_id" 
+POLAR_ORGANIZATION_ID="your_org_id"
 POLAR_SERVER="sandbox"
 POLAR_WEBHOOK_SECRET="random_secret_string"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
@@ -23,12 +25,14 @@ NEXT_PUBLIC_POLAR_PRODUCT_ID="your_product_uuid"
 ```
 
 ### 3. Database Setup
+
 ```sql
 -- Run in Supabase SQL Editor
 -- (Copy full SQL from main guide or sql/create_subscription_tables.sql)
 ```
 
 ### 4. Test Setup
+
 ```bash
 npm run dev
 # Visit: http://localhost:3000/polar-test
@@ -38,15 +42,17 @@ npm run dev
 ## 🚀 Usage Examples
 
 ### Basic Subscribe Button
+
 ```tsx
 import { SubscriptionButton } from "@/components/payments/SubscriptionButton";
 
 <SubscriptionButton productId={process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID}>
   Subscribe $9.99/month
-</SubscriptionButton>
+</SubscriptionButton>;
 ```
 
 ### Check Subscription Status
+
 ```tsx
 import { useSubscriptionStatus } from "@/hooks/use-subscription-status";
 
@@ -57,6 +63,7 @@ function MyComponent() {
 ```
 
 ### Protect Pages (Server-Side)
+
 ```tsx
 import { requireSubscription } from "@/lib/subscription-guards";
 
@@ -68,13 +75,13 @@ export default async function PremiumPage() {
 
 ## 🔧 Quick Fixes
 
-| Problem | Solution |
-|---------|----------|
+| Problem                  | Solution                                           |
+| ------------------------ | -------------------------------------------------- |
 | "Product does not exist" | Check `NEXT_PUBLIC_POLAR_PRODUCT_ID` in .env.local |
-| "Failed to fetch status" | Run database SQL setup |
-| "Multiple rows returned" | Visit `/subscription-debug` → Clean Duplicates |
-| "Unauthorized" | Check user login + `POLAR_ACCESS_TOKEN` |
-| Button doesn't work | Check browser console for errors |
+| "Failed to fetch status" | Run database SQL setup                             |
+| "Multiple rows returned" | Visit `/subscription-debug` → Clean Duplicates     |
+| "Unauthorized"           | Check user login + `POLAR_ACCESS_TOKEN`            |
+| Button doesn't work      | Check browser console for errors                   |
 
 ## 📱 Testing Tools
 
@@ -94,7 +101,7 @@ lib/
 
 app/api/subscriptions/
 ├── create/route.ts
-├── status/route.ts  
+├── status/route.ts
 ├── cancel/route.ts
 └── debug/route.ts
 
