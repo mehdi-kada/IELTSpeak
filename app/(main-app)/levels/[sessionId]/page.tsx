@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import Vapi from "@vapi-ai/web";
-import { configureAssistant } from "@/lib/utils-new";
+import { configureAssistant } from "@/lib/utils";
 import { geminiPrompt } from "@/constants/constants";
 import Link from "next/link";
 import { redirect, useSearchParams, useParams } from "next/navigation";

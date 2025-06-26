@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/server";
+import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }    // fetch all sessions for that user
+    } // fetch all sessions for that user
 
     const { data: sessions, error } = await supabase
       .from("sessions")
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
         positivePoints: session.feedback?.positives || [],
         negativePoints: session.feedback?.negatives || [],
       },
-    }));    // calculate average scores :
+    })); // calculate average scores :
     const ieltsScores = transformedSessions
       .map((s) => s.ieltsScore)
       .filter((score) => score > 0);
@@ -79,7 +79,8 @@ export async function GET(request: NextRequest) {
       toeflScores.length > 0
         ? toeflScores.reduce((sum, score) => sum + score, 0) /
           toeflScores.length
-        : 0;return NextResponse.json({
+        : 0;
+    return NextResponse.json({
       success: true,
       sessions: transformedSessions,
       averageIeltsScore,

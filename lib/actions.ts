@@ -1,7 +1,6 @@
 "use server";
 import { redirect } from "next/navigation";
-import { createClient } from "./server";
-
+import { createClient } from "./supabase/server";
 
 interface sessionProps {
   level: string;

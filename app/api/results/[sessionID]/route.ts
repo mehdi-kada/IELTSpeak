@@ -1,5 +1,5 @@
 import { levels } from "@/constants/constants";
-import { createClient } from "@/lib/server";
+import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(

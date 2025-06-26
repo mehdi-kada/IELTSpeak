@@ -83,3 +83,15 @@ export interface DashboardData {
   averageIeltsScore: number;
   averageToeflScore: number;
 }
+
+
+export interface SubscriptionData{
+  user_id: string;
+  lemonsqueezy_subscription_id: string;
+  lemonsqueezy_customer_id: string;
+  status: "active" | "cancelled" | "expired" | "on_trial" | "paused" | "unpaid";
+  plan_name: string;
+  current_period_start: string;
+  current_period_end: string;
+  cancel_at_period_end: boolean;
+}

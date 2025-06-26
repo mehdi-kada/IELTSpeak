@@ -2,7 +2,7 @@
 // used to recieve the vapi transcribts
 // uses gemini and send back suggestions
 
-import { createClient } from "@/lib/server";
+import { createClient } from "@/lib/supabase/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { error } from "console";
 import { Erica_One } from "next/font/google";
