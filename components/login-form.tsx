@@ -44,15 +44,26 @@ export function LoginForm({
     setError(null);
 
     try {
+      // Use environment variable for consistent redirect URL
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+      const redirectUrl = `${baseUrl}/auth/oauth?next=/dashboard`;
+
+      console.log("🚀 Starting OAuth with redirect URL:", redirectUrl);
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/oauth?next=/dashboard`,
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
         },
       });
 
       if (error) throw error;
     } catch (error: unknown) {
+      console.error("OAuth error:", error);
       setError(error instanceof Error ? error.message : "An error occurred");
       setIsLoading(false);
     }

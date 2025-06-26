@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@lemonsqueezy/lemonsqueezy.js": "^4.0.0",
     "@polar-sh/nextjs": "^0.4.0",
     "@polar-sh/sdk": "^0.34.2",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -20,6 +21,7 @@
     "@vapi-ai/web": "^2.3.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "crypto": "^1.0.1",
     "lottie-react": "^2.4.1",
     "lottie-web": "^5.13.0",
     "lucide-react": "^0.513.0",
