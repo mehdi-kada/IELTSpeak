@@ -1,10 +1,12 @@
 // for database operations
 
+import { SubscriptionData } from "@/types/types";
 import { createClient } from "@supabase/supabase-js";
+
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY! // use to surpass row level security
 );
 
 // get the user subscription details
@@ -26,3 +28,108 @@ const getUserSubscription = async (userId: string) => {
     console.error("Error in getUserSubscription:", error);
   }
 };
+
+const upsertSubscription = async (
+  subscriptionData: SubscriptionData
+): Promise<Boolean | null> => {
+  try {
+    // isnert the webhook payload to database
+    const { error: subscriptionError } = await supabase
+      .from("subscriptions")
+      .upsert(subscriptionData, {
+        onConflict: "lemonsqueezy_subscription_id",
+      });
+
+    if (subscriptionError) {
+      console.error("error when upserting subscription data ");
+      return false;
+    }
+
+    // update the user's profile premuim status
+    // customer subscription status from lemon to verify that sub is ineed active
+    const premuimStatus = subscriptionData.status === "active";
+    const premuimUpdateSusccess = await updateUserStatus(
+      subscriptionData.user_id,
+      premuimStatus
+    );
+    if (!premuimUpdateSusccess) {
+      console.error("failed to update user's status");
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error(" Error in upsertSubscription:", error);
+    return false;
+  }
+};
+
+// update the user premuim status in profiles table 
+const updateUserStatus = async (
+  userId: string,
+  isPremuim: boolean
+): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        is_premium: isPremuim,
+      })
+      .eq("user_id", userId);
+    return true;
+  } catch (error) {
+    console.error("error when updataing user status");
+    return false;
+  }
+};
+
+// cancel subscription from db
+const cancelSubFromDB = async (subscriptionId: string): Promise<Boolean> => {
+  try {
+    // update the database
+    const { data, error } = await supabase
+      .from("subscriptions")
+      .update({
+        status: "canceled",
+        cancel_at_period_end: true,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("lemonsqueezy_subscription_id", subscriptionId)
+      .select("user_id")
+      .single();
+
+    if (error || !data) {
+      console.error("error while canceling sub from database");
+      return false;
+    }
+
+    // update user premuim status as well
+    if (data?.user_id) {
+      await updateUserStatus(data?.user_id, false);
+    }
+    return true;
+  } catch (error) {
+    console.error("Error in cancelSubscriptionInDB:", error);
+    return false;
+  }
+};
+
+// check user's premuim status
+export async function checkUserPremiumStatus(userId: string): Promise<boolean> {
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("is_premium")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      console.error("Error checking premium status:", error);
+      return false;
+    }
+
+    return data?.is_premium || false;
+  } catch (error) {
+    console.error("Error in checkUserPremiumStatus:", error);
+    return false;
+  }
+}

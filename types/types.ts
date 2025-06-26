@@ -84,8 +84,7 @@ export interface DashboardData {
   averageToeflScore: number;
 }
 
-
-export interface SubscriptionData{
+export interface SubscriptionData {
   user_id: string;
   lemonsqueezy_subscription_id: string;
   lemonsqueezy_customer_id: string;
@@ -94,4 +93,5 @@ export interface SubscriptionData{
   current_period_start: string;
   current_period_end: string;
   cancel_at_period_end: boolean;
+  renews_at: string;
 }
