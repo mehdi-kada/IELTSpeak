@@ -10,7 +10,7 @@ const supabase = createClient(
 );
 
 // get the user subscription details
-const getUserSubscription = async (userId: string) => {
+export const getUserSubscription = async (userId: string) => {
   try {
     const { data, error } = await supabase
       .from("subscriptions")
@@ -29,7 +29,7 @@ const getUserSubscription = async (userId: string) => {
   }
 };
 
-const upsertSubscription = async (
+export const upsertSubscription = async (
   subscriptionData: SubscriptionData
 ): Promise<Boolean | null> => {
   try {
@@ -64,7 +64,7 @@ const upsertSubscription = async (
 };
 
 // update the user premuim status in profiles table 
-const updateUserStatus = async (
+export const updateUserStatus = async (
   userId: string,
   isPremuim: boolean
 ): Promise<boolean> => {
@@ -83,7 +83,7 @@ const updateUserStatus = async (
 };
 
 // cancel subscription from db
-const cancelSubFromDB = async (subscriptionId: string): Promise<Boolean> => {
+export const cancelSubFromDB = async (subscriptionId: string): Promise<Boolean> => {
   try {
     // update the database
     const { data, error } = await supabase
