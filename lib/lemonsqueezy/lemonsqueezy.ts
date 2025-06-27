@@ -21,7 +21,7 @@ lemonSqueezySetup({
  * @param userEmail to prefill checkout url
  */
 // define checkout options -> create chekout -> create chekout url and return it
-const createSubscriptionCheckout = async (
+export const createSubscriptionCheckout = async (
   variantId: string,
   userId: string,
   userEmail: string

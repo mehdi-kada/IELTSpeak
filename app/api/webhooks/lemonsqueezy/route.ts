@@ -1,24 +1,11 @@
 // the main webhook for lemon
 import crypto from "crypto";
 
-
 import { NextRequest, NextResponse } from "next/server";
-import { cancelSubFromDB, upsertSubscription } from "@/lib/lemonsqueezy/subscription-helpers";
-
-
-
-// function to verify the authenticity of the secret
-export const verifyWebhookSignature = (body: string, signature: string): boolean => {
-  const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET!;
-  const hmac = crypto.createHmac("sha256", secret);
-  hmac.update(body);
-  const expectedSingature = hmac.digest("hex");
-
-  return crypto.timingSafeEqual(
-    Buffer.from(secret, "hex"),
-    Buffer.from(expectedSingature, "hex")
-  );
-};
+import {
+  cancelSubFromDB,
+  upsertSubscription,
+} from "@/lib/lemonsqueezy/subscription-helpers";
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,10 +44,7 @@ export async function POST(request: NextRequest) {
       case "subscription_created":
       case "subscription_updated":
       case "subscription_resumed":
-        await handleSubscriptionUpdate(
-          subscriptionData,
-          metaCustomData,
-        );
+        await handleSubscriptionUpdate(subscriptionData, metaCustomData);
         break;
 
       case "subscription_canceled":
@@ -84,6 +68,22 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// function to verify the authenticity of the secret
+export const verifyWebhookSignature = (
+  body: string,
+  signature: string
+): boolean => {
+  const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET!;
+  const hmac = crypto.createHmac("sha256", secret);
+  hmac.update(body);
+  const expectedSingature = hmac.digest("hex");
+
+  return crypto.timingSafeEqual(
+    Buffer.from(secret, "hex"),
+    Buffer.from(expectedSingature, "hex")
+  );
+};
+
 export const handleSubscriptionUpdate = async (
   subscriptionData: any,
   metaCustomData: any
@@ -104,29 +104,25 @@ export const handleSubscriptionUpdate = async (
       renews_at: attributes.renews_at,
     };
     const success = await upsertSubscription(subscriptionUpdate);
-    if(!success){
-        console.log("error while upserting subscription data to database")
-    }else{
-        console.log("updated db with subscription data successfully ")
+    if (!success) {
+      console.log("error while upserting subscription data to database");
+    } else {
+      console.log("updated db with subscription data successfully ");
     }
   } catch (error) {
-    console.error("Error handling subscription update: ", error)
+    console.error("Error handling subscription update: ", error);
   }
 };
 
-export const handleSubCancellation = async(subscriptionData: any) =>{
-    try{
-
-        const success = await cancelSubFromDB(subscriptionData)
-        if(success){
-            console.log("canceled subscription successfully from db ")
-        }else{
-            console.log("failed to cancel subscription from db")
-        }
-    }catch(error){
-            console.error(
-      ` Error handling subscription cancellation:`,
-      error
-    );
+export const handleSubCancellation = async (subscriptionData: any) => {
+  try {
+    const success = await cancelSubFromDB(subscriptionData);
+    if (success) {
+      console.log("canceled subscription successfully from db ");
+    } else {
+      console.log("failed to cancel subscription from db");
     }
-}
+  } catch (error) {
+    console.error(` Error handling subscription cancellation:`, error);
+  }
+};
