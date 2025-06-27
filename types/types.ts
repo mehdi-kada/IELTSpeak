@@ -1,3 +1,5 @@
+import { SubscriptionCard } from "@/components/subscription/SubscriptionCard";
+
 export interface sessionComponentProps {
   mode: "exam" | "practice";
   level: string;
@@ -94,4 +96,13 @@ export interface SubscriptionData {
   current_period_end: string;
   cancel_at_period_end: boolean;
   renews_at: string;
+}
+
+export interface SubscriptionCardProps {
+  title: string;
+  description: string;
+  price: string;
+  features: string[];
+  variantId: string;
+  isPopular: boolean;
 }

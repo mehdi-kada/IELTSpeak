@@ -124,8 +124,8 @@ function Dashboard() {
             title="Welcome to Your Dashboard"
             description="Start practicing to see your progress and get personalized feedback."
           />
-          <div className="flex items-center justify-center min-h-[50vh]">
-            <div className="text-center p-8 rounded-xl shadow-sm border border-red-600 max-w-md">
+          <div className="flex  items-center justify-center min-h-[50vh]">
+            <div className="text-center bg-[#2F2F7F] p-8 rounded-xl shadow-sm border border-red-600 max-w-md">
               <div className="text-red-600 mb-6">
                 <svg
                   className="h-16 w-16 mx-auto"
