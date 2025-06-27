@@ -1,38 +1,50 @@
-import { NextRequest, NextResponse } from "next/server";
+import {
+  cancelSubFromDB,
+  getUserSubscription,
+} from "@/lib/lemonsqueezy/subscription-helpers";
 import { createClient } from "@/lib/supabase/server";
-import { cancelUserSubscription } from "@/lib/subscription-helpers";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export const POST = async (request: NextRequest) => {
   try {
-    // Get authenticated user
+    // get the user -> get the sub -> delete it
     const supabase = await createClient();
     const {
       data: { user },
-      error: authError,
+      error,
     } = await supabase.auth.getUser();
 
-    if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (error || !user) {
+      return NextResponse.json(
+        {
+          error: "couldnt get the user ",
+        },
+        { status: 400 }
+      );
     }
 
-    // Cancel user subscription
-    const result = await cancelUserSubscription(user.id);
+    // get the sub
+    const sub = await getUserSubscription(user.id);
+    if (!sub) {
+      return NextResponse.json(
+        { error: "No active subscription found" },
+        { status: 404 }
+      );
+    }
+    const cancelled = await cancelSubFromDB(sub.lemonsqueezy_subscription_id);
+    if (!cancelled) {
+      return NextResponse.json(
+        { error: "Failed to cancel subscription" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
-      success: true,
-      message:
-        "Subscription will be canceled at the end of the current billing period",
+      message: "subscription cancelled successfully",
     });
   } catch (error) {
-    console.error("Failed to cancel subscription:", error);
-    return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to cancel subscription",
-      },
-      { status: 500 }
-    );
+      return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 })
   }
-}
+};

@@ -7,8 +7,6 @@ import {
   cancelSubscription,
   type Subscription,
 } from "@lemonsqueezy/lemonsqueezy.js";
-import { subscribe } from "diagnostics_channel";
-
 import { NextResponse } from "next/server";
 
 lemonSqueezySetup({
@@ -64,7 +62,7 @@ export const createSubscriptionCheckout = async (
 };
 
 // get subscription details from lemonsSqueezy
-const getLemonSubscription = async (
+export const getLemonSubscription = async (
   subscriptionId: string
 ): Promise<Subscription | null> => {
   try {
@@ -81,7 +79,7 @@ const getLemonSubscription = async (
 };
 
 // function to cancelt the subscription
-const cancelLemonSubscription = async (subId: string): Promise<boolean> => {
+export const cancelLemonSubscription = async (subId: string): Promise<boolean> => {
   try {
     const result = await cancelSubscription(subId);
     if (!result) {
