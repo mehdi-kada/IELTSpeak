@@ -8,7 +8,6 @@ import { geminiPrompt } from "@/constants/constants";
 import Link from "next/link";
 import { redirect, useSearchParams, useParams } from "next/navigation";
 
-
 enum CallStatus {
   INACTIVE = "INACTIVE",
   CONNECTING = "CONNECTING",
@@ -24,6 +23,7 @@ interface SavedMessage {
 let globalVapiInstance: Vapi | null = null;
 
 function Session() {
+  const [loading, setLoading] = useState(true);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
@@ -41,7 +41,6 @@ function Session() {
   const searchParams = useSearchParams();
   const sessionId = params.sessionId as string;
   const level = searchParams.get("level") || "1";
-
 
   // for updating session and processing conversation
   const [isSavingResults, setIsSavingResults] = useState(false);
@@ -218,7 +217,7 @@ function Session() {
     };
 
     init();
-
+    setLoading(false);
     return () => {
       cancelled = true;
       const v = vapiRef.current;
@@ -275,6 +274,8 @@ function Session() {
     `${Math.floor(s / 60)
       .toString()
       .padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
+
+ 
 
   return (
     <div className="bg-[#1a1a3a] text-white flex flex-col h-screen overflow-hidden">

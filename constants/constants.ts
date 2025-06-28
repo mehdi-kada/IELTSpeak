@@ -67,3 +67,28 @@ Keep it short and appropriate for speaking — do not explain anything, and do n
 Only output what the user should say out loud, as if in a live exam.
   `;
 };
+
+export const hobbyOptions = [
+  "reading",
+  "watching movies",
+  "cooking",
+  "traveling",
+  "sports",
+  "music",
+  "gaming",
+  "photography",
+  "writing",
+  "drawing",
+  "dancing",
+  "swimming",
+];
+
+export const educationLevels = [
+  "High School",
+  "Bachelor's Degree",
+  "Master's Degree",
+  "PhD",
+  "Other",
+];
+
+export const genders = ["Male", "Female", "Other"];

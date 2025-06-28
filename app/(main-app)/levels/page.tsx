@@ -1,4 +1,4 @@
-"use client";
+
 import LevelCard from "@/components/LevelCard";
 import { levels } from "@/constants/constants";
 import React from "react";
