@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -48,11 +48,23 @@ export function ProfileForm() {
     },
   });
 
+  useEffect(() => {
+    try {
+      const savedProfile = localStorage.getItem("userProfile");
+      if (savedProfile) {
+        const profileData = JSON.parse(savedProfile);
+        form.reset(profileData);
+      }
+    } catch (error) {}
+  }, [form]);
+
   const onSubmit = async (data: profileValues) => {
+    // try to get data from local storage if it exists
+
     setIsSubmitting(true);
     try {
       console.log("Form data:", data);
-      localStorage.setItem(data);
+      localStorage.setItem("userProfile", JSON.stringify(data));
       // TODO: Submit to API
     } catch (error) {
       console.error("Error submitting form:", error);
