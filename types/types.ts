@@ -106,3 +106,12 @@ export interface SubscriptionCardProps {
   variantId: string;
   isPopular: boolean;
 }
+
+export interface SubscriptionStatusProps {
+  id: string;
+  status: string;
+  plan_name: string;
+  current_period_end: string;
+  cancel_at_period_end: boolean;
+  renews_at: string;
+}
