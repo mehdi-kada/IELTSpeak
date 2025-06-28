@@ -21,6 +21,7 @@ export function SubscriptionCard({
 }: SubscriptionCardProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  console.log("variant id is ", variantId);
   const handleSubscribe = async () => {
     setIsLoading(true);
     try {
@@ -85,7 +86,7 @@ export function SubscriptionCard({
                 strokeWidth="2"
               >
                 <path
-                  strokeLinecap="round" 
+                  strokeLinecap="round"
                   strokeLinejoin="round"
                   d="M5 13l4 4L19 7"
                 />

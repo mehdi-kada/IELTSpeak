@@ -34,7 +34,7 @@ function SubscriptionStatus() {
   const handleCanceleSub = async () => {
     try {
       setCancelling(true);
-      const response = await fetch("/api/subscription/cancel", {
+      const response = await fetch("/api/subscriptions/cancel", {
         method: "POST",
       });
       const data = await response.json();

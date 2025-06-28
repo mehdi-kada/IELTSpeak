@@ -3,7 +3,6 @@
 import { SubscriptionData } from "@/types/types";
 import { createClient } from "@supabase/supabase-js";
 
-
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY! // use to surpass row level security
@@ -63,7 +62,7 @@ export const upsertSubscription = async (
   }
 };
 
-// update the user premuim status in profiles table 
+// update the user premuim status in profiles table
 export const updateUserStatus = async (
   userId: string,
   isPremuim: boolean
@@ -74,7 +73,7 @@ export const updateUserStatus = async (
       .update({
         is_premium: isPremuim,
       })
-      .eq("user_id", userId);
+      .eq("id", userId);
     return true;
   } catch (error) {
     console.error("error when updataing user status");
@@ -83,7 +82,9 @@ export const updateUserStatus = async (
 };
 
 // cancel subscription from db
-export const cancelSubFromDB = async (subscriptionId: string): Promise<Boolean> => {
+export const cancelSubFromDB = async (
+  subscriptionId: string
+): Promise<Boolean> => {
   try {
     // update the database
     const { data, error } = await supabase
@@ -101,6 +102,8 @@ export const cancelSubFromDB = async (subscriptionId: string): Promise<Boolean> 
       console.error("error while canceling sub from database");
       return false;
     }
+
+
 
     // update user premuim status as well
     if (data?.user_id) {

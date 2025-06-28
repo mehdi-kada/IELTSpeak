@@ -1,3 +1,4 @@
+import { cancelLemonSubscription } from "@/lib/lemonsqueezy/lemonsqueezy";
 import {
   cancelSubFromDB,
   getUserSubscription,
@@ -17,6 +18,7 @@ export const POST = async (request: NextRequest) => {
     if (error || !user) {
       return NextResponse.json(
         {
+          ok: false,
           error: "couldnt get the user ",
         },
         { status: 400 }
@@ -25,26 +27,43 @@ export const POST = async (request: NextRequest) => {
 
     // get the sub
     const sub = await getUserSubscription(user.id);
+    console.log("sub data is : ", sub);
+
     if (!sub) {
       return NextResponse.json(
-        { error: "No active subscription found" },
+        { ok: false, error: "No active subscription found" },
         { status: 404 }
       );
     }
-    const cancelled = await cancelSubFromDB(sub.lemonsqueezy_subscription_id);
-    if (!cancelled) {
+
+    console.log("subscription id is ", sub.lemonsqueezy_subscription_id);
+    const cancelLemon = await cancelLemonSubscription(
+      sub.lemonsqueezy_subscription_id
+    );
+    if (!cancelLemon) {
       return NextResponse.json(
-        { error: "Failed to cancel subscription" },
+        { ok: false, error: "Failed to cancel subscription from lemonsqueezy" },
+        { status: 500 }
+      );
+    }
+
+    const cancelleDB = await cancelSubFromDB(sub.lemonsqueezy_subscription_id);
+
+    if (!cancelleDB) {
+      return NextResponse.json(
+        { ok: false, error: "Failed to cancel subscription from  DB" },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
+      ok: true,
       message: "subscription cancelled successfully",
     });
   } catch (error) {
-      return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 })
+    return NextResponse.json(
+      { ok: false, error: "Internal server error" },
+      { status: 500 }
+    );
   }
 };

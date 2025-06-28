@@ -6,6 +6,7 @@ import {
   cancelSubFromDB,
   upsertSubscription,
 } from "@/lib/lemonsqueezy/subscription-helpers";
+import { cancelLemonSubscription } from "@/lib/lemonsqueezy/lemonsqueezy";
 
 export async function POST(request: NextRequest) {
   try {
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
         break;
 
       case "subscription_canceled":
-      case "subcription_expired":
+      case "subscription_expired":
         await handleSubCancellation(subscriptionData.id);
         break;
       default:
@@ -114,13 +115,23 @@ export const handleSubscriptionUpdate = async (
   }
 };
 
-export const handleSubCancellation = async (subscriptionData: any) => {
+export const handleSubCancellation = async (subscriptionId: any) => {
   try {
-    const success = await cancelSubFromDB(subscriptionData);
-    if (success) {
+    console.log(
+      "canceling this subscription id from the database: ",
+      subscriptionId
+    );
+    const successDB = await cancelSubFromDB(subscriptionId);
+    if (successDB) {
       console.log("canceled subscription successfully from db ");
     } else {
       console.log("failed to cancel subscription from db");
+    }
+    const successLS = await cancelLemonSubscription(subscriptionId);
+    if (successLS) {
+      console.log("canceled subscription successfully from lemon ");
+    } else {
+      console.log("failed to cancel subscription from lemon");
     }
   } catch (error) {
     console.error(` Error handling subscription cancellation:`, error);

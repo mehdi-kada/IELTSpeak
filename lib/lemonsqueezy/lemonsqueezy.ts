@@ -78,12 +78,12 @@ export const getLemonSubscription = async (
   }
 };
 
-// function to cancelt the subscription
+// function to cancel the subscription
 export const cancelLemonSubscription = async (subId: string): Promise<boolean> => {
   try {
     const result = await cancelSubscription(subId);
     if (!result) {
-      console.log("couldnt cancel the subscription");
+      console.log("couldnt cancel the subscription", result.error);
       return false;
     }
     return true;

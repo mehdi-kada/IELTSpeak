@@ -1,8 +1,8 @@
 // create payments checkout
-import { createSubscriptionCheckout } from '@/lib/lemonsqueezy/lemonsqueezy';
-import { getUserSubscription } from '@/lib/lemonsqueezy/subscription-helpers';
-import { createClient } from '@/lib/supabase/server';
-import { NextRequest, NextResponse } from 'next/server';
+import { createSubscriptionCheckout } from "@/lib/lemonsqueezy/lemonsqueezy";
+import { getUserSubscription } from "@/lib/lemonsqueezy/subscription-helpers";
+import { createClient } from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,9 +19,10 @@ export async function POST(request: NextRequest) {
     }
 
     // get the variant id from the request body
-    const { varinatId } = await request.json();
+    const data = await request.json();
+    const variantId = data.variantId;
 
-    if (!varinatId) {
+    if (!variantId) {
       console.log("no variant id provided ");
       return NextResponse.json(
         { error: "product variant id not provided " },
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
 
     // if the user doesnt have any subs , create a new chekcout session
     const checkoutUrl = await createSubscriptionCheckout(
-      varinatId,
+      variantId,
       user.id,
       user.email!
     );
