@@ -18,7 +18,7 @@ export const GET = async (request: NextRequest) => {
     return NextResponse.json({
       subData,
       hasActiveSub: !!subData,
-      status: subData?.status === "active",
+      status: subData?.status,
     });
   } catch (error) {
     console.error("Error getting subscription status:", error);

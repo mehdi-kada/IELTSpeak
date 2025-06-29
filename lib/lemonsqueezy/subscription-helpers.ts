@@ -15,7 +15,8 @@ export const getUserSubscription = async (userId: string) => {
       .from("subscriptions")
       .select("*")
       .eq("user_id", userId)
-      .eq("status", "active")
+      .order("created_at", { ascending: false })
+      .limit(1) // get most recent sub
       .single();
 
     if (error || !data) {

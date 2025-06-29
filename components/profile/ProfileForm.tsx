@@ -373,7 +373,7 @@ export function ProfileForm() {
 
             <Button
               type="submit"
-              className="w-full bg-red-600 "
+              className="w-full bg-red-600 cursor-pointer  hover:shadow-md hover:shadow-red-600 "
               disabled={isSubmitting}
             >
               {isSubmitting ? "Saving Profile..." : "Save Profile"}
