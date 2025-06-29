@@ -74,6 +74,9 @@ export const updateUserStatus = async (
         is_premium: isPremuim,
       })
       .eq("id", userId);
+    if (error) {
+      console.log("error when updating the user's premium status : ", error);
+    }
     return true;
   } catch (error) {
     console.error("error when updataing user status");
@@ -87,10 +90,11 @@ export const cancelSubFromDB = async (
 ): Promise<Boolean> => {
   try {
     // update the database
+    console.log("canceling subscription from DB with id : ", subscriptionId);
     const { data, error } = await supabase
       .from("subscriptions")
       .update({
-        status: "canceled",
+        status: "cancelled",
         cancel_at_period_end: true,
         updated_at: new Date().toISOString(),
       })
@@ -99,11 +103,9 @@ export const cancelSubFromDB = async (
       .single();
 
     if (error || !data) {
-      console.error("error while canceling sub from database");
+      console.error("error while canceling sub from database : ", error);
       return false;
     }
-
-
 
     // update user premuim status as well
     if (data?.user_id) {

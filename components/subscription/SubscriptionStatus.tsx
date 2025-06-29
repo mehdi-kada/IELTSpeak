@@ -20,12 +20,13 @@ function SubscriptionStatus() {
     try {
       const response = await fetch("/api/subscriptions/status");
       const data = await response.json();
-      if (!data.ok) {
+      if (!data) {
         console.log(" failed to fetch user status");
       }
       setActiveSub(data.status);
       setSubData(data.subData);
     } catch (error) {
+      console.log("error when fetching the user's status : ", error);
     } finally {
       setLoading(false);
     }
@@ -72,7 +73,7 @@ function SubscriptionStatus() {
     <>
       {activeSub ? (
         <div className="bg-[#2F2F7F] border border-red-600 px-6 py-4 rounded-xl space-y-3">
-          <p className="text-2xl font-bold">You are already subscribed !</p>
+          <p className="text-2xl font-bold">You are subscribed !</p>
           {renews_at ? (
             <div className="">
               <p>
@@ -86,7 +87,7 @@ function SubscriptionStatus() {
                 Cancel subscription
               </button>
             </div>
-          ) : (
+          ) :  (
             <p>
               Your subscription will end in <strong>{endDate}</strong>
             </p>
