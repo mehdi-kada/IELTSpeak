@@ -11,10 +11,11 @@ export const configureAssistant = () => {
   const vapiAssistant: CreateAssistantDTO = {
     name: "Instructor",
     firstMessage:
-      "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the IELTS or TOEFL speaking test based on your level: {{level}}. I'll ask you questions, listen to your responses, and give you brief feedback after each one. Let's start with a quick introduction—what's your name?",
+     // "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the IELTS or TOEFL speaking test based on your level: {{level}}. I'll ask you questions, listen to your responses, and give you brief feedback after each one. Let's start with a quick introduction—what's your name?",
+     " hi there lets start our conversation , what is your name ? ",
 
     // Silence timeout configuration (in seconds)
-    silenceTimeoutSeconds: 45, // How long to wait for user speech before timing out
+    silenceTimeoutSeconds: 60, // How long to wait for user speech before timing out
     maxDurationSeconds: 1800, // Maximum call duration (30 minutes)
 
     transcriber: {
@@ -22,10 +23,11 @@ export const configureAssistant = () => {
       model: "scribe_v1",
       language: "en",
     },
+    
     voice: {
       provider: "11labs",
       voiceId: "2BJW5coyhAzSr8STdHbE", // Using a valid voice ID from constants
-      stability: 0.4,
+      stability: 0.8,
       similarityBoost: 0.8,
       speed: 1,
       style: 0.5,
@@ -45,7 +47,7 @@ Conduct the speaking test exactly as it would occur in a real exam. Adjust your 
 
 For IELTS, simulate Part 1 interview, Part 2 long turn, and Part 3 discussion. For TOEFL, simulate both the independent and integrated speaking tasks. Announce preparation and response times where appropriate.
 
-Ask one question at a time. Wait for the user’s response before continuing. If a response is unclear or off-topic, politely repeat or rephrase the question. Do not give any feedback, suggestions, or evaluation at any point.
+Ask one question at a time. Wait for the user's response before continuing. If a response is unclear or off-topic, politely repeat or rephrase the question. Do not give any feedback, suggestions, or evaluation at any point.
 
 Begin each section with a short reminder of the test format and the {{level}} setting. Maintain a formal, examiner-like tone throughout. This is a voice-based conversation. Do not display text or use special characters. Speak naturally and impersonally, as if you were conducting a real exam.
 never include special characters this is a voice conversation
@@ -56,7 +58,7 @@ never include special characters this is a voice conversation
 
     // Message plan for handling idle states and silence
     messagePlan: {
-      idleTimeoutSeconds: 30, // How long before sending idle message
+      idleTimeoutSeconds: 60, // How long before sending idle message
       silenceTimeoutMessage:
         "I notice you haven't spoken for a while. Are you still there? Please continue with your response or let me know if you need me to repeat the question.",
       idleMessages: [

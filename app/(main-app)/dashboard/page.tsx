@@ -2,10 +2,11 @@
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { OverallScores } from "@/components/dashboard/OverallScores";
 import { PracticeHistory } from "@/components/dashboard/PracticeHistory";
-import StartNewSession from "@/components/dashboard/StartNewSession";
+
 import TipsForImprovement from "@/components/dashboard/TipsForImprovement";
 import LoadingSpinner from "@/components/Loading";
 import { DashboardData } from "@/types/types";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -61,9 +62,7 @@ function Dashboard() {
   };
 
   if (loading) {
-    return (
-        <LoadingSpinner />
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -140,7 +139,12 @@ function Dashboard() {
                 Take your first practice test to get detailed feedback and track
                 your improvement over time.
               </p>
-              <StartNewSession href="/levels" />
+              <Link
+                href={"/levels"}
+                className="block w-full text-center bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-2 px-2 rounded-lg"
+              >
+                Start New Practice Session
+              </Link>
             </div>
           </div>
         </div>
@@ -166,7 +170,12 @@ function Dashboard() {
           description="Review your scores, practice history, and get tips for improvement."
         />
         <div>
-          <StartNewSession href="/levls" />
+          <Link
+            href={"/levels"}
+            className="block w-full text-center bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-2 px-2 rounded-lg"
+          >
+            Start New Practice Session
+          </Link>
         </div>
       </div>
 

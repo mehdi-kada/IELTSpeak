@@ -32,6 +32,7 @@ function Session() {
   const [prompt, setPrompt] = useState("");
   const [streamedResponse, setStreamedResponse] = useState("");
   const [suggestionsVisible, setSuggestionsVisible] = useState(true);
+
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const callStartRef = useRef(false);
@@ -142,19 +143,12 @@ function Session() {
       await new Promise((r) => setTimeout(r, 100));
       if (cancelled || globalVapiInstance || vapiRef.current) return;
 
-      // Validate API key
-      if (!process.env.NEXT_PUBLIC_VAPI_API_KEY) {
-        console.error("🔴 NEXT_PUBLIC_VAPI_API_KEY is not set");
-        setCallStatus(CallStatus.INACTIVE);
-        return;
-      }
-
-      vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY);
+      vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY!);
       vapiRef.current = vapi;
       globalVapiInstance = vapi; // Define handlers
       const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
       const onCallEnd = () => {
-        console.log("📞 call ended");
+        console.log("call ended");
         setCallStatus(CallStatus.FINISHED);
       };
       const onMessage = (msg: any) => {
@@ -163,12 +157,23 @@ function Session() {
           setMessages((ms) => [...ms, m]);
 
           if (m.role === "assistant") {
-            setPrompt(geminiPrompt(level, m.content));
+            try {
+              const savedProfile = localStorage.getItem("userProfile");
+              if (savedProfile) {
+                const profileData = JSON.parse(savedProfile);
+                const newPrompt = geminiPrompt(level, m.content, profileData);
+                console.log(
+                  " the prompt sent to the gemini api for suggestions is : ",
+                  newPrompt
+                );
+                setPrompt(newPrompt);
+              }
+            } catch (error) {}
           }
         }
       };
       const onError = (err: any) => {
-        console.error("💥 Vapi SDK error event:", {
+        console.error("Vapi SDK error event:", {
           err,
           name: err?.name,
           message: err?.message,
@@ -197,11 +202,11 @@ function Session() {
 
         const assistantConfig = configureAssistant();
         const overrides = { variableValues: { level } };
-        console.log("▶️ Starting Vapi with:", { assistantConfig, overrides });
+        console.log("Starting Vapi with:", { assistantConfig, overrides });
         try {
           await vapi!.start(assistantConfig, overrides);
         } catch (err: any) {
-          console.error("🔴 vapi.start() failed:", {
+          console.error("vapi.start() failed:", {
             err,
             name: err?.name,
             message: err?.message,
@@ -274,8 +279,6 @@ function Session() {
     `${Math.floor(s / 60)
       .toString()
       .padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
-
- 
 
   return (
     <div className="bg-[#1a1a3a] text-white flex flex-col h-screen overflow-hidden">
