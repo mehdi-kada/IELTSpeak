@@ -1,5 +1,5 @@
 "use client";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+
 import { OverallScores } from "@/components/dashboard/OverallScores";
 import { PracticeHistory } from "@/components/dashboard/PracticeHistory";
 
@@ -111,10 +111,16 @@ function Dashboard() {
     return (
       <div className="min-h-screen p-4 md:p-6">
         <div className="max-w-7xl mx-auto">
-          <DashboardHeader
-            title="Welcome to Your Dashboard"
-            description="Start practicing to see your progress and get personalized feedback."
-          />
+          <header className="mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold">
+              Welcome to Your Dashboard
+            </h1>
+            <p className="text-gray-400 mt-1">
+              Start practicing to see your progress and get personalized
+              feedback.
+            </p>
+          </header>
+
           <div className="flex  items-center justify-center min-h-[50vh]">
             <div className="text-center bg-[#2F2F7F] p-8 rounded-xl shadow-sm border border-red-600 max-w-md">
               <div className="text-red-600 mb-6">
@@ -158,17 +164,18 @@ function Dashboard() {
     date: session.date,
     level: session.level,
     ieltsScore: session.ieltsScore,
-    toeflScore: session.toeflScore,
     resultsUrl: `/results/${session.id}`,
   }));
 
   return (
     <main className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="flex justify-between items-center gap-2">
-        <DashboardHeader
-          title="Your Progress"
-          description="Review your scores, practice history, and get tips for improvement."
-        />
+        <header className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold">Your Progress</h1>
+          <p className="text-gray-400 mt-1">
+            Review your scores, practice history, and get tips for improvement.
+          </p>
+        </header>
         <div>
           <Link
             href={"/levels"}
@@ -184,7 +191,6 @@ function Dashboard() {
         <div className="lg:col-span-1 space-y-8">
           <OverallScores
             ieltsAverage={dashboardData.averageIeltsScore}
-            toeflAverage={dashboardData.averageToeflScore}
           />
 
           <TipsForImprovement

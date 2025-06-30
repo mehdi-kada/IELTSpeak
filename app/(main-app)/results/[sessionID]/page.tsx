@@ -207,69 +207,6 @@ function Practice() {
           </div>
 
           {/* Right Column: TOEFL Results */}
-          <div className="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl p-6">
-            <h2 className="text-3xl font-bold mb-2">TOEFL Results</h2>
-            <div className="flex items-baseline gap-2 mb-6">
-              <p className="text-5xl font-black text-[#E62136]">
-                {evaluationData.evaluation.toefl_ratings.overall}
-              </p>
-              <span className="font-medium text-gray-300">Overall</span>
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <span className="font-semibold w-40">Delivery</span>
-                <div className="w-full bg-black/20 rounded-full h-3">
-                  <div
-                    className="bg-[#E62136] h-3 rounded-full"
-                    style={{
-                      width: `${getProgressWidth(
-                        evaluationData.evaluation.toefl_ratings.delivery,
-                        4
-                      )}%`,
-                    }}
-                  ></div>
-                </div>
-                <span className="font-bold text-md w-10 text-right">
-                  {evaluationData.evaluation.toefl_ratings.delivery}/4
-                </span>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="font-semibold w-40">Language Use</span>
-                <div className="w-full bg-black/20 rounded-full h-3">
-                  <div
-                    className="bg-[#E62136] h-3 rounded-full"
-                    style={{
-                      width: `${getProgressWidth(
-                        evaluationData.evaluation.toefl_ratings.language_use,
-                        4
-                      )}%`,
-                    }}
-                  ></div>
-                </div>
-                <span className="font-bold text-md w-10 text-right">
-                  {evaluationData.evaluation.toefl_ratings.language_use}/4
-                </span>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="font-semibold w-40">Topic Development</span>
-                <div className="w-full bg-black/20 rounded-full h-3">
-                  <div
-                    className="bg-[#E62136] h-3 rounded-full"
-                    style={{
-                      width: `${getProgressWidth(
-                        evaluationData.evaluation.toefl_ratings
-                          .topic_development,
-                        4
-                      )}%`,
-                    }}
-                  ></div>
-                </div>
-                <span className="font-bold text-md w-10 text-right">
-                  {evaluationData.evaluation.toefl_ratings.topic_development}/4
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Consolidated Feedback Section */}

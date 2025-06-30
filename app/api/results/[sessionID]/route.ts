@@ -15,7 +15,7 @@ export async function GET(
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("sessions")
-      .select("ielts_rating ,toefl_rating,feedback,level")
+      .select("ielts_rating ,feedback,level")
       .eq("id", sessionID)
       .single();
 
@@ -33,7 +33,6 @@ export async function GET(
       level: data.level,
       evaluation: {
         ielts_ratings: data.ielts_rating,
-        toefl_ratings: data.toefl_rating,
         feedback: data.feedback,
       },
     };

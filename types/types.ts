@@ -1,4 +1,4 @@
-import { SubscriptionCard } from "@/components/subscription/SubscriptionCard";
+
 
 export interface sessionComponentProps {
   mode: "exam" | "practice";
@@ -14,12 +14,6 @@ export interface EvaluationData {
       grammar: number;
       vocabulary: number;
       pronunciation: number;
-      overall: number;
-    };
-    toefl_ratings: {
-      delivery: number;
-      language_use: number;
-      topic_development: number;
       overall: number;
     };
     feedback: {
@@ -42,12 +36,6 @@ export interface DashboardSession {
     vocabulary: number;
     pronunciation: number;
   } | null;
-  toefl_rating: {
-    overall: number;
-    delivery: number;
-    language_use: number;
-    topic_development: number;
-  } | null;
   feedback: {
     negatives: string[];
     positives: string[];
@@ -60,17 +48,13 @@ export interface TransformedDashboardSession {
   date: string;
   level: string;
   ieltsScore: number;
-  toeflScore: number;
+
   scores: {
     // IELTS scores
     fluency: number;
     grammar: number;
     vocabulary: number;
     pronunciation: number;
-    // TOEFL scores
-    delivery: number;
-    language_use: number;
-    topic_development: number;
   };
   feedback: {
     positivePoints: string[];
@@ -83,7 +67,6 @@ export interface DashboardData {
   sessions: TransformedDashboardSession[];
   totalSessions: number;
   averageIeltsScore: number;
-  averageToeflScore: number;
 }
 
 export interface SubscriptionData {

@@ -45,13 +45,11 @@ export const insertSession = async ({ level }: sessionProps) => {
 interface sessionUpdateProps {
   sessionId: string;
   ielts: string[];
-  toefl: string[];
   feedback: string;
 }
 export const updateSession = async ({
   sessionId,
   ielts,
-  toefl,
   feedback,
 }: sessionUpdateProps) => {
   const supabase = await createClient();
@@ -61,7 +59,6 @@ export const updateSession = async ({
 
   const sessionUpdatetData = {
     ielts_rating: ielts,
-    toefl_rating: toefl,
     feedback: feedback,
   };
 

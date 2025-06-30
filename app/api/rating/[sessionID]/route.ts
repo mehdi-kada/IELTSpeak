@@ -4,8 +4,6 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { error } from "console";
-import { Erica_One } from "next/font/google";
 import { NextRequest, NextResponse } from "next/server";
 
 const genAi = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
@@ -47,79 +45,52 @@ export async function POST(
     const conversation = formatCoversation(messages);
 
     const resultPrompt = `
-  You are an expert English language assessor specializing in IELTS and TOEFL Speaking evaluations. You will evaluate a conversation between an AI assistant (acting as an examiner) and a user (test taker) based on official IELTS and TOEFL speaking assessment criteria.
-  
-  **INPUT DATA:**
-  - Conversation: ${conversation}
-  - Test Level: ${level}
-  
-  **EVALUATION INSTRUCTIONS:**
-  
-  Analyze the USER's speaking performance (ignore the ASSISTANT's responses, focus only on what the USER said) based on the following criteria:
-  
-  **FOR IELTS EVALUATION:**
-  1. **Fluency and Coherence** (0-9 scale): Assess speech rate, flow, connected speech, and logical organization
-  2. **Lexical Resource** (0-9 scale): Evaluate vocabulary range, accuracy, and appropriateness
-  3. **Grammatical Range and Accuracy** (0-9 scale): Analyze grammar complexity, accuracy, and error frequency
-  4. **Pronunciation** (0-9 scale): Consider intelligibility, word/sentence stress, and intonation
-  5. **Overall Score** (0-9 scale): Weighted average of all criteria
-  
-  **FOR TOEFL EVALUATION:**
-  1. **Delivery** (0-4 scale): Assess clarity, pace, and pronunciation
-  2. **Language Use** (0-4 scale): Evaluate grammar and vocabulary usage
-  3. **Topic Development** (0-4 scale): Analyze response coherence and idea development
-  4. **Overall Score** (0-120 scale): Convert from 0-4 scale criteria to TOEFL total score
-  
-  **FEEDBACK REQUIREMENTS:**
-  - Identify exactly 4 positive aspects of the user's performance
-  - Identify exactly 4 areas that need improvement
-  - Be specific and constructive in your feedback
-  - Base feedback on actual evidence from the conversation
-    **OUTPUT FORMAT:**
-  Return ONLY a valid JSON object in this exact structure. Do not include any markdown formatting, code blocks, or additional text:
-
-  {
-    "ielts_ratings": {
-      "fluency": 0.0,
-      "grammar": 0.0,
-      "vocabulary": 0.0,
-      "pronunciation": 0.0,
-      "overall": 0.0
-    },
-    "toefl_ratings": {
-      "delivery": 0,
-      "language_use": 0,
-      "topic_development": 0,
-      "overall": 0
-    },
-    "feedback": {
-      "positives": [
-        "Specific positive aspect 1",
-        "Specific positive aspect 2", 
-        "Specific positive aspect 3",
-        "Specific positive aspect 4"
-      ],
-      "negatives": [
-        "Specific area for improvement 1",
-        "Specific area for improvement 2",
-        "Specific area for improvement 3", 
-        "Specific area for improvement 4"
-      ]
-    }
+You are an expert English language assessor specializing in IELTS Speaking evaluations. You will evaluate a conversation between an AI assistant (acting as an examiner) and a user (test taker) based on the official IELTS speaking assessment criteria.
+INPUT DATA:
+    Conversation: ${conversation}
+    Test Level: ${level}
+EVALUATION INSTRUCTIONS:
+Analyze the USER's speaking performance (ignore the ASSISTANT's responses, focus only on what the USER said) based on the following official IELTS criteria:
+    Fluency and Coherence (0-9 scale): Assess speech rate, flow, use of cohesive devices, and logical organization of ideas.
+    Lexical Resource (0-9 scale): Evaluate the range, accuracy, and appropriateness of the vocabulary used. Note any use of idiomatic language or less common words.
+    Grammatical Range and Accuracy (0-9 scale): Analyze the complexity of sentence structures, accuracy of grammar, and frequency of errors.
+    Pronunciation (0-9 scale): Consider overall intelligibility, individual sounds, word/sentence stress, and intonation patterns.
+    Overall Band Score (0-9 scale): Provide a holistic, realistic band score based on the four criteria.
+FEEDBACK REQUIREMENTS:
+    Provide specific, constructive feedback based on actual evidence from the conversation.
+    Identify exactly 3-4 positive aspects of the user's performance.
+    Identify exactly 3-4 areas that need improvement, providing actionable advice.
+OUTPUT FORMAT:
+Return ONLY a valid JSON object in this exact structure. Do not include any markdown formatting, code blocks, or additional text:
+{
+  "ielts_rating": {
+    "fluency_and_coherence": 0.0,
+    "lexical_resource": 0.0,
+    "grammatical_range_and_accuracy": 0.0,
+    "pronunciation": 0.0,
+    "overall_band": 0.0
+  },
+  "feedback": {
+    "positive_points": [
+      "Specific positive aspect 1, with an example from the text.",
+      "Specific positive aspect 2.",
+      "Specific positive aspect 3."
+    ],
+    "areas_for_improvement": [
+      "Specific area for improvement 1, with a suggestion.",
+      "Specific area for improvement 2.",
+      "Specific area for improvement 3."
+    ]
   }
-
-  **IMPORTANT GUIDELINES:**
-  - Use decimal scores for IELTS (e.g., 6.5, 7.0, 7.5)
-  - Use integer scores for TOEFL delivery/language_use/topic_development (0-4)
-  - Calculate TOEFL overall score: ((delivery + language_use + topic_development) / 3) * 30
-  - Be consistent with official IELTS and TOEFL band descriptors
-  - Consider the test level when setting expectations
-  - Focus only on the USER's responses, not the assistant's questions
-  - Provide realistic and fair assessments
-  - Ensure feedback is actionable and specific to the conversation content
-  - Return ONLY the JSON object without any markdown formatting or code blocks
-
-  Analyze the conversation now and return only the JSON response.
+}
+  IMPORTANT GUIDELINES:
+    You must adhere strictly to the official IELTS band descriptors.
+    Use decimal scores rounded to the nearest half-band (e.g., 6.0, 6.5, 7.0).
+    Consider the provided Test Level when setting expectations for the user's performance.
+    Focus only on the USER's responses, not the assistant's questions.
+    Provide realistic, fair, and actionable assessments.
+    Return ONLY the JSON object without any introductory text, markdown, or explanations.
+Analyze the conversation now and return only the JSON response.
   `; // send the prompt to gemini and get response
     const result = await model.generateContent(resultPrompt);
     const response = await result.response;
@@ -163,7 +134,6 @@ export async function POST(
       .from("sessions")
       .update({
         ielts_rating: parsedEvaluation.ielts_ratings,
-        toefl_rating: parsedEvaluation.toefl_ratings,
         feedback: parsedEvaluation.feedback,
       })
       .eq("id", sessionId)

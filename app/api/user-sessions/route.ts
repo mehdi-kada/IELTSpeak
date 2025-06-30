@@ -36,7 +36,6 @@ export async function GET(request: NextRequest) {
         success: true,
         sessions: [],
         averageIeltsScore: 0,
-        averageToeflScore: 0,
       });
     }
 
@@ -46,17 +45,12 @@ export async function GET(request: NextRequest) {
       date: new Date(session.created_at).toLocaleDateString(),
       level: session.level || "Unknown Level",
       ieltsScore: session.ielts_rating?.overall || 0,
-      toeflScore: session.toefl_rating?.overall || 0,
       scores: {
         // IELTS scores
         fluency: session.ielts_rating?.fluency || 0,
         grammar: session.ielts_rating?.grammar || 0,
         vocabulary: session.ielts_rating?.vocabulary || 0,
         pronunciation: session.ielts_rating?.pronunciation || 0,
-        // TOEFL scores
-        delivery: session.toefl_rating?.delivery || 0,
-        language_use: session.toefl_rating?.language_use || 0,
-        topic_development: session.toefl_rating?.topic_development || 0,
       },
       feedback: {
         positivePoints: session.feedback?.positives || [],
@@ -66,25 +60,16 @@ export async function GET(request: NextRequest) {
     const ieltsScores = transformedSessions
       .map((s) => s.ieltsScore)
       .filter((score) => score > 0);
-    const toeflScores = transformedSessions
-      .map((s) => s.toeflScore)
-      .filter((score) => score > 0);
+
     const averageIeltsScore =
       ieltsScores.length > 0
         ? ieltsScores.reduce((sum, score) => sum + score, 0) /
           ieltsScores.length
         : 0;
-
-    const averageToeflScore =
-      toeflScores.length > 0
-        ? toeflScores.reduce((sum, score) => sum + score, 0) /
-          toeflScores.length
-        : 0;
     return NextResponse.json({
       success: true,
       sessions: transformedSessions,
       averageIeltsScore,
-      averageToeflScore,
     });
   } catch (error) {
     console.log("api error in sessions fetching for user ", error);

@@ -5,7 +5,6 @@ interface PracticeSession {
   date: string;
   level: string;
   ieltsScore: number;
-  toeflScore: number;
   resultsUrl: string;
 }
 
@@ -15,7 +14,7 @@ interface PracticeHistoryProps {
 
 export function PracticeHistory({ sessions }: PracticeHistoryProps) {
   return (
-    <div className="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl overflow-auto h-144">
+    <div className="bg-[#2F2F7F] border border-white/10 rounded-2xl overflow-auto h-144">
       <div className="p-6 border-b border-white/10">
         <h2 className="text-xl font-bold text-center">Practice History</h2>
       </div>
@@ -33,10 +32,6 @@ export function PracticeHistory({ sessions }: PracticeHistoryProps) {
               <div className="text-center">
                 <p className="text-xs text-gray-400">IELTS</p>
                 <p className="font-bold text-lg">{session.ieltsScore}</p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs text-gray-400">TOEFL</p>
-                <p className="font-bold text-lg">{session.toeflScore}</p>
               </div>
               <Link
                 href={session.resultsUrl}
