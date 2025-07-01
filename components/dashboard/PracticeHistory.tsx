@@ -16,13 +16,13 @@ export function PracticeHistory({ sessions }: PracticeHistoryProps) {
   return (
     <div className="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl overflow-auto h-144">
       <div className="p-6 border-b border-white/10">
-        <h2 className="text-xl font-bold text-center">Practice History</h2>
+        <h2 className="text-2xl font-bold text-center">Practice History</h2>
       </div>
       <div className="divide-y divide-white/10">
         {sessions.map((session) => (
           <div
             key={session.id}
-            className="p-6 space-y-4 md:space-y-0 md:flex md:justify-between md:items-center hover:bg-white/5 transition-colors"
+            className="flex justify-between p-6 space-y-4 md:space-y-0 md:flex md:justify-between md:items-center hover:bg-white/5 transition-colors"
           >
             <div>
               <p className="font-bold text-lg">Level  {session.level}</p>

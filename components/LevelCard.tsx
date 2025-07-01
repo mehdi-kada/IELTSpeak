@@ -16,7 +16,11 @@ function LevelCard({ level, title, description }: cardProps) {
   const handleSubmit = async () => {
     try {
       const result = await insertSession({ level });
-      if (result?.redirectUrl) {
+      if (result?.redirect) {
+        router.push(result.redirect);
+        return;
+      }
+      if (result.redirectUrl) {
         router.push(result.redirectUrl);
       }
     } catch (error) {

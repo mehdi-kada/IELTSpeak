@@ -455,24 +455,24 @@ function Session() {
               <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-grow">
                 {streamedResponse ? (
                   <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors">
-                    <h4 className="font-bold text-red-600">AI suggestions</h4>
-                    <p className="text-sm text-gray-400 mt-1">
+                    
+                    <p className="text-md text-gray-300 mt-1">
                       {streamedResponse}
                     </p>
                   </div>
                 ) : (
                   <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent">
-                    <h4 className="font-bold text-red-400">
+                    <h4 className="font-bold text-red-600">
                       Generating suggestion...
                     </h4>
                     <div className="flex items-center space-x-2 mt-2">
-                      <div className="w-2 h-2 bg-red-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-red-600 rounded-full animate-bounce"></div>
                       <div
-                        className="w-2 h-2 bg-red-400 rounded-full animate-bounce"
+                        className="w-2 h-2 bg-red-600 rounded-full animate-bounce"
                         style={{ animationDelay: "0.1s" }}
                       ></div>
                       <div
-                        className="w-2 h-2 bg-red-400 rounded-full animate-bounce"
+                        className="w-2 h-2 bg-red-600 rounded-full animate-bounce"
                         style={{ animationDelay: "0.2s" }}
                       ></div>
                     </div>

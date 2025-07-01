@@ -149,7 +149,7 @@ function Dashboard() {
                 href={"/levels"}
                 className="block w-full text-center bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-2 px-2 rounded-lg"
               >
-                Start New Practice Session
+                Start New Session
               </Link>
             </div>
           </div>
@@ -175,15 +175,15 @@ function Dashboard() {
         <header className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold">Your Progress</h1>
           <p className="text-gray-400 mt-1">
-            Review your scores, practice history, and get tips for improvement.
+            Review your scores, exams history, and get tips for improvement.
           </p>
         </header>
-        <div>
+        <div className="hidden sm:block">
           <Link
             href={"/levels"}
             className="block w-full text-center bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-2 px-2 rounded-lg"
           >
-            Start New Practice Session
+            Start New Session
           </Link>
         </div>
       </div>

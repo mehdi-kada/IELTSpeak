@@ -36,7 +36,6 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    console.log("subscription id is ", sub.lemonsqueezy_subscription_id);
     const cancelLemon = await cancelLemonSubscription(
       sub.lemonsqueezy_subscription_id
     );

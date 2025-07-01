@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
-import { voices } from "@/constants/constants";
+
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -12,27 +12,29 @@ export const configureAssistant = () => {
     name: "Instructor",
     backgroundSpeechDenoisingPlan: {
       // Enable Smart Denoising
-
       smartDenoisingPlan: {
         enabled: true,
       },
-
       // Enable Fourier Denoising (optional)
-
       fourierDenoisingPlan: {
         enabled: true,
-
         mediaDetectionEnabled: true,
-
-        staticThreshold: -35,
-
-        baselineOffsetDb: -15,
-
-        windowSizeMs: 3000,
-
-        baselinePercentile: 85,
+        staticThreshold: -30,
+        baselineOffsetDb: -10,
+        windowSizeMs: 2000,
+        baselinePercentile: 90,
       },
     },
+
+    startSpeakingPlan: {
+      transcriptionEndpointingPlan: {
+        onPunctuationSeconds: 0.1,
+        onNoPunctuationSeconds: 1.5,
+        onNumberSeconds: 0.5,
+      },
+      waitSeconds: 1.0,
+    },
+
     firstMessage:
       "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the IELTS  speaking test based on your level: {{level}}. I'll ask you questions, listen to your responses, and give you brief feedback after each one. Let's start with a quick introduction—what's your name?",
     //" hi there lets start our conversation , what is your name ? ",
@@ -49,10 +51,10 @@ export const configureAssistant = () => {
 
     voice: {
       provider: "11labs",
-      voiceId: "2BJW5coyhAzSr8STdHbE", // Using a valid voice ID from constants
-      stability: 0.8,
+      voiceId: "burt", // Using a valid voice ID from constants
+      stability: 0.9,
       similarityBoost: 0.8,
-      speed: 1,
+      speed: 0.9,
       style: 0.5,
       useSpeakerBoost: true,
     },
@@ -96,28 +98,8 @@ Begin the test now by introducing yourself and starting with Part 1.
     },
 
     // Message plan for handling idle states and silence
-    messagePlan: {
-      idleTimeoutSeconds: 60, // How long before sending idle message
-      silenceTimeoutMessage:
-        "I notice you haven't spoken for a while. Are you still there? Please continue with your response or let me know if you need me to repeat the question.",
-      idleMessages: [
-        "Take your time to think about your response.",
-        "I'm here when you're ready to continue.",
-        "Feel free to ask me to repeat the question if needed.",
-      ],
-      idleMessageMaxSpokenCount: 2, // Max idle messages before timeout
-    },
 
     // Start speaking configuration for better user experience
-    startSpeakingPlan: {
-      waitSeconds: 0.4, // Wait time before user can interrupt
-      smartEndpointingEnabled: true,
-      transcriptionEndpointingPlan: {
-        onPunctuationSeconds: 0.2,
-        onNoPunctuationSeconds: 1.5,
-        onNumberSeconds: 0.5,
-      },
-    },
 
     clientMessages: undefined,
     serverMessages: undefined,

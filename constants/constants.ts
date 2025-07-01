@@ -72,6 +72,7 @@ CRUCIAL INSTRUCTIONS:
         Do not force irrelevant personal information into the answer. The goal is a natural response, not a list of all the user's profile data.
     IELTS Quality: The answer must be natural, polite, and appropriate for an IELTS speaking test. It should demonstrate vocabulary, cohesive devices (e.g., "Furthermore," "On the other hand"), and sentence structures suitable for the target level ${level}.
     Output Format: Output ONLY what the user should say. Do not add explanations, greetings, quotation marks, or any text other than the spoken answer itself.
+    dont make the answers too long , just make them fit an ielts exam based on the level , also only refer to the user's info when neccessary
 User Profile Context:
     Name: ${profileData?.name || "Not provided"}
     Age: ${profileData?.age || "Not provided"}

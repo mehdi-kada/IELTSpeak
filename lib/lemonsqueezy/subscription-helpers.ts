@@ -47,7 +47,9 @@ export const upsertSubscription = async (
 
     // update the user's profile premuim status
     // customer subscription status from lemon to verify that sub is ineed active
-    const premuimStatus = subscriptionData.status === "active";
+    const premuimStatus =
+      subscriptionData.status === "active" ||
+      subscriptionData.status === "cancelled";
     const premuimUpdateSusccess = await updateUserStatus(
       subscriptionData.user_id,
       premuimStatus
@@ -107,11 +109,6 @@ export const cancelSubFromDB = async (
       console.error("error while canceling sub from database : ", error);
       return false;
     }
-
-    // update user premuim status as well
-    if (data?.user_id) {
-      await updateUserStatus(data?.user_id, false);
-    }
     return true;
   } catch (error) {
     console.error("Error in cancelSubscriptionInDB:", error);
@@ -119,7 +116,7 @@ export const cancelSubFromDB = async (
   }
 };
 
-// check user's premuim status
+// check user's premium status
 export async function checkUserPremiumStatus(userId: string): Promise<boolean> {
   try {
     const { data, error } = await supabase
@@ -133,7 +130,26 @@ export async function checkUserPremiumStatus(userId: string): Promise<boolean> {
       return false;
     }
 
-    return data?.is_premium || false;
+    if (data.is_premium) {
+      return true;
+    }
+
+    // If profile says not premium, check if they have a cancelled subscription
+    // that's still valid until period end
+    const { data: subscription, error: subError } = await supabase
+      .from("subscriptions")
+      .select("status, current_period_end")
+      .eq("user_id", userId)
+      .in("status", ["cancelled"]) // Only check cancelled subs
+      .gt("current_period_end", new Date().toISOString()) // Still valid
+      .single();
+
+    if (subError || !subscription) {
+      return false;
+    }
+
+    // They have a cancelled subscription that's still valid
+    return true;
   } catch (error) {
     console.error("Error in checkUserPremiumStatus:", error);
     return false;

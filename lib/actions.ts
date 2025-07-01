@@ -1,6 +1,7 @@
 "use server";
 import { redirect } from "next/navigation";
 import { createClient } from "./supabase/server";
+import { checkUserPremiumStatus } from "./lemonsqueezy/subscription-helpers";
 
 interface sessionProps {
   level: string;
@@ -20,6 +21,33 @@ export const insertSession = async ({ level }: sessionProps) => {
   };
 
   if (!user) redirect("/auth/login");
+
+  const isPremium = await checkUserPremiumStatus(user?.id);
+
+  if (!isPremium) {
+    console.log("user is not prmium");
+    const { data: sessions, error } = await supabase
+      .from("sessions")
+      .select("*")
+      .eq("user_id", user.id)
+      .gt("ielts_rating->>overall", 0)
+      .order("created_at", { ascending: false });
+    console.log(" the sessions are : ", sessions);
+    if (error) {
+      console.log();
+      throw new Error(
+        " error when fetching data from db for premium status check in actions ",
+        error
+      );
+    }
+    if (sessions?.length >= 3) {
+      console.log("limit reached , redirecting : ");
+      return {
+        redirect: "/subscribe",
+        reason: "limit_reached",
+      };
+    }
+  }
 
   const { data: newSession, error } = await supabase
     .from("sessions")

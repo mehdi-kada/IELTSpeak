@@ -4,9 +4,11 @@ import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import {
   cancelSubFromDB,
+  updateUserStatus,
   upsertSubscription,
 } from "@/lib/lemonsqueezy/subscription-helpers";
 import { cancelLemonSubscription } from "@/lib/lemonsqueezy/lemonsqueezy";
+import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -49,9 +51,15 @@ export async function POST(request: NextRequest) {
         break;
 
       case "subscription_canceled":
-      case "subscription_expired":
-        await handleSubCancellation(subscriptionData.id);
+        // User cancelled but keeps access until period ends
+        await handleSubscriptionCancellation(subscriptionData);
         break;
+
+      case "subscription_expired":
+        // Subscription actually ended - remove access
+        await handleSubscriptionExpired(subscriptionData);
+        break;
+
       default:
         console.log("unhandled event type : ", eventType);
     }
@@ -135,5 +143,89 @@ export const handleSubCancellation = async (subscriptionId: any) => {
     }
   } catch (error) {
     console.error(` Error handling subscription cancellation:`, error);
+  }
+};
+
+// Handle when user cancels (but keeps access until period ends)
+export const handleSubscriptionCancellation = async (subscriptionData: any) => {
+  try {
+    console.log("Handling subscription cancellation:", subscriptionData.id);
+    const supabase = await createClient();
+    const attributes = subscriptionData.attributes;
+
+    // Update subscription status to cancelled but DON'T remove premium access
+    const { error } = await supabase
+      .from("subscriptions")
+      .update({
+        status: "cancelled",
+        cancel_at_period_end: true,
+        updated_at: new Date().toISOString(),
+        current_period_end: attributes.ends_at, // Make sure we have the end date
+      })
+      .eq("lemonsqueezy_subscription_id", subscriptionData.id);
+
+    if (error) {
+      console.error("Error updating cancelled subscription:", error);
+      return false;
+    }
+
+    // DON'T UPDATE is_premium here - user keeps access until period ends
+    console.log(
+      "Subscription marked as cancelled, user retains access until period ends"
+    );
+    return true;
+  } catch (error) {
+    console.error("Error handling subscription cancellation:", error);
+    return false;
+  }
+};
+
+// Handle when subscription actually expires (remove access)
+export const handleSubscriptionExpired = async (subscriptionData: any) => {
+  try {
+    console.log("Handling subscription expiration:", subscriptionData.id);
+    const supabase = await createClient();
+    // Get user_id from subscription
+    const { data: subscription, error: fetchError } = await supabase
+      .from("subscriptions")
+      .select("user_id")
+      .eq("lemonsqueezy_subscription_id", subscriptionData.id)
+      .single();
+
+    if (fetchError || !subscription) {
+      console.error("Error fetching subscription for expiration:", fetchError);
+      return false;
+    }
+
+    // Update subscription status to expired
+    const { error: updateError } = await supabase
+      .from("subscriptions")
+      .update({
+        status: "expired",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("lemonsqueezy_subscription_id", subscriptionData.id);
+
+    if (updateError) {
+      console.error("Error updating expired subscription:", updateError);
+      return false;
+    }
+
+    // NOW remove premium access
+    const premiumUpdateSuccess = await updateUserStatus(
+      subscription.user_id,
+      false
+    );
+
+    if (!premiumUpdateSuccess) {
+      console.error("Failed to remove premium status on expiration");
+      return false;
+    }
+
+    console.log("Subscription expired, premium access removed");
+    return true;
+  } catch (error) {
+    console.error("Error handling subscription expiration:", error);
+    return false;
   }
 };

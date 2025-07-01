@@ -21,31 +21,7 @@ function NavBar() {
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-3">
-          {logoSrc ? (
-            <Image
-              src={logoSrc}
-              alt="IELTSpeak Logo"
-              width={60}
-              height={60}
-              className="h-10 w-10"
-            />
-          ) : (
-            <svg
-              className="h-8 w-8 text-[#E62136]"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
-              />
-            </svg>
-          )}
-          <span className="hidden  md:block text-xl font-bold text-white">
+          <span className="hidden  md:block text-xl font-bold text-red-600">
             IELTSpeak
           </span>
         </Link>
@@ -57,7 +33,7 @@ function NavBar() {
               key={item.name}
               href={item.href}
               className={cn(
-                "text-gray-200 text-lg hover:text-[#E62136] font-medium transition-colors duration-300",
+                "text-gray-200 text-sm sm:text-lg  hover:text-[#E62136] font-medium transition-colors duration-300",
                 {
                   "text-[#E62136]": path === item.href,
                 }
