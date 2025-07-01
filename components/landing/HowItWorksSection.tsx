@@ -45,9 +45,9 @@ const HowItWorksSection = () => {
           />
         </svg>
       ),
-      title: "Choose Mode",
+      title: "Choose Level",
       description:
-        "Select your proficiency level and decide if you want a casual practice or a formal exam simulation.",
+        "Select your proficiency level and tailor the session for your capabilities ",
     },
     {
       stepNumber: "02",

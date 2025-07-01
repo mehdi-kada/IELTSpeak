@@ -1,5 +1,7 @@
 import { profileValues } from "@/types/schemas";
 
+
+
 export const levels = [
   {
     level: "A1",
@@ -42,9 +44,9 @@ export const levels = [
 ];
 
 export const navItems = [
-  { name: "levels", href: "/levels" },
-  { name: "dashboard", href: "/dashboard" },
-  { name: "upgrade", href: "/subscribe" },
+  { name: "Levels", href: "/levels" },
+  { name: "Dashboard", href: "/dashboard" },
+  { name: "Upgrade", href: "/subscribe" },
 ];
 
 export const voices = {

@@ -62,27 +62,29 @@ FEEDBACK REQUIREMENTS:
     Identify exactly 3-4 areas that need improvement, providing actionable advice.
 OUTPUT FORMAT:
 Return ONLY a valid JSON object in this exact structure. Do not include any markdown formatting, code blocks, or additional text:
-{
-  "ielts_rating": {
-    "fluency_and_coherence": 0.0,
-    "lexical_resource": 0.0,
-    "grammatical_range_and_accuracy": 0.0,
-    "pronunciation": 0.0,
-    "overall_band": 0.0
-  },
-  "feedback": {
-    "positive_points": [
-      "Specific positive aspect 1, with an example from the text.",
-      "Specific positive aspect 2.",
-      "Specific positive aspect 3."
-    ],
-    "areas_for_improvement": [
-      "Specific area for improvement 1, with a suggestion.",
-      "Specific area for improvement 2.",
-      "Specific area for improvement 3."
-    ]
+  {
+    "ielts_ratings": {
+      "fluency": 0.0,
+      "grammar": 0.0,
+      "vocabulary": 0.0,
+      "pronunciation": 0.0,
+      "overall": 0.0
+    },
+    "feedback": {
+      "positives": [
+        "Specific positive aspect 1",
+        "Specific positive aspect 2", 
+        "Specific positive aspect 3",
+        "Specific positive aspect 4"
+      ],
+      "negatives": [
+        "Specific area for improvement 1",
+        "Specific area for improvement 2",
+        "Specific area for improvement 3", 
+        "Specific area for improvement 4"
+      ]
+    }
   }
-}
   IMPORTANT GUIDELINES:
     You must adhere strictly to the official IELTS band descriptors.
     Use decimal scores rounded to the nearest half-band (e.g., 6.0, 6.5, 7.0).

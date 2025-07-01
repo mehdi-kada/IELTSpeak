@@ -159,13 +159,15 @@ function Dashboard() {
   }
 
   // Prepare sessions data for components
-  const sessions = dashboardData.sessions.map((session) => ({
-    id: session.id,
-    date: session.date,
-    level: session.level,
-    ieltsScore: session.ieltsScore,
-    resultsUrl: `/results/${session.id}`,
-  }));
+  const sessions = dashboardData.sessions
+    .map((session) => ({
+      id: session.id,
+      date: session.date,
+      level: session.level,
+      ieltsScore: session.ieltsScore,
+      resultsUrl: `/results/${session.id}`,
+    }))
+    
 
   return (
     <main className="container mx-auto p-4 sm:p-6 lg:p-8">
@@ -191,6 +193,10 @@ function Dashboard() {
         <div className="lg:col-span-1 space-y-8">
           <OverallScores
             ieltsAverage={dashboardData.averageIeltsScore}
+            averageFluency={dashboardData.averageFluency}
+            averageGrammar={dashboardData.averageGrammar}
+            averageVocab={dashboardData.averageVocab}
+            averagePronunciation={dashboardData.averagePronunciation}
           />
 
           <TipsForImprovement

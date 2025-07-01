@@ -10,10 +10,10 @@ const FinalCTASection = () => {
         </h3>
         <p className="text-gray-300 mb-8 max-w-xl mx-auto">
           Join hundreds of students who have gained confidence and achieved
-          their target scores with LangAI.
+          their target scores with IELTSpeak.
         </p>
         <Link
-          href="/subscribe"
+          href="/levels"
           className="cta-button text-white font-bold py-4 px-10 rounded-lg text-lg"
         >
           Start Practicing for Free

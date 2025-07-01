@@ -7,7 +7,7 @@ const HeroSection = () => {
       <div className="container mx-auto">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black mb-4 leading-tight gradient-text">
-            Ace IELTS & TOEFL Speaking with Your Personal AI Tutor
+            Ace IELTS  Speaking with Your Personal AI Tutor
           </h2>
           <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
             Stop practicing alone. Get instant, realistic conversation practice

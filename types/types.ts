@@ -67,6 +67,10 @@ export interface DashboardData {
   sessions: TransformedDashboardSession[];
   totalSessions: number;
   averageIeltsScore: number;
+  averageFluency: number;
+  averageGrammar: number;
+  averageVocab: number;
+  averagePronunciation: number;
 }
 
 export interface SubscriptionData {

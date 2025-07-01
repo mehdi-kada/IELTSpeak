@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
       .from("sessions")
       .select("*")
       .eq("user_id", user.id)
+      .gt("ielts_rating->>overall", 0)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -56,20 +57,68 @@ export async function GET(request: NextRequest) {
         positivePoints: session.feedback?.positives || [],
         negativePoints: session.feedback?.negatives || [],
       },
-    })); // calculate average scores :
+    }));
+
+    // calculate average scores :
     const ieltsScores = transformedSessions
       .map((s) => s.ieltsScore)
       .filter((score) => score > 0);
+
+    const fluencyScores = transformedSessions
+      .map((f) => f.scores.fluency)
+      .filter((f) => f > 0);
+
+    const grammarScores = transformedSessions
+      .map((s) => s.scores.grammar)
+      .filter((s) => s > 0);
+
+    const vocabScores = transformedSessions
+      .map((s) => s.scores.vocabulary)
+      .filter((s) => s > 0);
+
+    const pronunciationScores = transformedSessions
+      .map((s) => s.scores.pronunciation)
+      .filter((s) => s > 0);
 
     const averageIeltsScore =
       ieltsScores.length > 0
         ? ieltsScores.reduce((sum, score) => sum + score, 0) /
           ieltsScores.length
         : 0;
+
+    const averageFluencyScores =
+      fluencyScores.length > 0
+        ? fluencyScores.reduce((sum, score) => sum + score, 0) /
+          fluencyScores.length
+        : 0;
+
+    const averageGrammarScores =
+      grammarScores.length > 0
+        ? grammarScores.reduce((sum, score) => sum + score, 0) /
+          grammarScores.length
+        : 0;
+
+    const averagePronunciationScores =
+      pronunciationScores.length > 0
+        ? pronunciationScores.reduce((sum, score) => sum + score, 0) /
+          pronunciationScores.length
+        : 0;
+
+    const averageVocabScores =
+      vocabScores.length > 0
+        ? vocabScores.reduce((sum, score) => sum + score, 0) /
+          vocabScores.length
+        : 0;
+
     return NextResponse.json({
       success: true,
       sessions: transformedSessions,
+      totalSessions: transformedSessions.length, // Add this missing field
       averageIeltsScore,
+      averageFluency: averageFluencyScores, // Fix property names
+      averageGrammar: averageGrammarScores,
+      averageVocab: averageVocabScores,
+      averagePronunciation: averagePronunciationScores,
     });
   } catch (error) {
     console.log("api error in sessions fetching for user ", error);

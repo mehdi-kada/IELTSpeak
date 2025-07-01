@@ -1,25 +1,5 @@
 import React from "react";
 
-interface FeatureCardProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}
-
-const FeatureCard: React.FC<FeatureCardProps> = ({
-  icon,
-  title,
-  description,
-}) => {
-  return (
-    <div className="feature-card p-6 rounded-xl">
-      <div className="text-red-500 mb-4">{icon}</div>
-      <h4 className="font-bold text-xl mb-2">{title}</h4>
-      <p className="text-gray-400">{description}</p>
-    </div>
-  );
-};
-
 const FeaturesSection = () => {
   const features = [
     {
@@ -43,27 +23,7 @@ const FeaturesSection = () => {
       description:
         "From A1 to C2, practice at a level that challenges you without being overwhelming. We adapt to your progress.",
     },
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-10 w-10"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-          />
-        </svg>
-      ),
-      title: "Dual Practice Modes",
-      description:
-        "Choose between a relaxed General Practice to build fluency or a timed Exam Mode that perfectly mimics real test conditions.",
-    },
+
     {
       icon: (
         <svg
@@ -125,28 +85,7 @@ const FeaturesSection = () => {
       ),
       title: "Instant Score Analysis",
       description:
-        "Receive an estimated IELTS/TOEFL score after each practice test, with detailed feedback on fluency, grammar, and vocabulary.",
-    },
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-10 w-10"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M4 6h16M4 12h16M4 18h7"
-          />
-        </svg>
-      ),
-      title: "Interactive Transcripts",
-      description:
-        "Review full transcripts of your conversations. See potential errors highlighted and learn from your mistakes effectively.",
+        "Receive an estimated IELTS score after each practice test, with detailed feedback on fluency, grammar, and vocabulary.",
     },
   ];
 
@@ -162,14 +101,13 @@ const FeaturesSection = () => {
             give you the feedback you can't get anywhere else.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {features.map((feature, index) => (
-            <FeatureCard
-              key={index}
-              icon={feature.icon}
-              title={feature.title}
-              description={feature.description}
-            />
+            <div key={index} className="feature-card p-6 rounded-xl max-w-3xl mx-auto ">
+              <div className="text-red-500 mb-4">{feature.icon}</div>
+              <h4 className="font-bold text-xl mb-2">{feature.title}</h4>
+              <p className="text-gray-400">{feature.description}</p>
+            </div>
           ))}
         </div>
       </div>

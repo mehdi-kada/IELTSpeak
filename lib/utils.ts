@@ -34,8 +34,8 @@ export const configureAssistant = () => {
       },
     },
     firstMessage:
-      // "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the IELTS  speaking test based on your level: {{level}}. I'll ask you questions, listen to your responses, and give you brief feedback after each one. Let's start with a quick introduction—what's your name?",
-      " hi there lets start our conversation , what is your name ? ",
+      "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the IELTS  speaking test based on your level: {{level}}. I'll ask you questions, listen to your responses, and give you brief feedback after each one. Let's start with a quick introduction—what's your name?",
+    //" hi there lets start our conversation , what is your name ? ",
 
     // Silence timeout configuration (in seconds)
     silenceTimeoutSeconds: 60, // How long to wait for user speech before timing out
@@ -73,7 +73,6 @@ CORE RULES:
 TEST STRUCTURE & PACING:
 You must conduct the test in three distinct parts. Announce each part clearly.
     Part 1 (Interview - Approx. 4-5 minutes):
-        Begin with a standard introduction: "This is the speaking test for the International English Language Testing System. My name is [Choose a simple name, e.g., Alex]. Can you tell me your full name, please?"
         After the introduction, ask a series of questions about familiar topics such as home, family, work, studies, and interests.
     Part 2 (Long Turn - Approx. 3-4 minutes):
         Introduce the section clearly: "Now, I'm going to give you a topic, and I'd like you to talk about it for one to two minutes."

@@ -24,7 +24,7 @@ function NavBar() {
           {logoSrc ? (
             <Image
               src={logoSrc}
-              alt="ToIELIT Logo"
+              alt="IELTSpeak Logo"
               width={60}
               height={60}
               className="h-10 w-10"
@@ -46,18 +46,18 @@ function NavBar() {
             </svg>
           )}
           <span className="hidden  md:block text-xl font-bold text-white">
-            ToIELIT
+            IELTSpeak
           </span>
         </Link>
 
         {/* Navigation Links */}
-        <div className="flex items-center space-x-8">
+        <div className="flex items-center gap-15 absolute right-1/2 transform translate-x-1/2">
           {navItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
-                "text-gray-300 hover:text-[#E62136] font-medium transition-colors duration-300",
+                "text-gray-200 text-lg hover:text-[#E62136] font-medium transition-colors duration-300",
                 {
                   "text-[#E62136]": path === item.href,
                 }

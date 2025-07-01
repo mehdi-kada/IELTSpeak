@@ -8,7 +8,7 @@ function Subscribe() {
       <div className="text-center mb-12 space-y-4 ">
         <h1 className="text-4xl font-bold">Choose Your Plan</h1>
         <p className="text-gray-400">
-          Unlock premium features and unlimited access to ToIELT
+          Unlock premium features and unlimited access to IELTSpeak
         </p>
         <SubscriptionStatus  />
       </div>

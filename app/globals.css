@@ -52,3 +52,7 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.transcript-title {
+  @apply hidden sm:block sm:text-xl sm:font-bold sm:mb-4 sm:flex-shrink-0;
+}

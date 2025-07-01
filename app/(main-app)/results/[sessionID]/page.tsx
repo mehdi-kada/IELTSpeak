@@ -4,6 +4,7 @@ import { EvaluationData } from "@/types/types";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import LoadingSpinner from "@/components/Loading";
 
 function Practice() {
   const params = useParams();
@@ -62,14 +63,7 @@ function Practice() {
 
   // Loading state
   if (loading) {
-    return (
-      <div className="bg-[#1a1a3a] text-white min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#E62136] mx-auto mb-4"></div>
-          <p className="text-xl">Loading your results...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   // Error state
@@ -128,19 +122,30 @@ function Practice() {
         </header>
 
         {/* Scores Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-          {/* Left Column: IELTS Results */}
-          <div className="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl p-6">
-            <h2 className="text-3xl font-bold mb-2">IELTS Results</h2>
-            <div className="flex items-baseline gap-2 mb-6">
-              <p className="text-5xl font-black text-[#E62136]">
-                {evaluationData.evaluation.ielts_ratings.overall}
-              </p>
-              <span className="font-medium text-gray-300">Overall</span>
+        <div className="flex justify-center mb-10">
+          <div className="bg-[#2F2F7F] border border-white/10 rounded-2xl p-6 w-full max-w-4xl">
+            <h2 className=" text-3xl sm:text-center font-bold mb-6">IELTS Results</h2>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+              <div className="flex items-baseline gap-2">
+                <p className="text-5xl font-black text-[#E62136]">
+                  {evaluationData.evaluation.ielts_ratings.overall}
+                </p>
+                <span className="font-medium text-gray-300">Overall</span>
+              </div>
+              <div className="w-full sm:w-auto">
+                <Link
+                  href="/levels"
+                  className="block w-full sm:w-auto text-center bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px text-white font-bold py-3 px-4 sm:px-6 rounded-lg transition-all whitespace-nowrap"
+                >
+                  Start a New Session
+                </Link>
+              </div>
             </div>
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <span className="font-semibold w-32">Fluency</span>
+                <span className="font-semibold w-24 sm:w-32 text-sm sm:text-base">
+                  Fluency
+                </span>
                 <div className="w-full bg-black/20 rounded-full h-3">
                   <div
                     className="bg-[#E62136] h-3 rounded-full"
@@ -151,12 +156,14 @@ function Practice() {
                     }}
                   ></div>
                 </div>
-                <span className="font-bold text-md w-10 text-right">
+                <span className="font-bold text-sm sm:text-base w-8 sm:w-10 text-right">
                   {evaluationData.evaluation.ielts_ratings.fluency}
                 </span>
               </div>
               <div className="flex items-center gap-4">
-                <span className="font-semibold w-32">Vocabulary</span>
+                <span className="font-semibold w-24 sm:w-32 text-sm sm:text-base">
+                  Vocabulary
+                </span>
                 <div className="w-full bg-black/20 rounded-full h-3">
                   <div
                     className="bg-[#E62136] h-3 rounded-full"
@@ -167,12 +174,14 @@ function Practice() {
                     }}
                   ></div>
                 </div>
-                <span className="font-bold text-md w-10 text-right">
+                <span className="font-bold text-sm sm:text-base w-8 sm:w-10 text-right">
                   {evaluationData.evaluation.ielts_ratings.vocabulary}
                 </span>
               </div>
               <div className="flex items-center gap-4">
-                <span className="font-semibold w-32">Grammar</span>
+                <span className="font-semibold w-24 sm:w-32 text-sm sm:text-base">
+                  Grammar
+                </span>
                 <div className="w-full bg-black/20 rounded-full h-3">
                   <div
                     className="bg-[#E62136] h-3 rounded-full"
@@ -183,12 +192,14 @@ function Practice() {
                     }}
                   ></div>
                 </div>
-                <span className="font-bold text-md w-10 text-right">
+                <span className="font-bold text-sm sm:text-base w-8 sm:w-10 text-right">
                   {evaluationData.evaluation.ielts_ratings.grammar}
                 </span>
               </div>
               <div className="flex items-center gap-4">
-                <span className="font-semibold w-32">Pronunciation</span>
+                <span className="font-semibold w-24 sm:w-32 text-sm sm:text-base">
+                  Pronunciation
+                </span>
                 <div className="w-full bg-black/20 rounded-full h-3">
                   <div
                     className="bg-[#E62136] h-3 rounded-full"
@@ -199,18 +210,18 @@ function Practice() {
                     }}
                   ></div>
                 </div>
-                <span className="font-bold text-md w-10 text-right">
+                <span className="font-bold text-sm sm:text-base w-8 sm:w-10 text-right">
                   {evaluationData.evaluation.ielts_ratings.pronunciation}
                 </span>
               </div>
             </div>
           </div>
-
-          {/* Right Column: TOEFL Results */}
         </div>
 
         {/* Consolidated Feedback Section */}
-        <div>
+        <div className="mt-10">
+          {" "}
+          {/* Add top margin to separate sections */}
           <h2 className="text-3xl font-bold text-center mb-8">
             Overall Performance Feedback
           </h2>
@@ -293,12 +304,6 @@ function Practice() {
             >
               Print Results
             </button>
-            <Link
-              href="/levels"
-              className="bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px text-white font-bold py-3 px-6 rounded-lg transition-all"
-            >
-              Start a New Session
-            </Link>
           </div>
         </div>
       </main>

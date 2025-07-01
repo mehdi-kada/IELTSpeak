@@ -285,40 +285,77 @@ function Session() {
       {/* Session Navigation */}
       <nav className="bg-[#2F2F7F] p-4 shadow-lg z-40 flex-shrink-0">
         <div className="container mx-auto flex justify-between items-center">
-          <Link href="/" className="flex items-center space-x-3">
-            <svg
-              className="h-8 w-8 text-[#E62136]"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
+          {/* Mute button replaces logo on all screens */}
+          <div className="flex items-center">
+            <button
+              onClick={toggleMicrophone}
+              className={`${
+                isMuted ? "bg-red-600" : "bg-white/10"
+              } hover:bg-white/20 p-2 rounded-full transition-colors`}
+              aria-label="Mute Microphone"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
-              />
-            </svg>
-            <span className="text-xl font-bold text-white">ToILET</span>
-          </Link>
-          <div>
-            <span className="font-semibold text-lg">
+              {isMuted ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  {/* Microphone paths */}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
+                  />
+                  {/* Diagonal slash */}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 3l18 18"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
+                  />
+                </svg>
+              )}
+            </button>
+          </div>
+
+          <div className="absolute left-1/2 transform -translate-x-1/2 ">
+            <span className="font-semibold text-sm md:text-lg  ">
               IELTS Speaking {level}
             </span>
-          </div>{" "}
+          </div>
+
           <button
             onClick={EndCall}
             disabled={isSavingResults}
-            className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed transition-colors text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2"
+            className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed transition-colors text-white font-bold py-2 px-2 md:px-4 rounded-lg flex items-center gap-2 text-sm md:text-base"
           >
             {isSavingResults ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                Processing...
+                <span className="hidden md:inline">Processing...</span>
               </>
             ) : (
-              "End Session"
+              <>
+                <span className="hidden md:inline">End Session</span>
+                <span className="md:hidden">End</span>
+              </>
             )}
           </button>
         </div>
@@ -352,81 +389,73 @@ function Session() {
           <p className="text-gray-400 text-sm">
             Session Timer: {formatTime(sessionTime)}
           </p>
-          <button
-            onClick={toggleMicrophone}
-            className={`absolute top-4 right-4 ${
-              isMuted ? "bg-red-600" : "bg-white/10"
-            } hover:bg-white/20 p-2 rounded-full transition-colors`}
-            aria-label="Mute Microphone"
-          >
-            {isMuted ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.25 9.75 19.5 12m0 0 2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6-4.72 4.72a.75.75 0 0 0 0 1.06l4.72 4.72a.75.75 0 0 0 1.06 0l4.72-4.72a.75.75 0 0 0 0-1.06l-4.72-4.72a.75.75 0 0 0-1.06 0Z"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
-                />
-              </svg>
-            )}
-          </button>
         </div>
 
         {/* Bottom Section: Suggestions and Transcript */}
-        <div className="flex-grow flex flex-col md:flex-row overflow-hidden">
-          {/* Left Column: Suggestions */}
-          <div className="w-full md:w-1/2 lg:w-1/3 flex flex-col p-4 sm:p-6 bg-black/10 overflow-hidden border-r border-white/10">
-            <div className="flex justify-between items-center mb-4 flex-shrink-0">
-              <h2 className="text-2xl font-bold">Real-time Suggestions</h2>
+        <div className="flex-grow flex flex-col sm:flex-row overflow-hidden">
+          {/* Mobile tabs only on very small screens (below sm) */}
+          <div className="w-full sm:w-1/3 flex flex-col overflow-hidden">
+            {/* Mobile Tabs - only show on screens smaller than sm */}
+            <div className="sm:hidden flex border-b border-white/10">
               <button
-                onClick={() => setSuggestionsVisible(!suggestionsVisible)}
-                className="flex items-center gap-2 cursor-pointer bg-white/10 hover:bg-white/20 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors"
+                onClick={() => setSuggestionsVisible(true)}
+                className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
+                  suggestionsVisible
+                    ? "bg-[#2F2F7F] text-white border-b-2 border-red-600"
+                    : "text-gray-400 hover:text-white"
+                }`}
               >
-                <span>{suggestionsVisible ? "Hide" : "Show"}</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  className={`w-4 h-4 transition-transform ${
-                    suggestionsVisible ? "" : "rotate-180"
-                  }`}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m4.5 15.75 7.5-7.5 7.5 7.5"
-                  />
-                </svg>
+                Suggestions
+              </button>
+              <button
+                onClick={() => setSuggestionsVisible(false)}
+                className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
+                  !suggestionsVisible
+                    ? "bg-[#2F2F7F] text-white border-b-2 border-[#E62136]"
+                    : "text-gray-400 hover:text-white"
+                }`}
+              >
+                Transcript
               </button>
             </div>
-            {suggestionsVisible && (
-              <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar">
+
+            {/* Suggestions Panel */}
+            <div
+              className={`${
+                suggestionsVisible ? "flex" : "hidden sm:flex"
+              } flex-col p-4 bg-black/10 overflow-hidden sm:border-r border-white/10 h-full`}
+            >
+              <div className="flex justify-between items-center mb-4 flex-shrink-0">
+                <h2 className="text-xl sm:text-2xl font-bold">
+                  Real-time Suggestions
+                </h2>
+                <button
+                  onClick={() => setSuggestionsVisible(!suggestionsVisible)}
+                  className="hidden sm:flex items-center gap-2 cursor-pointer bg-white/10 hover:bg-white/20 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors"
+                >
+                  <span>{suggestionsVisible ? "Hide" : "Show"}</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    className={`w-4 h-4 transition-transform ${
+                      suggestionsVisible ? "" : "rotate-180"
+                    }`}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-grow">
                 {streamedResponse ? (
-                  <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-400 transition-colors">
-                    <h4 className="font-bold text-red-400">AI suggestions</h4>
+                  <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors">
+                    <h4 className="font-bold text-red-600">AI suggestions</h4>
                     <p className="text-sm text-gray-400 mt-1">
                       {streamedResponse}
                     </p>
@@ -450,14 +479,16 @@ function Session() {
                   </div>
                 )}
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Right Column: Transcript */}
-          <div className="w-full md:w-1/2 lg:w-2/3 flex flex-col p-4 sm:p-6">
-            <h2 className="text-2xl font-bold mb-4 flex-shrink-0">
-              Live Transcript
-            </h2>
+          {/* Transcript Panel */}
+          <div
+            className={`${
+              !suggestionsVisible ? "flex" : "hidden sm:flex"
+            } w-full sm:w-2/3 flex-col p-4 overflow-hidden`}
+          >
+            <h2 className="transcript-title ">Live Transcript</h2>
             <div
               ref={messagesContainerRef}
               className="flex-grow overflow-y-auto pr-4 space-y-6 custom-scrollbar"
@@ -482,17 +513,17 @@ function Session() {
                       {message.role === "assistant" && (
                         <div className="flex-shrink-0 h-10 w-10 bg-[#1a1a3a] rounded-full flex items-center justify-center border border-[#E62136]">
                           <svg
-                            className="h-6 w-6 text-[#E62136]"
+                            className="mx-auto h-6 w-6 text-red-500"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
-                            strokeWidth="2"
+                            strokeWidth="1.5"
                             stroke="currentColor"
                           >
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75"
+                              d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 0 1 6 0v8.25a3 3 0 0 1-3 3Z"
                             />
                           </svg>
                         </div>
