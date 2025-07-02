@@ -3,202 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Improved Speaking Session UI</title>
+    <title>IELTSpeak SEO Image</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #111827; /* Dark background */
-        }
-        /* Custom scrollbar for a more modern look */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #1f2937;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #4b5563;
-            border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #6b7280;
-        }
-
-        /* Animations for the status indicator */
-        @keyframes pulse-glow {
-            0%, 100% {
-                box-shadow: 0 0 15px rgba(59, 130, 246, 0.4), 0 0 5px rgba(59, 130, 246, 0.6);
-            }
-            50% {
-                box-shadow: 0 0 25px rgba(59, 130, 246, 0.6), 0 0 10px rgba(59, 130, 246, 0.8);
-            }
-        }
-        .status-listening {
-            animation: pulse-glow 2s infinite ease-in-out;
-        }
-
-        @keyframes thinking-dots {
-            0%, 20% { content: '.'; }
-            40%, 60% { content: '..'; }
-            80%, 100% { content: '...'; }
-        }
-        .status-processing::after {
-            content: '.';
-            animation: thinking-dots 1.5s infinite;
-            display: inline-block;
-            width: 20px;
-            text-align: left;
+            /* Sets a neutral background for viewing the image container */
+            background-color: #111827; 
         }
     </style>
 </head>
-<body class="text-gray-200">
-    <div class="flex flex-col h-screen bg-[#1a1c2c]">
+<body class="flex items-center justify-center min-h-screen">
 
-        <!-- Header Section -->
-        <header class="flex items-center justify-between p-4 border-b border-gray-700 shadow-md">
-            <div class="flex items-center space-x-3">
-                <!-- IMPORTANT: New, professional logo -->
-                <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2V4a2 2 0 012-2h8a2 2 0 012 2v4z"></path></svg>
-                <span class="text-xl font-bold text-white">SpeakWise</span>
+    <!-- SEO Image Container: 1200x630 pixels -->
+    <div class="w-[1200px] h-[630px] bg-[#2F2F7F] flex flex-col items-center justify-center p-16 relative overflow-hidden">
+        
+        <!-- Background Gradients for Style -->
+        <div class="absolute top-0 left-0 w-full h-full bg-no-repeat" 
+             style="background-image: radial-gradient(circle at 15% 50%, rgba(230, 33, 54, 0.15), transparent 40%), radial-gradient(circle at 85% 60%, rgba(47, 47, 127, 0.8), transparent 50%);">
+        </div>
+
+        <!-- Content Wrapper -->
+        <div class="relative z-10 flex flex-col items-center justify-center text-center">
+            
+            <!-- Microphone Logo -->
+            <div class="w-48 h-48 bg-[#1a1a3a]/50 rounded-full flex items-center justify-center border-4 border-[#E62136]/50 mb-8">
+                <svg class="w-24 h-24 text-[#E62136]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 0 1 6 0v8.25a3 3 0 0 1-3 3Z" />
+                </svg>
             </div>
-            <div class="text-center">
-                <h1 class="text-lg font-semibold text-white">IELTS Speaking B1</h1>
-                <!-- More prominent timer -->
-                <div id="session-timer" class="text-sm text-gray-400">Session Timer: 00:37</div>
-            </div>
-            <button id="end-session-btn" class="px-4 py-2 font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors">
-                End Session
-            </button>
-        </header>
 
-        <!-- Main Content Area -->
-        <main class="flex flex-1 overflow-hidden">
+            <!-- Brand Name -->
+            <h1 class="text-9xl font-black text-white tracking-tight">
+                IELTSpeak
+            </h1>
 
-            <!-- Suggestions Sidebar (Narrower) -->
-            <aside class="w-1/3 p-4 border-r border-gray-700 flex flex-col space-y-4 bg-[#1f2133]">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-lg font-semibold text-white">Real-time Suggestions</h2>
-                    <button class="text-sm text-blue-400 hover:text-blue-300">Hide</button>
-                </div>
-                <!-- Granular, actionable suggestions -->
-                <div class="flex-1 space-y-3 overflow-y-auto custom-scrollbar">
-                    <div class="p-3 bg-gray-800 rounded-lg">
-                        <h4 class="font-semibold text-blue-300">Alternative Openings</h4>
-                        <p class="text-sm text-gray-300 mt-1">"Well, my hometown is a rather charming place called..."</p>
-                        <button class="copy-btn text-xs mt-2 text-gray-400 hover:text-white">Copy</button>
-                    </div>
-                    <div class="p-3 bg-gray-800 rounded-lg">
-                        <h4 class="font-semibold text-blue-300">Key Vocabulary</h4>
-                        <ul class="text-sm text-gray-300 mt-1 list-disc list-inside">
-                            <li>picturesque</li>
-                            <li>bustling atmosphere</li>
-                            <li>serene environment</li>
-                        </ul>
-                    </div>
-                     <div class="p-3 bg-gray-800 rounded-lg">
-                        <h4 class="font-semibold text-blue-300">Example Phrase</h4>
-                        <p class="text-sm text-gray-300 mt-1">"What I love most about it is the sense of community."</p>
-                        <button class="copy-btn text-xs mt-2 text-gray-400 hover:text-white">Copy</button>
-                    </div>
-                </div>
-            </aside>
+            <!-- Tagline -->
+            <p class="text-4xl text-gray-300 mt-4">
+                Master Your IELTS Speaking with AI
+            </p>
 
-            <!-- Live Transcript & Status (Wider) -->
-            <section class="w-2/3 flex flex-col p-6">
-                <!-- Dynamic Status Indicator -->
-                <div id="status-container" class="flex flex-col items-center justify-center p-6 text-center">
-                    <div id="status-indicator" class="w-24 h-24 bg-blue-500 bg-opacity-20 border-2 border-blue-400 rounded-full flex items-center justify-center mb-4 transition-all duration-300">
-                        <span id="status-level" class="text-3xl font-bold text-white">B1</span>
-                    </div>
-                    <h3 id="status-text" class="text-xl font-semibold text-white">Your turn to speak</h3>
-                </div>
-
-                <!-- Transcript Area -->
-                <div id="transcript-container" class="flex-1 mt-4 space-y-6 overflow-y-auto custom-scrollbar pr-4">
-                    <!-- AI Message -->
-                    <div class="flex items-start space-x-3">
-                        <div class="flex-shrink-0 w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center font-bold">AI</div>
-                        <div class="p-4 bg-gray-800 rounded-lg rounded-tl-none max-w-xl">
-                            <p>Thank you, Amar. Let's begin. This is the IELTS speaking test, and we'll start with part one. In this part, I will ask you some questions about yourself and familiar topics. Let's talk about your hometown or city. Can you describe it to me?</p>
-                        </div>
-                    </div>
-                    <!-- User Message (Neutral Color) -->
-                    <div class="flex items-start justify-end space-x-3">
-                         <div class="p-4 bg-blue-600 bg-opacity-80 rounded-lg rounded-br-none max-w-xl">
-                            <p>My name is Amar Athavale.</p>
-                        </div>
-                        <div class="flex-shrink-0 w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center font-bold">You</div>
-                    </div>
-                     <!-- AI Message -->
-                    <div class="flex items-start space-x-3">
-                        <div class="flex-shrink-0 w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center font-bold">AI</div>
-                        <div class="p-4 bg-gray-800 rounded-lg rounded-tl-none max-w-xl">
-                            <p>Hi there. Let's start our conversation. What is your name?</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
+        </div>
     </div>
 
-    <script>
-        // --- SCRIPT FOR DEMONSTRATION PURPOSES ---
-
-        const statusIndicator = document.getElementById('status-indicator');
-        const statusText = document.getElementById('status-text');
-        const statusLevel = document.getElementById('status-level');
-
-        const states = [
-            { name: 'listening', text: 'Your turn to speak', showLevel: true },
-            { name: 'processing', text: 'AI is thinking', showLevel: false },
-            { name: 'speaking', text: 'AI is speaking', showLevel: true }
-        ];
-        let currentStateIndex = 0;
-
-        function setStatus(state) {
-            // Remove all status classes
-            statusIndicator.classList.remove('status-listening');
-            statusText.classList.remove('status-processing');
-            
-            statusText.textContent = state.text;
-            statusLevel.style.display = state.showLevel ? 'block' : 'none';
-
-            if (state.name === 'listening') {
-                statusIndicator.classList.add('status-listening');
-            } else if (state.name === 'processing') {
-                statusText.classList.add('status-processing');
-            }
-        }
-
-        // Cycle through states every 4 seconds to demonstrate the animations
-        setInterval(() => {
-            currentStateIndex = (currentStateIndex + 1) % states.length;
-            setStatus(states[currentStateIndex]);
-        }, 4000);
-
-        // Initial state
-        setStatus(states[0]);
-
-        // Add copy functionality to buttons
-        document.querySelectorAll('.copy-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const textToCopy = e.target.previousElementSibling.textContent;
-                // A simple way to copy text that works in this environment
-                const textarea = document.createElement('textarea');
-                textarea.value = textToCopy;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                
-                e.target.textContent = 'Copied!';
-                setTimeout(() => {
-                    e.target.textContent = 'Copy';
-                }, 1500);
-            });
-        });
-    </script>
 </body>
 </html>

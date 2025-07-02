@@ -86,12 +86,7 @@ function NavBar() {
               >
                 My Profile
               </Link>
-              <Link
-                href="/settings"
-                className="block w-full text-left px-4 py-2 text-gray-300 rounded-md hover:bg-[#E62136]/20 transition-colors duration-300"
-              >
-                Settings
-              </Link>
+              
               <div className="border-t border-gray-600 my-1"></div>
               <LogoutButton
                 className={

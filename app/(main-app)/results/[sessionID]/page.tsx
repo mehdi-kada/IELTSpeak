@@ -1,10 +1,13 @@
 "use client";
 
+
+
 import { EvaluationData } from "@/types/types";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/Loading";
+import { Metadata } from "next";
 
 function Practice() {
   const params = useParams();
@@ -124,7 +127,9 @@ function Practice() {
         {/* Scores Section */}
         <div className="flex justify-center mb-10">
           <div className="bg-[#2F2F7F] border border-white/10 rounded-2xl p-6 w-full max-w-4xl">
-            <h2 className=" text-3xl sm:text-center font-bold mb-6">IELTS Results</h2>
+            <h2 className=" text-3xl sm:text-center font-bold mb-6">
+              IELTS Results
+            </h2>
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
               <div className="flex items-baseline gap-2">
                 <p className="text-5xl font-black text-[#E62136]">

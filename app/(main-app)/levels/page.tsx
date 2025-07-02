@@ -1,5 +1,21 @@
+export const metadata: Metadata = {
+  title: "Levels",
+  description:
+    "Select your target IELTS band score (A1, A2, B1, B2, C1, C2) and start a realistic speaking practice test with the IELTSpeak AI examiner. Get tailored practice for your level.",
+  keywords: [
+    "IELTS Speaking levels",
+    "IELTS band score practice",
+    "B2 IELTS Speaking",
+    "C1 IELTS Speaking",
+    "select IELTS level",
+    "AI IELTS tutor",
+    "IELTS mock test",
+  ],
+};
+
 import LevelCard from "@/components/LevelCard";
 import { levels } from "@/constants/constants";
+import { Metadata } from "next";
 import React from "react";
 
 function Levels() {
