@@ -1,11 +1,11 @@
 // the main webhook for lemon
-import crypto from "crypto";
 
 import { NextRequest, NextResponse } from "next/server";
 import {
   cancelSubFromDB,
   updateUserStatus,
   upsertSubscription,
+  verifyWebhookSignature,
 } from "@/lib/lemonsqueezy/subscription-helpers";
 import { cancelLemonSubscription } from "@/lib/lemonsqueezy/lemonsqueezy";
 import { createClient } from "@/lib/supabase/server";
@@ -77,23 +77,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// function to verify the authenticity of the secret
-export const verifyWebhookSignature = (
-  body: string,
-  signature: string
-): boolean => {
-  const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET!;
-  const hmac = crypto.createHmac("sha256", secret);
-  hmac.update(body);
-  const expectedSingature = hmac.digest("hex");
-
-  return crypto.timingSafeEqual(
-    Buffer.from(signature, "hex"),
-    Buffer.from(expectedSingature, "hex")
-  );
-};
-
-export const handleSubscriptionUpdate = async (
+ const handleSubscriptionUpdate = async (
   subscriptionData: any,
   metaCustomData: any
 ) => {
@@ -123,7 +107,7 @@ export const handleSubscriptionUpdate = async (
   }
 };
 
-export const handleSubCancellation = async (subscriptionId: any) => {
+ const handleSubCancellation = async (subscriptionId: any) => {
   try {
     console.log(
       "canceling this subscription id from the database: ",
@@ -147,7 +131,7 @@ export const handleSubCancellation = async (subscriptionId: any) => {
 };
 
 // Handle when user cancels (but keeps access until period ends)
-export const handleSubscriptionCancellation = async (subscriptionData: any) => {
+ const handleSubscriptionCancellation = async (subscriptionData: any) => {
   try {
     console.log("Handling subscription cancellation:", subscriptionData.id);
     const supabase = await createClient();
@@ -181,7 +165,7 @@ export const handleSubscriptionCancellation = async (subscriptionData: any) => {
 };
 
 // Handle when subscription actually expires (remove access)
-export const handleSubscriptionExpired = async (subscriptionData: any) => {
+ const handleSubscriptionExpired = async (subscriptionData: any) => {
   try {
     console.log("Handling subscription expiration:", subscriptionData.id);
     const supabase = await createClient();

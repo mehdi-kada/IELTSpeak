@@ -2,6 +2,7 @@
 
 import { SubscriptionData } from "@/types/types";
 import { createClient } from "@supabase/supabase-js";
+import crypto from "crypto";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -155,3 +156,19 @@ export async function checkUserPremiumStatus(userId: string): Promise<boolean> {
     return false;
   }
 }
+
+// function to verify the authenticity of the secret
+export const verifyWebhookSignature = (
+  body: string,
+  signature: string
+): boolean => {
+  const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET!;
+  const hmac = crypto.createHmac("sha256", secret);
+  hmac.update(body);
+  const expectedSingature = hmac.digest("hex");
+
+  return crypto.timingSafeEqual(
+    Buffer.from(signature, "hex"),
+    Buffer.from(expectedSingature, "hex")
+  );
+};

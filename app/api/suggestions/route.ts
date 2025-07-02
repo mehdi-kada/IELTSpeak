@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   // get the model
   const model = genAi.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
   try {
-    //initialze a streaming generatinve session with the response
+    //initialze a streaming generatinve session with the responsele
     const result = await model.generateContentStream(prompt);
 
     // create a new readable stream to send the response

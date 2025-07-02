@@ -22,14 +22,12 @@ function Levels() {
   // Define order classes for each level
   const getOrderClasses = (level: string) => {
     const orderMap = {
-      A1: "order-1 lg:order-1", // Last on mobile, first on desktop
-      A2: "order-2 lg:order-4",
-      B1: "order-3 lg:order-2",
-      B2: "order-4 lg:order-5",
-      C1: "order-5 lg:order-3",
-      C2: "order-6 lg:order-6", // First on mobile, last on desktop
+      "6": "order-1 lg:order-1", // Last on mobile, first on desktop
+      "7": "order-2 lg:order-4",
+      "8": "order-3 lg:order-2",
+      "9": "order-4 lg:order-5",
     };
-    return orderMap[level] || "";
+    return orderMap[level as keyof typeof orderMap] || "";
   };
 
   return (
@@ -38,7 +36,7 @@ function Levels() {
         <div className="text-center">
           <h1 className="text-4xl font-bold mt-6">Choose Your Level</h1>
           <p className="text-gray-400">
-            Select a proficiency level to begin your targeted speaking practice.
+            Select a proficiency level to begin your targeted speaking exam.
           </p>
         </div>
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

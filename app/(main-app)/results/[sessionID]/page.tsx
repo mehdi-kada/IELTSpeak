@@ -1,13 +1,11 @@
 "use client";
 
-
-
 import { EvaluationData } from "@/types/types";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/Loading";
-import { Metadata } from "next";
+
 
 function Practice() {
   const params = useParams();

@@ -3,8 +3,8 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
   const isWebhookUrl = request.nextUrl.pathname.startsWith("/api/webhooks");
-  const isCancelUrl = request.nextUrl.pathname.startsWith("/api/subscriptions");
-  if (isWebhookUrl) return NextResponse.next();
+  const isResultsPage = request.nextUrl.pathname.startsWith("/results");
+  if (isWebhookUrl || isResultsPage) return NextResponse.next();
   let supabaseResponse = NextResponse.next({
     request,
   });

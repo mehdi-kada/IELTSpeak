@@ -1,8 +1,8 @@
 "use client";
 
 const metadata: Metadata = {
-  title: "Session"
-}
+  title: "Session",
+};
 
 import { useState, useRef, useEffect } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
@@ -12,6 +12,7 @@ import { geminiPrompt } from "@/constants/constants";
 import Link from "next/link";
 import { redirect, useSearchParams, useParams } from "next/navigation";
 import { Metadata } from "next";
+import LoadingSpinner from "@/components/Loading";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -353,7 +354,7 @@ function Session() {
           >
             {isSavingResults ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <LoadingSpinner fullScreen={false} size="sm" />
                 <span className="hidden md:inline">Processing...</span>
               </>
             ) : (
@@ -460,7 +461,6 @@ function Session() {
               <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-grow">
                 {streamedResponse ? (
                   <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors">
-                    
                     <p className="text-md text-gray-300 mt-1">
                       {streamedResponse}
                     </p>
