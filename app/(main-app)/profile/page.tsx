@@ -1,7 +1,5 @@
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { createClient } from "@/lib/supabase/server";
-import { error } from "console";
-import { create } from "domain";
 import { Metadata } from "next";
 import React from "react";
 

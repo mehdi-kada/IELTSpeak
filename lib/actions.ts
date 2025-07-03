@@ -2,12 +2,10 @@
 import { redirect } from "next/navigation";
 import { createClient } from "./supabase/server";
 import { checkUserPremiumStatus } from "./lemonsqueezy/subscription-helpers";
+import { sessionUpdateProps } from "@/types/types";
+import { profileValues } from "@/types/schemas";
 
-interface sessionProps {
-  level: string;
-}
-
-export const insertSession = async ({ level }: sessionProps) => {
+export const insertSession = async ({ level }: { level: string }) => {
   // get the user id insert it , return the session id for future update and redirect
 
   const supabase = await createClient();
@@ -22,6 +20,44 @@ export const insertSession = async ({ level }: sessionProps) => {
 
   if (!user) redirect("/auth/login");
 
+  const { data: profileData, error: profileDataError } = await supabase
+    .from("profiles")
+    .select(
+      "name, age, gender, hometown, country, occupation, education_level, favorite_subject, hobbies, travel_experience, favorite_food, life_goal"
+    )
+    .eq("id", user.id)
+    .single();
+  if (profileDataError) {
+    console.log();
+    throw new Error(
+      "failed to fetch user's info to start the session",
+      profileDataError
+    );
+  }
+  // Check for missing fields
+  const requiredFields = [
+    "name",
+    "age",
+    "gender",
+    "hometown",
+    "country",
+    "occupation",
+    "education_level",
+    "favorite_subject",
+    "hobbies",
+    "travel_experience",
+    "favorite_food",
+    "life_goal",
+  ];
+
+  const isProfileComplete = requiredFields.every(
+    (field) =>
+      profileData && profileData[field as keyof typeof profileData] !== null && profileData[field as keyof typeof profileData] !== ""
+  );
+  if (!isProfileComplete) {
+    console.log("need to fill out the form for best customization ");
+    redirect("/profile?reason=no_data");
+  }
   const isPremium = await checkUserPremiumStatus(user?.id);
 
   if (!isPremium) {
@@ -70,11 +106,6 @@ export const insertSession = async ({ level }: sessionProps) => {
 // this doesnt include any ai logic just inserts the data,
 // session updater gets called from the session page ,gets sent the id of the session
 
-interface sessionUpdateProps {
-  sessionId: string;
-  ielts: string[];
-  feedback: string;
-}
 export const updateSession = async ({
   sessionId,
   ielts,
@@ -103,4 +134,25 @@ export const updateSession = async ({
   }
 
   return updatedData;
+};
+
+export const insertProfileData = async (
+  data: profileValues,
+  userId: string
+) => {
+  try {
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from("profiles")
+      .upsert(data)
+      .eq("id", userId);
+
+    if (error) {
+      console.log("error when inserting profile data to the db");
+      throw new Error("error : ", error);
+    }
+  } catch (error) {
+    console.log("error inserting data action");
+  }
 };

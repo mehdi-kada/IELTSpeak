@@ -34,7 +34,7 @@ export const createSubscriptionCheckout = async (
       },
       productOptions: {
         redirectUrl: `${
-          process.env.NEXT_PUBLIC_APP_URL || "http://localhost:8000"
+          process.env.NEXT_PUBLIC_APP_URL 
         }/dashboard?success=true`,
         receiptButtonText: "Go to Dashboard", // Button text on receipt
         receiptThankYouNote: "Thank you for subscribing to ToEILET Premium!",
