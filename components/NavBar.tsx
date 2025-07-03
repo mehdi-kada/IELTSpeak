@@ -12,7 +12,6 @@ import { LogoutButton } from "./logout-button";
 
 function NavBar() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const logoSrc = "/images/logo2.png"; // Set to "/images/logo.png" to test your logo
   const userAvatar = useCurrentUserImage();
   const userName = useCurrentUserName();
   const path = usePathname();

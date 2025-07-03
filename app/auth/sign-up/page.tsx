@@ -8,7 +8,7 @@ export default function Page() {
       <div className="w-full max-w-sm">
         <div className="py-6">
           <div className="flex items-center justify-center mb-2 gap-1">
-            <Image src={"/images/logo2.png"} alt="logo" width={40} height={40} />
+
             <h1 className="text-4xl text-center font-bold">IELTSpeak</h1>
           </div>
 

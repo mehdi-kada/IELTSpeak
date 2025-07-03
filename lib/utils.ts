@@ -2,7 +2,6 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
 
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -16,14 +15,6 @@ export const configureAssistant = () => {
         enabled: true,
       },
       // Enable Fourier Denoising (optional)
-      fourierDenoisingPlan: {
-        enabled: true,
-        mediaDetectionEnabled: true,
-        staticThreshold: -30,
-        baselineOffsetDb: -10,
-        windowSizeMs: 2000,
-        baselinePercentile: 90,
-      },
     },
 
     startSpeakingPlan: {
@@ -51,11 +42,11 @@ export const configureAssistant = () => {
 
     voice: {
       provider: "11labs",
-      voiceId: "burt", // Using a valid voice ID from constants
+      voiceId: "marissa", // Using a valid voice ID from constants
       stability: 0.9,
       similarityBoost: 0.8,
       speed: 0.9,
-      style: 0.5,
+      style: 0.7,
       useSpeakerBoost: true,
     },
     model: {
@@ -95,7 +86,7 @@ VOICE & PERSONA:
     Speak at a natural, clear pace—not too fast and not too slow.
     If a user's response is completely unclear or off-topic, you may politely rephrase the question once. Do not over-simplify it. For example, you can say, "Could you elaborate on that point?"
 Begin the test now by introducing yourself and starting with Part 1.
-              `
+              `,
         },
       ],
     },
