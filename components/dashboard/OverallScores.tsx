@@ -50,7 +50,7 @@ export function OverallScores({
             {Math.round(ieltsAverage * 2) / 2}
           </span>
         </div>
-        <div className="sm:hidden  ">
+        <div className="">
           <Link
             href={"/levels"}
             className="block w-full text-center bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-2 px-2 rounded-lg"

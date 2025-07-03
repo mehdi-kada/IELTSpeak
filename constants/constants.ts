@@ -4,43 +4,35 @@ import { profileValues } from "@/types/schemas";
 
 export const levels = [
   {
-    level: "A1",
-    title: "Beginner",
-    description:
-      "Understand and use familiar everyday expressions and basic phrases aimed at simple needs.",
-  },
-
-  {
-    level: "B1",
-    title: "Intermediate",
-    description:
-      "Deal with most situations likely to arise whilst travelling in an area where the language is spoken.",
+    level: "6.5",
+    title: "Band 6.5 - Competent User",
+    description: "Good operational command of English with some inaccuracies and misunderstandings."
   },
   {
-    level: "C1",
-    title: "Advanced",
-    description:
-      "Express ideas fluently and spontaneously without much obvious searching for expressions.",
+    level: "7",
+    title: "Band 7 - Good User", 
+    description: "Operational command of English with occasional inaccuracies and inappropriate usage."
   },
   {
-    level: "A2",
-    title: "Elementary",
-    description:
-      "Communicate in simple and routine tasks requiring a simple exchange of information.",
+    level: "7.5",
+    title: "Band 7.5 - Good User",
+    description: "Good operational command with occasional inaccuracies in unfamiliar situations."
   },
   {
-    level: "B2",
-    title: "Upper Intermediate",
-    description:
-      "Understand the main ideas of complex text and interact with fluency and spontaneity.",
+    level: "8",
+    title: "Band 8 - Very Good User",
+    description: "Very good command of English with only occasional unsystematic inaccuracies."
   },
-
   {
-    level: "C2",
-    title: "Proficient",
-    description:
-      "Understand virtually everything heard or read with ease and express yourself spontaneously.",
+    level: "8.5", 
+    title: "Band 8.5 - Very Good User",
+    description: "Very good command with only occasional inaccuracies and inappropriate usage."
   },
+  {
+    level: "9",
+    title: "Band 9 - Expert User",
+    description: "Fully operational command of English with complete accuracy and fluency."
+  }
 ];
 
 export const navItems = [
@@ -61,7 +53,7 @@ export const geminiPrompt = (
 ) => {
   return `
 You are an AI assistant for the app IELTSpeak. Your role is to help a user prepare for their IELTS speaking test by generating a high-quality, spoken answer to an examiner's question, acting as if you are the user.
-The user’s target band score is ${level}.
+The user's target band score is ${level}.
 The examiner's question is: " ${message} ".
 Your Task:
 Generate the exact answer the user should say out loud in response to the examiner.

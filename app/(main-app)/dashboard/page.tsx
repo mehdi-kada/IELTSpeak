@@ -16,7 +16,7 @@ function Dashboard() {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [isPremium, setIsPremium] = useState(false);
   useEffect(() => {
     checkUserAndFetchData();
   }, []);
@@ -51,6 +51,7 @@ function Dashboard() {
 
       const data: DashboardData = await response.json();
       setDashboardData(data);
+      setIsPremium(data.isPremium);
     } catch (err) {
       console.log("error while fetching data from database: ", err);
       setError(
@@ -62,7 +63,7 @@ function Dashboard() {
   };
 
   if (loading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner message="loading history data..." />;
   }
 
   if (error) {
@@ -128,18 +129,18 @@ function Dashboard() {
         </Head>
         <div className="min-h-screen p-4 md:p-6">
           <div className="max-w-7xl mx-auto">
-            <header className="mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold">
+            <header className="mb-8 text-center">
+              <h1 className="text-3xl md:text-4xl font-bold ">
                 Welcome to Your Dashboard
               </h1>
-              <p className="text-gray-400 mt-1">
+              <p className="text-gray-400 mt-1 ">
                 Start practicing to see your progress and get personalized
                 feedback.
               </p>
             </header>
 
             <div className="flex  items-center justify-center min-h-[50vh]">
-              <div className="text-center bg-[#2F2F7F] p-8 rounded-xl shadow-sm border border-red-600 max-w-md">
+              <div className="text-center bg-[#2F2F7F]/50 p-8 rounded-xl shadow-sm border border-red-600 max-w-md">
                 <div className="text-red-600 mb-6">
                   <svg
                     className="h-16 w-16 mx-auto"
@@ -195,21 +196,64 @@ function Dashboard() {
         />
       </Head>
       <main className="container mx-auto p-4 sm:p-6 lg:p-8">
-        <div className="flex justify-between items-center gap-2">
-          <header className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold">Your Progress</h1>
-            <p className="text-gray-400 mt-1">
-              Review your scores, exams history, and get tips for improvement.
-            </p>
+        <div className="items-center gap-2 mb-8">
+          <header
+            className={`${
+              isPremium
+                ? "text-center"
+                : "flex flex-col lg:flex-row lg:items-center lg:justify-between"
+            }`}
+          >
+            <div className={`${isPremium ? "" : "text-center lg:text-left"}`}>
+              <h1 className="text-3xl md:text-4xl font-bold">Your Progress</h1>
+              <p className="text-gray-400 mt-1">
+                Review your scores, exams history, and get tips for improvement.
+              </p>
+            </div>
+
+            {/* Session Limit Warning - Only show for non-premium users */}
+            {!isPremium && (
+              <div className="mt-4 lg:mt-0 lg:ml-8 flex-shrink-0">
+                <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 max-w-xs">
+                  <div className="flex items-start gap-3">
+                    <div className="text-amber-500 flex-shrink-0 mt-0.5">
+                      <svg
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-amber-400 mb-1">
+                        Free Plan Limit
+                      </h3>
+                      <p className="text-xs text-amber-200/80 leading-relaxed">
+                        You have{" "}
+                        {Math.max(0, 3 - (dashboardData?.totalSessions || 0))}{" "}
+                        of 3 free sessions remaining.
+                      </p>
+                      {dashboardData && dashboardData.totalSessions >= 3 && (
+                        <Link
+                          href="/subscribe"
+                          className="inline-block mt-2 text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded transition-colors"
+                        >
+                          Upgrade Now
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </header>
-          <div className="hidden sm:block">
-            <Link
-              href={"/levels"}
-              className="block w-full text-center bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-2 px-2 rounded-lg"
-            >
-              Start New Session
-            </Link>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

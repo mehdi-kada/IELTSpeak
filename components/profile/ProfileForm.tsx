@@ -27,7 +27,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { profileValues, userProfileSchema } from "@/types/schemas";
 import { educationLevels, genders, hobbyOptions } from "@/constants/constants";
 
-export function ProfileForm() {
+export function ProfileForm({userId}: {userId: string}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<profileValues>({
@@ -50,7 +50,7 @@ export function ProfileForm() {
 
   useEffect(() => {
     try {
-      const savedProfile = localStorage.getItem("userProfile");
+      const savedProfile = localStorage.getItem(`${userId}_userProfile`);
       if (savedProfile) {
         const profileData = JSON.parse(savedProfile);
         form.reset(profileData);
@@ -64,7 +64,7 @@ export function ProfileForm() {
     setIsSubmitting(true);
     try {
       console.log("Form data:", data);
-      localStorage.setItem("userProfile", JSON.stringify(data));
+      localStorage.setItem(`${userId}_userProfile`, JSON.stringify(data));
       // TODO: Submit to API
     } catch (error) {
       console.error("Error submitting form:", error);

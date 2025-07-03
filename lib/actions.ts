@@ -43,7 +43,7 @@ export const insertSession = async ({ level }: sessionProps) => {
     if (sessions?.length >= 3) {
       console.log("limit reached , redirecting : ");
       return {
-        redirect: "/subscribe",
+        redirect: "/subscribe?reason=limit-hit",
         reason: "limit_reached",
       };
     }

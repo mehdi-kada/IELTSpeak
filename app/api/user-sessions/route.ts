@@ -1,3 +1,4 @@
+import { checkUserPremiumStatus } from "@/lib/lemonsqueezy/subscription-helpers";
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -39,6 +40,9 @@ export async function GET(request: NextRequest) {
         averageIeltsScore: 0,
       });
     }
+
+    let isPremium =
+      sessions.length > 3 ? true : await checkUserPremiumStatus(user.id);
 
     //transform all data for dashboard use
     const transformedSessions = sessions.map((session) => ({
@@ -119,6 +123,7 @@ export async function GET(request: NextRequest) {
       averageGrammar: averageGrammarScores,
       averageVocab: averageVocabScores,
       averagePronunciation: averagePronunciationScores,
+      isPremium: isPremium,
     });
   } catch (error) {
     console.log("api error in sessions fetching for user ", error);

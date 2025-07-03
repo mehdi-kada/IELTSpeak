@@ -48,7 +48,6 @@ export async function POST(
 You are an expert English language assessor specializing in IELTS Speaking evaluations. You will evaluate a conversation between an AI assistant (acting as an examiner) and a user (test taker) based on the official IELTS speaking assessment criteria.
 INPUT DATA:
     Conversation: ${conversation}
-    Test Level: ${level}
 EVALUATION INSTRUCTIONS:
 Analyze the USER's speaking performance (ignore the ASSISTANT's responses, focus only on what the USER said) based on the following official IELTS criteria:
     Fluency and Coherence (0-9 scale): Assess speech rate, flow, use of cohesive devices, and logical organization of ideas.
@@ -86,9 +85,11 @@ Return ONLY a valid JSON object in this exact structure. Do not include any mark
     }
   }
   IMPORTANT GUIDELINES:
+    if the conversation is too small for evaluation , dont restrain from giving bad scores ,
     You must adhere strictly to the official IELTS band descriptors.
+    the feedback must be like you are talking to the user directly , using "you"
     Use decimal scores rounded to the nearest half-band (e.g., 6.0, 6.5, 7.0).
-    Consider the provided Test Level when setting expectations for the user's performance.
+    Consider the provided Test band Level when setting expectations for the user's performance.
     Focus only on the USER's responses, not the assistant's questions.
     Provide realistic, fair, and actionable assessments.
     Return ONLY the JSON object without any introductory text, markdown, or explanations.

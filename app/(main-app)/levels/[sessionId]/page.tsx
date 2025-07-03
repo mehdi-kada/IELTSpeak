@@ -1,18 +1,17 @@
 "use client";
+import LoadingSpinner from "@/components/Loading";
+import { geminiPrompt } from "@/constants/constants";
+import { configureAssistant } from "@/lib/utils";
+import Vapi from "@vapi-ai/web";
+import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import { Metadata } from "next";
+import { useParams, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 const metadata: Metadata = {
   title: "Session",
 };
-
-import { useState, useRef, useEffect } from "react";
-import Lottie, { LottieRefCurrentProps } from "lottie-react";
-import Vapi from "@vapi-ai/web";
-import { configureAssistant } from "@/lib/utils";
-import { geminiPrompt } from "@/constants/constants";
-import Link from "next/link";
-import { redirect, useSearchParams, useParams } from "next/navigation";
-import { Metadata } from "next";
-import LoadingSpinner from "@/components/Loading";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -38,7 +37,9 @@ function Session() {
   const [prompt, setPrompt] = useState("");
   const [streamedResponse, setStreamedResponse] = useState("");
   const [suggestionsVisible, setSuggestionsVisible] = useState(true);
-
+  const [suggestionStatus, setSuggestionStatus] = useState<
+    "waiting" | "generating" | "ready"
+  >("waiting");
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const callStartRef = useRef(false);
@@ -49,6 +50,7 @@ function Session() {
   const sessionId = params.sessionId as string;
   const level = searchParams.get("level") || "1";
 
+  const route = useRouter();
   // for updating session and processing conversation
   const [isSavingResults, setIsSavingResults] = useState(false);
   const sendCoversationToAPI = async () => {
@@ -114,8 +116,13 @@ function Session() {
 
   // Streamed suggestions
   useEffect(() => {
-    if (!prompt) return;
+    if (!prompt) {
+      setSuggestionStatus("waiting");
+      return;
+    }
+
     const generate = async () => {
+      setSuggestionStatus("generating");
       setStreamedResponse("");
       try {
         const res = await fetch("/api/suggestions", {
@@ -124,6 +131,7 @@ function Session() {
           body: JSON.stringify({ prompt }),
         });
         if (!res.ok) throw new Error("Bad status from suggestions API");
+
         const reader = res.body!.getReader();
         const dec = new TextDecoder();
         while (true) {
@@ -131,12 +139,19 @@ function Session() {
           if (done) break;
           setStreamedResponse((r) => r + dec.decode(value, { stream: true }));
         }
+        setSuggestionStatus("ready");
       } catch (err) {
         console.error("Suggestions error:", err);
+        setSuggestionStatus("waiting");
       }
     };
     generate();
   }, [prompt]);
+
+  // Also update when conversation starts
+  useEffect(() => {
+
+  }, [messages]);
 
   // Vapi setup + cleanup
   useEffect(() => {
@@ -205,6 +220,7 @@ function Session() {
         if (callStartRef.current) return;
         callStartRef.current = true;
         setCallStatus(CallStatus.CONNECTING);
+        setLoading(false);
 
         const assistantConfig = configureAssistant();
         const overrides = { variableValues: { level } };
@@ -228,7 +244,7 @@ function Session() {
     };
 
     init();
-    setLoading(false);
+
     return () => {
       cancelled = true;
       const v = vapiRef.current;
@@ -270,8 +286,8 @@ function Session() {
       // Continue with redirect even if evaluation fails
     }
 
-    // Use window.location.href instead of redirect
-    window.location.href = `/results/${sessionId}`;
+    // redirect
+    route.push(`/results/${sessionId}`);
   };
 
   const toggleMicrophone = () => {
@@ -285,6 +301,10 @@ function Session() {
     `${Math.floor(s / 60)
       .toString()
       .padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
+
+  if (loading) {
+    return <LoadingSpinner message="callibrating AI" />;
+  }
 
   return (
     <div className="bg-[#1a1a3a] text-white flex flex-col h-screen overflow-hidden">
@@ -354,7 +374,6 @@ function Session() {
           >
             {isSavingResults ? (
               <>
-                <LoadingSpinner fullScreen={false} size="sm" />
                 <span className="hidden md:inline">Processing...</span>
               </>
             ) : (
@@ -459,28 +478,33 @@ function Session() {
                 </button>
               </div>
               <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-grow">
-                {streamedResponse ? (
+                {suggestionStatus === "waiting" ? (
+                  <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
+                    <h4 className="font-bold text-gray-400 mb-2">
+                      Waiting for conversation to start...
+                    </h4>
+                    <p className="text-sm text-gray-500">
+                      Start speaking to get AI-powered suggestions
+                    </p>
+                  </div>
+                ) : suggestionStatus === "generating" ? (
+                  <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
+                    <h4 className="font-bold text-red-600 mb-4">
+                      Generating suggestions...
+                    </h4>
+                    <LoadingSpinner size="sm" fullScreen={false} message="" />
+                  </div>
+                ) : streamedResponse ? (
                   <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors">
                     <p className="text-md text-gray-300 mt-1">
                       {streamedResponse}
                     </p>
                   </div>
                 ) : (
-                  <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent">
-                    <h4 className="font-bold text-red-600">
-                      Generating suggestion...
+                  <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
+                    <h4 className="font-bold text-gray-400">
+                      No suggestions available
                     </h4>
-                    <div className="flex items-center space-x-2 mt-2">
-                      <div className="w-2 h-2 bg-red-600 rounded-full animate-bounce"></div>
-                      <div
-                        className="w-2 h-2 bg-red-600 rounded-full animate-bounce"
-                        style={{ animationDelay: "0.1s" }}
-                      ></div>
-                      <div
-                        className="w-2 h-2 bg-red-600 rounded-full animate-bounce"
-                        style={{ animationDelay: "0.2s" }}
-                      ></div>
-                    </div>
                   </div>
                 )}
               </div>
@@ -528,7 +552,7 @@ function Session() {
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 0 1 6 0v8.25a3 3 0 0 1-3 3Z"
+                              d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
                             />
                           </svg>
                         </div>

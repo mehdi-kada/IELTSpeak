@@ -1,5 +1,3 @@
-
-
 export interface sessionComponentProps {
   mode: "exam" | "practice";
   level: string;
@@ -71,6 +69,7 @@ export interface DashboardData {
   averageGrammar: number;
   averageVocab: number;
   averagePronunciation: number;
+  isPremium: boolean;
 }
 
 export interface SubscriptionData {

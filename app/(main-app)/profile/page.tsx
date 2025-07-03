@@ -1,14 +1,27 @@
 import { ProfileForm } from "@/components/profile/ProfileForm";
+import { createClient } from "@/lib/supabase/server";
+import { error } from "console";
+import { create } from "domain";
 import { Metadata } from "next";
 import React from "react";
 
-const metadata : Metadata = {
+const metadata: Metadata = {
   title: "Profile",
-  description: ""
-}
+  description: "",
+};
 
-function page() {
-  return <ProfileForm />;
+async function page() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (!user || error) {
+    console.log("error , couldnt fetch user for user info ", error);
+    return null;
+  }
+  return <ProfileForm userId={user.id} />;
 }
 
 export default page;
