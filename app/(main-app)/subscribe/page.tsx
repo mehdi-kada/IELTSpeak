@@ -1,6 +1,13 @@
+export const metadata: Metadata = {
+  title: "Upgrade",
+  description:
+    "Upgrade to IELTSpeak Premium for unlimited practice sessions, advanced AI feedback, and full access to all features. Choose the plan that fits your learning goals and boost your IELTS speaking score.",
+};
+
 import { SubscriptionCard } from "@/components/subscription/SubscriptionCard";
 import SubscriptionStatus from "@/components/subscription/SubscriptionStatus";
-import React from "react";
+import { Metadata } from "next";
+import React, { Suspense } from "react";
 
 function Subscribe() {
   return (
@@ -10,7 +17,9 @@ function Subscribe() {
         <p className="text-gray-400">
           Unlock premium features and unlimited access to IELTSpeak
         </p>
-        <SubscriptionStatus  />
+        <Suspense fallback={null}>
+          <SubscriptionStatus />
+        </Suspense>
       </div>
 
       <div className="flex flex-col lg:flex-row justify-center items-center gap-10">

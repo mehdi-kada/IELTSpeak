@@ -64,7 +64,7 @@ const FeaturesSection = () => {
       ),
       title: "Smart Suggestions",
       description:
-        "Stuck for words? Get optional next-word suggestions, synonyms, or ideas to keep the conversation flowing and expand your vocabulary.",
+        "Suggestions that know you. Instantly get words, synonyms, and ideas based on your profile to keep the conversation flowing and expand your vocabulary.",
     },
     {
       icon: (
@@ -103,7 +103,10 @@ const FeaturesSection = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="feature-card p-6 rounded-xl max-w-3xl mx-auto ">
+            <div
+              key={index}
+              className="feature-card p-6 rounded-xl max-w-3xl mx-auto "
+            >
               <div className="text-red-500 mb-4">{feature.icon}</div>
               <h4 className="font-bold text-xl mb-2">{feature.title}</h4>
               <p className="text-gray-400">{feature.description}</p>

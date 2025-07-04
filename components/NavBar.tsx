@@ -16,7 +16,7 @@ function NavBar() {
   const userName = useCurrentUserName();
   const path = usePathname();
   return (
-    <nav className="bg-[#2F2F7F] p-4 shadow-lg sticky top-0 z-40">
+    <nav className="bg-[#2F2F7F]/70 backdrop-blur-md p-4 shadow-lg sticky top-0 z-40">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-3">
@@ -26,7 +26,7 @@ function NavBar() {
         </Link>
 
         {/* Navigation Links */}
-        <div className="flex items-center gap-15 absolute right-1/2 transform translate-x-1/2">
+        <div className="flex items-center  gap-15 absolute right-1/2 transform translate-x-1/2">
           {navItems.map((item) => (
             <Link
               key={item.name}

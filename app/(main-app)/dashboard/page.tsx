@@ -140,7 +140,7 @@ function Dashboard() {
             </header>
 
             <div className="flex  items-center justify-center min-h-[50vh]">
-              <div className="text-center bg-[#2F2F7F]/50 p-8 rounded-xl shadow-sm border border-red-600 max-w-md">
+              <div className="text-center bg-[#2F2F7F]/50 p-8 rounded-xl shadow-sm border border-white/10 max-w-md">
                 <div className="text-red-600 mb-6">
                   <svg
                     className="h-16 w-16 mx-auto"

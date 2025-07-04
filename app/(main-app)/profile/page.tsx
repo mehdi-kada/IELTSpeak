@@ -1,12 +1,13 @@
+export const metadata: Metadata = {
+  title: "Profile",
+  description:
+    "Complete your profile to help our AI personalize your IELTS practice and suggestions just for you.",
+};
+
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { createClient } from "@/lib/supabase/server";
 import { Metadata } from "next";
 import React from "react";
-
-const metadata: Metadata = {
-  title: "Profile",
-  description: "",
-};
 
 async function page() {
   const supabase = await createClient();

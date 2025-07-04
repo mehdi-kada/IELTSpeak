@@ -45,9 +45,9 @@ const HowItWorksSection = () => {
           />
         </svg>
       ),
-      title: "Choose Level",
+      title: "Tell Us About Yourself",
       description:
-        "Select your proficiency level and tailor the session for your capabilities ",
+        "Tell us a bit about yourself so we can personalize your practice and suggestions.",
     },
     {
       stepNumber: "02",

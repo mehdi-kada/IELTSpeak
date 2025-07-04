@@ -1,6 +1,12 @@
-import { LoginForm } from "@/components/login-form";
+export const metadata: Metadata = {
+  title: "Sign Up",
+  description:
+    "Create your IELTSpeak account to unlock personalized AI speaking practice, instant feedback, and track your progress toward your IELTS goals.",
+};
+
 import { SignUpForm } from "@/components/sign-up-form";
-import Image from "next/image";
+import { Metadata } from "next";
+
 import Link from "next/link";
 
 export default function Page() {

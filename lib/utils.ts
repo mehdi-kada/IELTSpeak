@@ -27,7 +27,7 @@ export const configureAssistant = () => {
     },
 
     firstMessage:
-      "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the IELTS  speaking test based on your level: {{level}}. I'll ask you questions, listen to your responses, and give you brief feedback after each one. Let's start with a quick introduction—what's your name?",
+      "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the IELTS  speaking test based on your level: {{level}}. I'll ask you questions and listen to your responses. Let's start with a quick introduction—what's your name?",
     //" hi there lets start our conversation , what is your name ? ",
 
     // Silence timeout configuration (in seconds)
@@ -41,17 +41,16 @@ export const configureAssistant = () => {
     },
 
     voice: {
-      provider: "11labs",
-      voiceId: "marissa", // Using a valid voice ID from constants
-      stability: 0.9,
-      similarityBoost: 0.8,
+      provider: "playht",
+      voiceId: "melissa", // Using a valid voice ID from constants
+
       speed: 0.9,
-      style: 0.7,
-      useSpeakerBoost: true,
+
+
     },
     model: {
-      provider: "openai",
-      model: "gpt-4",
+      provider: "anthropic",
+      model: "claude-sonnet-4-20250514",
       maxTokens: 500, // Control max tokens for AI responses
       temperature: 0.7, // Add some variability to responses
       messages: [

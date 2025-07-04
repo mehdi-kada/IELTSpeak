@@ -1,4 +1,9 @@
+export const metadata: Metadata = {
+  title: "Login",
+description: "Sign in to your IELTSpeak account to continue your personalized AI speaking practice and track your progress toward your IELTS goals.",};
+
 import { LoginForm } from "@/components/login-form";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
