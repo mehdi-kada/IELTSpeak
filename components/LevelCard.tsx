@@ -12,6 +12,7 @@ interface cardProps {
 function LevelCard({ level, title, description }: cardProps) {
   const router = useRouter();
 
+
   // Use client-side navigation instead of server action redirect
   const handleSubmit = async () => {
     try {

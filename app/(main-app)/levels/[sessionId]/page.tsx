@@ -1,6 +1,7 @@
 "use client";
 import LoadingSpinner from "@/components/Loading";
 import { geminiPrompt } from "@/constants/constants";
+import { createClient } from "@/lib/supabase/client";
 import { configureAssistant } from "@/lib/utils";
 import Vapi from "@vapi-ai/web";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
@@ -28,6 +29,7 @@ interface SavedMessage {
 let globalVapiInstance: Vapi | null = null;
 
 function Session() {
+  const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -51,6 +53,7 @@ function Session() {
   const level = searchParams.get("level") || "1";
 
   const route = useRouter();
+
   // for updating session and processing conversation
   const [isSavingResults, setIsSavingResults] = useState(false);
   const sendCoversationToAPI = async () => {
@@ -91,6 +94,20 @@ function Session() {
       setIsSavingResults(false);
     }
   };
+
+  // get the user id for localstorage fetch
+  useEffect(() => {
+    const getUserId = async () => {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+      }
+    };
+    getUserId();
+  }, []);
 
   // Timer
   useEffect(() => {
@@ -148,13 +165,12 @@ function Session() {
     generate();
   }, [prompt]);
 
-  // Also update when conversation starts
-  useEffect(() => {
-
-  }, [messages]);
-
   // Vapi setup + cleanup
   useEffect(() => {
+    // first wait for the user id before initializing vapi
+    if (!userId) {
+      return;
+    }
     let cancelled = false;
     let vapi: Vapi | null = null;
 
@@ -179,9 +195,13 @@ function Session() {
 
           if (m.role === "assistant") {
             try {
-              const savedProfile = localStorage.getItem("userProfile");
+              const savedProfile = localStorage.getItem(
+                `${userId}_userProfile`
+              );
+              console.log(" the user profile data is : ", savedProfile);
               if (savedProfile) {
                 const profileData = JSON.parse(savedProfile);
+                console.log(" the user profile data is : ", savedProfile);
                 const newPrompt = geminiPrompt(level, m.content, profileData);
                 console.log(
                   " the prompt sent to the gemini api for suggestions is : ",
@@ -220,7 +240,6 @@ function Session() {
         if (callStartRef.current) return;
         callStartRef.current = true;
         setCallStatus(CallStatus.CONNECTING);
-        setLoading(false);
 
         const assistantConfig = configureAssistant();
         const overrides = { variableValues: { level } };
@@ -244,6 +263,7 @@ function Session() {
     };
 
     init();
+    setLoading(false);
 
     return () => {
       cancelled = true;
@@ -261,7 +281,7 @@ function Session() {
       }
       callStartRef.current = false;
     };
-  }, [level, sessionId]);
+  }, [level, sessionId, userId]);
   const EndCall = async () => {
     console.log("Ending call with messages:", messages);
     setCallStatus(CallStatus.FINISHED);
