@@ -82,6 +82,7 @@ export function ProfileForm({ userId }: { userId: string }) {
       localStorage.setItem(`${userId}_userProfile`, JSON.stringify(data));
       // TODO: Submit to API
       await insertProfileData(data, userId);
+      toast("Profile updated")
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {

@@ -52,7 +52,9 @@ export const insertSession = async ({ level }: { level: string }) => {
 
   const isProfileComplete = requiredFields.every(
     (field) =>
-      profileData && profileData[field as keyof typeof profileData] !== null && profileData[field as keyof typeof profileData] !== ""
+      profileData &&
+      profileData[field as keyof typeof profileData] !== null &&
+      profileData[field as keyof typeof profileData] !== ""
   );
   if (!isProfileComplete) {
     console.log("need to fill out the form for best customization ");
@@ -141,15 +143,19 @@ export const insertProfileData = async (
   userId: string
 ) => {
   try {
+    console.log("the user is for this profile : ", userId);
+    console.log("the data to be inserted is : ", data);
+    const profileData = { id: userId, ...data };
+
     const supabase = await createClient();
 
-    const { error } = await supabase
-      .from("profiles")
-      .upsert(data)
-      .eq("id", userId);
+    const { error } = await supabase.from("profiles").upsert(profileData);
 
     if (error) {
-      console.log("error when inserting profile data to the db");
+      console.log(
+        "error when inserting profile data to the db : ",
+        error.message
+      );
       throw new Error("error : ", error);
     }
   } catch (error) {

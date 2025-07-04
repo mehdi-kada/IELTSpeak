@@ -23,7 +23,7 @@ export const configureAssistant = () => {
         onNoPunctuationSeconds: 1.5,
         onNumberSeconds: 0.5,
       },
-      waitSeconds: 2.0,
+      waitSeconds: 0.5,
     },
 
     firstMessage:
