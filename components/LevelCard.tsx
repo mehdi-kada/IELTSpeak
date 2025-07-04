@@ -31,7 +31,7 @@ function LevelCard({ level, title, description }: cardProps) {
   };
 
   return (
-    <div className="group relative bg-[#2F2F7F]/50 border border-white/10 p-8 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:border-[#E62136]">
+    <div className="group relative bg-[#2F2F7F]/50 border border-white/10 p-4 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:border-[#E62136]">
       <div className="relative z-10 pointer-events-none ">
         <h3 className="text-4xl font-black text-[#E62136]">{level}</h3>
         <h4 className="font-bold text-2xl mb-2 mt-2 text-white">{title}</h4>

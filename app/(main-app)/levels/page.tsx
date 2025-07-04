@@ -34,7 +34,7 @@ function Levels() {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center p-4">
       <div className="container max-auto">
         <div className="text-center">
           <h1 className="text-4xl font-bold mt-6">Choose Your Target Band</h1>

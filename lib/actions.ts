@@ -105,8 +105,6 @@ export const insertSession = async ({ level }: { level: string }) => {
   };
 };
 
-// this doesnt include any ai logic just inserts the data,
-// session updater gets called from the session page ,gets sent the id of the session
 
 export const updateSession = async ({
   sessionId,

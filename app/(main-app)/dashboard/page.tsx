@@ -195,7 +195,7 @@ function Dashboard() {
           content="View your IELTS speaking practice progress and performance analytics"
         />
       </Head>
-      <main className="container mx-auto p-4 sm:p-6 lg:p-8">
+      <main className="container mx-auto  p-8 sm:p-6 lg:p-8">
         <div className="items-center gap-2 mb-8">
           <header
             className={`${
@@ -243,7 +243,7 @@ function Dashboard() {
                       {dashboardData && dashboardData.totalSessions >= 3 && (
                         <Link
                           href="/subscribe"
-                          className="inline-block mt-2 text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded transition-colors"
+                          className="inline-block mt-2 text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition-colors"
                         >
                           Upgrade Now
                         </Link>
@@ -268,7 +268,7 @@ function Dashboard() {
             />
 
             <TipsForImprovement
-              tips={dashboardData.sessions[0]?.feedback?.positivePoints}
+              tips={dashboardData.sessions[0]?.feedback?.negativePoints}
             />
           </div>
 
