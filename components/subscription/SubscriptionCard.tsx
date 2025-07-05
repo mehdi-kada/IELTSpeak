@@ -8,8 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { SubscriptionCardProps } from "@/types/types";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 export function SubscriptionCard({
   title,
@@ -20,8 +21,11 @@ export function SubscriptionCard({
   isPopular,
 }: SubscriptionCardProps) {
   const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
-  console.log("variant id is ", variantId);
+
+ // Keep empty dependency array
+
   const handleSubscribe = async () => {
     setIsLoading(true);
     try {

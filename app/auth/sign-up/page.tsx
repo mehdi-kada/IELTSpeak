@@ -1,6 +1,13 @@
-import { LoginForm } from "@/components/login-form";
+export const metadata: Metadata = {
+  title: "Sign Up",
+  description:
+    "Create your IELTSpeak account to unlock personalized AI speaking practice, instant feedback, and track your progress toward your IELTS goals.",
+};
+
 import { SignUpForm } from "@/components/sign-up-form";
-import Image from "next/image";
+import { Metadata } from "next";
+
+import Link from "next/link";
 
 export default function Page() {
   return (
@@ -8,8 +15,9 @@ export default function Page() {
       <div className="w-full max-w-sm">
         <div className="py-6">
           <div className="flex items-center justify-center mb-2 gap-1">
-            <Image src={"/images/logo2.png"} alt="logo" width={40} height={40} />
-            <h1 className="text-4xl text-center font-bold">IELTSpeak</h1>
+            <Link href={"/"}>
+              <h1 className="text-4xl text-center font-bold text-red-600">IELTSpeak</h1>
+            </Link>
           </div>
 
           <p className="text-gray-400 text-center">

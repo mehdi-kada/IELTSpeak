@@ -101,3 +101,11 @@ export interface SubscriptionStatusProps {
   cancel_at_period_end: boolean;
   renews_at: string;
 }
+
+export interface sessionUpdateProps {
+  sessionId: string;
+  ielts: string[];
+  feedback: string;
+}
+
+

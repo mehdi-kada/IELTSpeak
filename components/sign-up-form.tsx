@@ -30,7 +30,7 @@ export function SignUpForm({
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/oauth?next=/dashboard`,
+          redirectTo: `${window.location.origin}/auth/oauth?next=/profile`
         },
       });
 
@@ -58,7 +58,7 @@ export function SignUpForm({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
+          emailRedirectTo: `${window.location.origin}/profile`
         },
       });
       if (error) throw error;
@@ -71,8 +71,8 @@ export function SignUpForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <div className="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl shadow-2xl shadow-[#2F2F7F]/20 p-8">
+    <div className={cn("flex flex-col gap-6 ", className)} {...props}>
+      <div className="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl shadow-2xl shadow-[#2F2F7F]/20 p-6">
         <form onSubmit={handleSignUp} className="space-y-6">
           {/* Email Input */}
           <div>
@@ -184,7 +184,7 @@ export function SignUpForm({
       </div>
 
       {/* Sign In Link */}
-      <p className="mt-8 text-center text-sm text-gray-400">
+      <p className="mt-0 text-center text-sm text-gray-400">
         Already have an account?{" "}
         <Link
           href="/auth/login"

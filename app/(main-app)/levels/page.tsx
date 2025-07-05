@@ -1,5 +1,5 @@
 export const metadata: Metadata = {
-  title: "IELTS Band Levels",
+  title: "Band Levels",
   description:
     "Select your target IELTS band score (6.5, 7, 7.5, 8, 8.5, 9) and start a realistic speaking practice test with the AI examiner. Get tailored practice for your band level.",
   keywords: [
@@ -34,7 +34,7 @@ function Levels() {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center p-4">
       <div className="container max-auto">
         <div className="text-center">
           <h1 className="text-4xl font-bold mt-6">Choose Your Target Band</h1>

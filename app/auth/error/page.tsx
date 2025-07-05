@@ -1,4 +1,10 @@
+export const metadata: Metadata = {
+  title: "Error",
+  description: "something went wrong trying to sign you in ",
+};
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Metadata } from "next";
 import Link from "next/link";
 
 export default async function Page({

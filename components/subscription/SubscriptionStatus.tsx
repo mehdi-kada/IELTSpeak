@@ -1,10 +1,15 @@
 "use client";
 import { SubscriptionStatusProps } from "@/types/types";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import LoadingSpinner from "../Loading";
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 function SubscriptionStatus() {
   const [loading, setLoading] = useState(true);
+  const params = useSearchParams();
+  const limitReached = params.get("reason");
+  const toastRefshown = useRef(false);
   const [subStatus, setSubStatus] = useState("");
   const [subData, setSubData] = useState<SubscriptionStatusProps | null>(null);
   const [cancelling, setCancelling] = useState(false);
@@ -15,6 +20,14 @@ function SubscriptionStatus() {
     ? new Date(subData?.renews_at).toLocaleString()
     : null;
   console.log("sub status is : ", subStatus);
+
+  useEffect(() => {
+    if (limitReached && !toastRefshown.current) {
+      toast("Please upgrade to get unlimited sessions");
+      toastRefshown.current = true;
+    }
+  }, []);
+
   const fetchSubStatus = async () => {
     try {
       const response = await fetch("/api/subscriptions/status");

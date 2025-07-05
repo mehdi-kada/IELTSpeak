@@ -2,7 +2,6 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
 
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -16,14 +15,6 @@ export const configureAssistant = () => {
         enabled: true,
       },
       // Enable Fourier Denoising (optional)
-      fourierDenoisingPlan: {
-        enabled: true,
-        mediaDetectionEnabled: true,
-        staticThreshold: -30,
-        baselineOffsetDb: -10,
-        windowSizeMs: 2000,
-        baselinePercentile: 90,
-      },
     },
 
     startSpeakingPlan: {
@@ -32,11 +23,11 @@ export const configureAssistant = () => {
         onNoPunctuationSeconds: 1.5,
         onNumberSeconds: 0.5,
       },
-      waitSeconds: 2.0,
+      waitSeconds: 0.5,
     },
 
     firstMessage:
-      "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the IELTS  speaking test based on your level: {{level}}. I'll ask you questions, listen to your responses, and give you brief feedback after each one. Let's start with a quick introduction—what's your name?",
+      "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the IELTS  speaking test based on your level: {{level}}. I'll ask you questions and listen to your responses. Let's start with a quick introduction—what's your name?",
     //" hi there lets start our conversation , what is your name ? ",
 
     // Silence timeout configuration (in seconds)
@@ -50,17 +41,16 @@ export const configureAssistant = () => {
     },
 
     voice: {
-      provider: "11labs",
-      voiceId: "burt", // Using a valid voice ID from constants
-      stability: 0.9,
-      similarityBoost: 0.8,
+      provider: "playht",
+      voiceId: "melissa", // Using a valid voice ID from constants
+
       speed: 0.9,
-      style: 0.5,
-      useSpeakerBoost: true,
+
+
     },
     model: {
-      provider: "openai",
-      model: "gpt-4",
+      provider: "anthropic",
+      model: "claude-sonnet-4-20250514",
       maxTokens: 500, // Control max tokens for AI responses
       temperature: 0.7, // Add some variability to responses
       messages: [
@@ -95,7 +85,7 @@ VOICE & PERSONA:
     Speak at a natural, clear pace—not too fast and not too slow.
     If a user's response is completely unclear or off-topic, you may politely rephrase the question once. Do not over-simplify it. For example, you can say, "Could you elaborate on that point?"
 Begin the test now by introducing yourself and starting with Part 1.
-              `
+              `,
         },
       ],
     },

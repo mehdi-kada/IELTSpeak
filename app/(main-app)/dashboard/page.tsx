@@ -140,7 +140,7 @@ function Dashboard() {
             </header>
 
             <div className="flex  items-center justify-center min-h-[50vh]">
-              <div className="text-center bg-[#2F2F7F]/50 p-8 rounded-xl shadow-sm border border-red-600 max-w-md">
+              <div className="text-center bg-[#2F2F7F]/50 p-8 rounded-xl shadow-sm border border-white/10 max-w-md">
                 <div className="text-red-600 mb-6">
                   <svg
                     className="h-16 w-16 mx-auto"
@@ -195,7 +195,7 @@ function Dashboard() {
           content="View your IELTS speaking practice progress and performance analytics"
         />
       </Head>
-      <main className="container mx-auto p-4 sm:p-6 lg:p-8">
+      <main className="container mx-auto  p-8 sm:p-6 lg:p-8">
         <div className="items-center gap-2 mb-8">
           <header
             className={`${
@@ -213,10 +213,10 @@ function Dashboard() {
 
             {/* Session Limit Warning - Only show for non-premium users */}
             {!isPremium && (
-              <div className="mt-4 lg:mt-0 lg:ml-8 flex-shrink-0">
-                <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 max-w-xs">
-                  <div className="flex items-start gap-3">
-                    <div className="text-amber-500 flex-shrink-0 mt-0.5">
+              <div className="mt-4 lg:mt-0 lg:ml-8 flex-shrink-0 flex justify-center lg:justify-end ">
+                <div className="bg-red-600/10 border border-red-600/30 rounded-lg p-4 max-w-xs ">
+                  <div className="flex items-centeer gap-3">
+                    <div className="text-red-500 flex-shrink-0 mt-0.5">
                       <svg
                         className="h-5 w-5"
                         fill="none"
@@ -232,10 +232,10 @@ function Dashboard() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-amber-400 mb-1">
+                      <h3 className="text-sm font-semibold text-red-400 mb-1">
                         Free Plan Limit
                       </h3>
-                      <p className="text-xs text-amber-200/80 leading-relaxed">
+                      <p className="text-xs text-red-200/80 leading-relaxed">
                         You have{" "}
                         {Math.max(0, 3 - (dashboardData?.totalSessions || 0))}{" "}
                         of 3 free sessions remaining.
@@ -243,7 +243,7 @@ function Dashboard() {
                       {dashboardData && dashboardData.totalSessions >= 3 && (
                         <Link
                           href="/subscribe"
-                          className="inline-block mt-2 text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded transition-colors"
+                          className="inline-block mt-2 text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition-colors"
                         >
                           Upgrade Now
                         </Link>
@@ -268,7 +268,7 @@ function Dashboard() {
             />
 
             <TipsForImprovement
-              tips={dashboardData.sessions[0]?.feedback?.positivePoints}
+              tips={dashboardData.sessions[0]?.feedback?.negativePoints}
             />
           </div>
 

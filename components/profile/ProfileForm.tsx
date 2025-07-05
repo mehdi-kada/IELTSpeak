@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,9 +26,15 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { profileValues, userProfileSchema } from "@/types/schemas";
 import { educationLevels, genders, hobbyOptions } from "@/constants/constants";
+import { insertProfileData } from "@/lib/actions";
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
-export function ProfileForm({userId}: {userId: string}) {
+export function ProfileForm({ userId }: { userId: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const searchParams = useSearchParams();
+  const emptyProfile = searchParams.get("reason");
+  const toastShown = useRef(false);
 
   const form = useForm<profileValues>({
     resolver: zodResolver(userProfileSchema),
@@ -58,6 +64,15 @@ export function ProfileForm({userId}: {userId: string}) {
     } catch (error) {}
   }, [form]);
 
+  // New useEffect for toast
+  useEffect(() => {
+    if (emptyProfile && !toastShown.current) {
+      toast(
+        "Please complete your profile to get a personalized IELTS experience."
+      );
+      toastShown.current = true;
+    }
+  }, []); // Empty dependency array to run only once on mount
   const onSubmit = async (data: profileValues) => {
     // try to get data from local storage if it exists
 
@@ -66,6 +81,8 @@ export function ProfileForm({userId}: {userId: string}) {
       console.log("Form data:", data);
       localStorage.setItem(`${userId}_userProfile`, JSON.stringify(data));
       // TODO: Submit to API
+      await insertProfileData(data, userId);
+      toast("Profile updated");
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
