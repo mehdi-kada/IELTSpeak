@@ -14,7 +14,7 @@ export default function Page() {
         <div className="py-6">
           <div className="flex items-center justify-center mb-2 gap-1">
             <Link href="/">
-              <h1 className="text-4xl text-center font-bold">IELTSpeak</h1>
+              <h1 className="text-4xl text-center font-bold text-red-600">IELTSpeak</h1>
             </Link>
           </div>
 

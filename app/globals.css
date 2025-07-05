@@ -153,3 +153,14 @@ body {
     clip-path: polygon(0 22%, 100% 22%, 100% 33%, 0 33%);
   }
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #1a1a3a;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #e62136;
+  border-radius: 4px;
+}

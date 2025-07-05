@@ -163,7 +163,7 @@ export function LoginForm({
       </div>
 
       {/* Sign Up Link */}
-      <p className="mt-8 text-center text-sm text-gray-400">
+      <p className="mt-0 text-center text-sm text-gray-400">
         Don't have an account?{" "}
         <Link
           href="/auth/sign-up"
