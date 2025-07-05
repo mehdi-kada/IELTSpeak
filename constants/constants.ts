@@ -76,6 +76,8 @@ User Profile Context:
     Travel Experience: ${profileData?.travel_experience || "Not provided"}
     Favorite Food: ${profileData?.favorite_food || "Not provided"}
     Life Goals: ${profileData?.life_goal || "Not provided"}
+
+    only include the required info for the answer dont try to fit them all in one answer , and keep the answer short unless prompted otherwise 
   `;
 };
 

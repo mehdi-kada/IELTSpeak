@@ -46,7 +46,7 @@ export default function GlobalError({
       {/* Action Buttons */}
       <div className="mt-8 flex gap-4 flex-wrap justify-center">
         <a
-          href="/"
+          href="/dashboard"
           className="bg-white/10 hover:bg-white/20 text-white font-bold py-3 px-8 rounded-lg transition-colors"
         >
           Go Back Home

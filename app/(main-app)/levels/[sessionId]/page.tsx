@@ -4,7 +4,7 @@ import { geminiPrompt } from "@/constants/constants";
 import { createClient } from "@/lib/supabase/client";
 import { configureAssistant } from "@/lib/utils";
 import Vapi from "@vapi-ai/web";
-import Lottie, { LottieRefCurrentProps } from "lottie-react";
+
 import { Metadata } from "next";
 import { useParams, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -43,7 +43,6 @@ function Session() {
     "waiting" | "generating" | "ready"
   >("waiting");
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const lottieRef = useRef<LottieRefCurrentProps>(null);
   const callStartRef = useRef(false);
   const vapiRef = useRef<Vapi | null>(null);
 
@@ -56,6 +55,7 @@ function Session() {
 
   // for updating session and processing conversation
   const [isSavingResults, setIsSavingResults] = useState(false);
+
   const sendCoversationToAPI = async () => {
     setIsSavingResults(true);
     try {
@@ -125,11 +125,8 @@ function Session() {
     }
   }, [messages]);
 
-  // Lottie play/stop
-  useEffect(() => {
-    if (isSpeaking) lottieRef.current?.play();
-    else lottieRef.current?.stop();
-  }, [isSpeaking]);
+
+
 
   // Streamed suggestions
   useEffect(() => {
@@ -294,20 +291,25 @@ function Session() {
 
     // Send messages to rating API before redirecting
     try {
-      if (messages.length > 0) {
+      if (messages.length > 5) {
         console.log("Sending evaluation request...");
         await sendCoversationToAPI();
         console.log("Evaluation completed successfully");
+        // redirect to results only if we have enough messages for AI processing
+        route.push(`/results/${sessionId}`);
       } else {
-        console.warn("No messages to evaluate");
+        // redirect to too-short page if insufficient messages for AI processing
+        route.push("/too-short");
       }
     } catch (error) {
       console.error("Failed to get evaluation:", error);
-      // Continue with redirect even if evaluation fails
+      // Only redirect to results if we had enough messages, otherwise go to too-short
+      if (messages.length > 5) {
+        route.push(`/results/${sessionId}`);
+      } else {
+        route.push("/too-short");
+      }
     }
-
-    // redirect
-    route.push(`/results/${sessionId}`);
   };
 
   const toggleMicrophone = () => {
@@ -399,7 +401,6 @@ function Session() {
             ) : (
               <>
                 <span>End Session</span>
-                
               </>
             )}
           </button>
