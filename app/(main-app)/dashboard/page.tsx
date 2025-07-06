@@ -127,7 +127,7 @@ function Dashboard() {
             content="View your IELTS speaking practice progress and performance analytics"
           />
         </Head>
-        <div className="min-h-screen p-4 md:p-6">
+        <div className="min-h-screen mt-8 p-4 md:p-6">
           <div className="max-w-7xl mx-auto">
             <header className="mb-8 text-center">
               <h1 className="text-3xl md:text-4xl font-bold ">

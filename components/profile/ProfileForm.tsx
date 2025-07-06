@@ -179,7 +179,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                     <Select onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 focus:ring-2 px-4 py-3 text-white">
-                          <SelectValue placeholder="Select your gender" />
+                          <SelectValue placeholder="Gender" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-[#1a1a3a] border border-white/20 text-white">
