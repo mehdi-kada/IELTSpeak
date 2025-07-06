@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "My IELTS Speaking Test Results | IELTSpeak",
     description:
       "Review detailed feedback and band scores from a practice session on IELTSpeak.",
-    url: "www.ieltspeak.com", // Point to the main site URL as these pages shouldn't be indexed
+    url: "https://www.ieltspeak.tech", // Point to the main site URL as these pages shouldn't be indexed
     siteName: "IELTSpeak",
     images: [
       {
@@ -37,7 +37,6 @@ export const metadata: Metadata = {
     follow: false,
   },
 };
-
 
 export default function DashboardLayout({
   children,

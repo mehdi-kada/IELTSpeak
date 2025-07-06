@@ -5,15 +5,15 @@ import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const siteUrl = "www.ieltspeak.com";
+const siteUrl = "www.ieltspeak.tech";
 
-// filepath: app/layout.js (or app/page.js)
+
 export const metadata: Metadata = {
   title: {
     default: "IELTSpeak | AI IELTS Speaking Practice & Mock Tests",
     template: "%s - IELTSpeak",
   },
-  metadataBase: new URL("https://your-domain.com"),
+  metadataBase: new URL("https://www.ieltspeak.tech"),
   description:
     "Get instant feedback on your IELTS Speaking with the IELTSpeak AI examiner. Practice with realistic mock tests, improve your fluency, and boost your band score.",
   keywords: [

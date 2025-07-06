@@ -29,7 +29,7 @@ function NavBar() {
           </Link>
 
           {/* Navigation Links */}
-          <div className="flex items-center  gap-15 absolute right-1/2 transform translate-x-1/2">
+          <div className="flex items-center  sm:gap-15 gap-8 absolute sm:right-1/2 sm:transform sm:translate-x-1/2">
             {navItems.map((item) => (
               <Link
                 key={item.name}
