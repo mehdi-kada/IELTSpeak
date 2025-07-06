@@ -56,7 +56,7 @@ function NavBar() {
               {userAvatar ? (
                 <CurrentUserAvatar />
               ) : (
-                <div className="h-10 w-10 rounded-full bg-gray-700 border-2 border-[#E62136] flex items-center justify-center">
+                <div className="h-10 w-10 rounded-full bg-blue-900/50 border-2 border-[#E62136] flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6 text-gray-400"

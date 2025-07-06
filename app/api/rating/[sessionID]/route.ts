@@ -98,7 +98,7 @@ Analyze the conversation now and return only the JSON response.
     const result = await model.generateContent(resultPrompt);
     const response = await result.response;
     const evaluation = response.text();
-    console.log("Raw Gemini response:", evaluation);
+
 
     // Clean the response by removing markdown code blocks
     let cleanedEvaluation = evaluation.trim();
@@ -112,12 +112,11 @@ Analyze the conversation now and return only the JSON response.
         .replace(/\s*```$/, "");
     }
 
-    console.log("Cleaned response:", cleanedEvaluation);
+
 
     let parsedEvaluation;
     try {
       parsedEvaluation = JSON.parse(cleanedEvaluation);
-      console.log("Parsed evaluation:", parsedEvaluation);
     } catch (parseError) {
       console.log("failed to parse model response as json : ", parseError);
       parsedEvaluation = {

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/Loading";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 function Practice() {
   const params = useParams();

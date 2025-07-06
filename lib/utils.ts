@@ -23,7 +23,7 @@ export const configureAssistant = () => {
         onNoPunctuationSeconds: 1.5,
         onNumberSeconds: 0.5,
       },
-      waitSeconds: 0.5,
+      waitSeconds: 1,
     },
 
     firstMessage:
@@ -31,8 +31,8 @@ export const configureAssistant = () => {
     //" hi there lets start our conversation , what is your name ? ",
 
     // Silence timeout configuration (in seconds)
-    silenceTimeoutSeconds: 60, // How long to wait for user speech before timing out
-    maxDurationSeconds: 1800, // Maximum call duration (30 minutes)
+    silenceTimeoutSeconds: 120, // How long to wait for user speech before timing out
+    maxDurationSeconds: 900, // Maximum call duration (30 minutes)
 
     transcriber: {
       provider: "11labs",

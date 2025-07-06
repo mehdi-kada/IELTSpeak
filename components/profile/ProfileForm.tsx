@@ -78,9 +78,9 @@ export function ProfileForm({ userId }: { userId: string }) {
 
     setIsSubmitting(true);
     try {
-      console.log("Form data:", data);
+      // save in local storage
       localStorage.setItem(`${userId}_userProfile`, JSON.stringify(data));
-      // TODO: Submit to API
+      //  Submit to API
       await insertProfileData(data, userId);
       toast("Profile updated");
     } catch (error) {
@@ -159,7 +159,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                       </FormControl>
                       <SelectContent className="bg-[#1a1a3a] border border-white/20 text-white">
                         {educationLevels.map((l, index) => (
-                          <SelectItem key={index} value={l}>
+                          <SelectItem className="hover:bg-white/10" key={index} value={l}>
                             {l}
                           </SelectItem>
                         ))}
@@ -184,7 +184,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                       </FormControl>
                       <SelectContent className="bg-[#1a1a3a] border border-white/20 text-white">
                         {genders.map((g, index) => (
-                          <SelectItem key={index} value={g}>
+                          <SelectItem className="hover:bg-white/10" key={index} value={g}>
                             {g}
                           </SelectItem>
                         ))}

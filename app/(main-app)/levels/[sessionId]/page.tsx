@@ -29,6 +29,7 @@ interface SavedMessage {
 let globalVapiInstance: Vapi | null = null;
 
 function Session() {
+  const [ended, setEnded] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
@@ -124,9 +125,6 @@ function Session() {
       messagesContainerRef.current.scrollTop = 0;
     }
   }, [messages]);
-
-
-
 
   // Streamed suggestions
   useEffect(() => {
@@ -234,7 +232,7 @@ function Session() {
 
       // Kickoff
       const startCall = async () => {
-        if (callStartRef.current) return;
+        if (callStartRef.current || ended) return;
         callStartRef.current = true;
         setCallStatus(CallStatus.CONNECTING);
 
@@ -282,13 +280,14 @@ function Session() {
   const EndCall = async () => {
     console.log("Ending call with messages:", messages);
     setCallStatus(CallStatus.FINISHED);
-
+    setEnded(true);
     if (vapiRef.current) {
       vapiRef.current.stop();
       vapiRef.current = null;
       globalVapiInstance = null;
     }
 
+    setCallStatus(CallStatus.FINISHED);
     // Send messages to rating API before redirecting
     try {
       if (messages.length > 5) {
@@ -299,7 +298,8 @@ function Session() {
         route.push(`/results/${sessionId}`);
       } else {
         // redirect to too-short page if insufficient messages for AI processing
-        route.push("/too-short");
+        window.location.href = "/too-short";
+        return;
       }
     } catch (error) {
       console.error("Failed to get evaluation:", error);
@@ -307,7 +307,7 @@ function Session() {
       if (messages.length > 5) {
         route.push(`/results/${sessionId}`);
       } else {
-        route.push("/too-short");
+        window.location.href = "/too-short";
       }
     }
   };
@@ -425,12 +425,12 @@ function Session() {
             {callStatus === CallStatus.CONNECTING
               ? "Connecting..."
               : callStatus === CallStatus.ACTIVE
-              ? isSpeaking
-                ? "AI is speaking"
-                : "Your turn to speak"
-              : callStatus === CallStatus.FINISHED
-              ? "Session ended"
-              : "Ready to start"}
+                ? isSpeaking
+                  ? "AI is speaking"
+                  : "Your turn to speak"
+                : callStatus === CallStatus.FINISHED
+                  ? "Session ended"
+                  : "Ready to start"}
           </p>
           <p className="text-gray-400 text-sm">
             Session Timer: {formatTime(sessionTime)}

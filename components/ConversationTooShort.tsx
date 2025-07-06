@@ -46,7 +46,7 @@ export default function ConversationTooShort() {
           Back to Dashboard
         </Link>
         <Link
-          href="/"
+          href="/levels"
           className="bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px text-white font-bold py-3 px-8 rounded-lg transition-all duration-200"
         >
           Try Again
