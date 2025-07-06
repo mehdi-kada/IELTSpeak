@@ -24,7 +24,7 @@ export function SubscriptionCard({
 
   const router = useRouter();
 
- // Keep empty dependency array
+  // Keep empty dependency array
 
   const handleSubscribe = async () => {
     setIsLoading(true);
@@ -103,14 +103,29 @@ export function SubscriptionCard({
       <CardFooter className="flex-col gap-2">
         <button
           onClick={handleSubscribe}
-          disabled={isLoading}
-          className={`w-full font-bold py-3 px-6 rounded-lg transition-colors ${
+          disabled={true} // replace with loading
+          className={`w-full font-bold py-3 px-6 rounded-lg transition-colors cursor-not-allowed ${
             isPopular
-              ? "bg-red-600 hover:shadow-md hover:shadow-red-600/50"
-              : "bg-white/10 hover:bg-white/20"
+              ? "bg-red-600/20 hover:shadow-md hover:shadow-red-600/50"
+              : "bg-white/20 hover:bg-white/20"
           }`}
         >
-          Choose {description} {isPopular ? "and save 16% " : ""}
+          <div className="flex items-center justify-center gap-2">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+            Choose {description} {isPopular ? "and save 16% " : ""}
+          </div>
         </button>
       </CardFooter>
     </Card>

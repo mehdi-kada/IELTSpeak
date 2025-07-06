@@ -12,6 +12,13 @@ import React, { Suspense } from "react";
 function Subscribe() {
   return (
     <div className="max-w-4xl mx-auto p-6">
+            {/* Free Trial Announcement */}
+      <div className="bg-gradient-to-r from-blue-600 to-red-600 text-white text-center py-4 px-6 rounded-lg mb-8">
+        <h2 className="text-xl font-semibold mb-2">🎉 Limited Time Offer!</h2>
+        <p className="text-lg">
+          Enjoy your <span className="font-bold">7-day FREE trial</span> today - No credit card required!
+        </p>
+      </div>
       <div className="text-center mb-12 space-y-4 ">
         <h1 className="text-4xl font-bold">Choose Your Plan</h1>
         <p className="text-gray-400">
@@ -31,7 +38,7 @@ function Subscribe() {
           features={[
             "Unlimited Practice Sessions",
             "Advanced AI Feedback & Scoring",
-            "Access to All Levels (A1-C2)",
+            "Access to All Levels (6.5-9)",
             "Save & Review Session History",
           ]}
           variantId="871461"
@@ -45,7 +52,7 @@ function Subscribe() {
           features={[
             "Unlimited Practice Sessions",
             "Advanced AI Feedback & Scoring",
-            "Access to All Levels (A1-C2)",
+            "Access to All Levels (6.5-9)",
             "Save & Review Session History",
           ]}
           variantId="875882"
