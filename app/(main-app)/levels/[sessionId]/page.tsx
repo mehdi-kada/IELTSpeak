@@ -44,7 +44,9 @@ function Session() {
   const [suggestionStatus, setSuggestionStatus] = useState<
     "waiting" | "generating" | "ready"
   >("waiting");
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const suggestionsContainerRef = useRef<HTMLDivElement>(null);
 
   const [profileData, setProfileData] = useState<profileValues | null>(null);
 
@@ -145,9 +147,9 @@ function Session() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt }),
         });
-        
+
         console.log("Suggestions API response status:", res.status);
-        
+
         if (!res.ok) {
           const errorText = await res.text();
           console.error("Suggestions API error:", errorText);
@@ -156,14 +158,30 @@ function Session() {
 
         const reader = res.body!.getReader();
         const dec = new TextDecoder();
+        let fullResponse = "";
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = dec.decode(value, { stream: true });
+          fullResponse += chunk;
           console.log("Received suggestion chunk:", chunk);
-          setStreamedResponse((r) => r + chunk);
+          setStreamedResponse(fullResponse);
         }
+
+        // Add completed suggestion to the top of suggestions array
+        if (fullResponse.trim()) {
+          console.log("Adding suggestion to array:", fullResponse.trim());
+          setSuggestions((prev) => {
+            const newSuggestions = [fullResponse.trim(), ...prev];
+            console.log("Updated suggestions array:", newSuggestions);
+            return newSuggestions;
+          });
+        }
+
+        // Clear the streamed response since it's now in the suggestions array
+        setStreamedResponse("");
         setSuggestionStatus("ready");
+        console.log("Suggestions generation completed");
       } catch (err) {
         console.error("Suggestions error:", err);
         setSuggestionStatus("waiting");
@@ -171,6 +189,13 @@ function Session() {
     };
     generate();
   }, [prompt]);
+
+  // Auto-scroll suggestions to top when new suggestion is added
+  useEffect(() => {
+    if (suggestionsContainerRef.current && suggestions.length > 0) {
+      suggestionsContainerRef.current.scrollTop = 0;
+    }
+  }, [suggestions]);
 
   //effect for getting profile data either from localstorage or database
   useEffect(() => {
@@ -180,13 +205,16 @@ function Session() {
       try {
         const savedProfile = localStorage.getItem(`${userId}_userProfile`);
         console.log("Saved profile from localStorage:", savedProfile);
-        
+
         if (savedProfile) {
           const profileData = JSON.parse(savedProfile);
           console.log("Using cached profile data:", profileData);
           setProfileData(profileData);
         } else {
-          console.log("Fetching profile data from database for userId:", userId);
+          console.log(
+            "Fetching profile data from database for userId:",
+            userId
+          );
           const profileData = await fetchUserProfileData(userId);
           if (!profileData) {
             console.log("No profile data found, redirecting to profile page");
@@ -241,7 +269,10 @@ function Session() {
           if (m.role === "assistant") {
             try {
               if (profileData) {
-                console.log("Profile data available for suggestions:", profileData);
+                console.log(
+                  "Profile data available for suggestions:",
+                  profileData
+                );
                 const newPrompt = geminiPrompt(level, m.content, profileData);
                 console.log("Generated prompt for suggestions:", newPrompt);
                 setPrompt(newPrompt);
@@ -352,10 +383,20 @@ function Session() {
   };
 
   const toggleMicrophone = () => {
-    if (!vapiRef.current) return;
-    const muted = vapiRef.current.isMuted();
-    vapiRef.current.setMuted(!muted);
-    setIsMuted(!muted);
+    // Check if Vapi instance exists and is ready
+    if (!vapiRef.current) {
+      console.warn("Vapi instance not available yet");
+      return;
+    }
+
+    try {
+      const muted = vapiRef.current.isMuted();
+      vapiRef.current.setMuted(!muted);
+      setIsMuted(!muted);
+    } catch (error) {
+      console.error("Error toggling microphone:", error);
+      // Optionally show user feedback here
+    }
   };
 
   const formatTime = (s: number) =>
@@ -370,16 +411,26 @@ function Session() {
   return (
     <div className="bg-[#1a1a3a] text-white flex flex-col h-screen overflow-hidden">
       {/* Session Navigation */}
-      <nav className="bg-[#2F2F7F] p-4 shadow-lg flex-shrink-0">
+      <nav className="bg-[#2F2F7F] z-5 p-4  shadow-lg flex-shrink-0">
         <div className="container mx-auto flex justify-between items-center">
           {/* Mute button replaces logo on all screens */}
           <div className="flex items-center">
             <button
               onClick={toggleMicrophone}
-              className={`${
-                isMuted ? "bg-red-600" : "bg-white/10"
-              }  p-2 rounded-full transition-colors`}
+              disabled={!vapiRef.current || callStatus === CallStatus.INACTIVE}
+              className={`${isMuted ? "bg-red-600" : "bg-white/10"} ${
+                !vapiRef.current || callStatus === CallStatus.INACTIVE
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-white/20"
+              } p-2 rounded-full transition-colors`}
               aria-label="Mute Microphone"
+              title={
+                !vapiRef.current || callStatus === CallStatus.INACTIVE
+                  ? "Microphone will be available when session starts"
+                  : isMuted
+                    ? "Unmute microphone"
+                    : "Mute microphone"
+              }
             >
               {isMuted ? (
                 <svg
@@ -515,52 +566,73 @@ function Session() {
                   <h2 className="text-xl sm:text-2xl font-bold">
                     Real-time Suggestions
                   </h2>
-                  <button
-                    onClick={() => setSuggestionsVisible(!suggestionsVisible)}
-                    className="flex items-center gap-2 cursor-pointer bg-white/10 hover:bg-white/20 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors"
-                  >
-                    <span>{suggestionsVisible ? "Hide" : "Show"}</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="2"
-                      stroke="currentColor"
-                      className={`w-4 h-4 transition-transform ${
-                        suggestionsVisible ? "" : "rotate-180"
-                      }`}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m4.5 15.75 7.5-7.5 7.5 7.5"
-                      />
-                    </svg>
-                  </button>
                 </div>
-                <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-grow">
+                <div
+                  ref={suggestionsContainerRef}
+                  className="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-grow"
+                >
                   {suggestionStatus === "waiting" ? (
                     <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
                       <h4 className="font-bold text-gray-400 mb-2">
                         Waiting for conversation to start...
                       </h4>
                       <p className="text-sm text-gray-500">
-                        Start speaking to get AI-powered suggestions
+                        Once the conversation starts you will get suggestions on
+                        what to say next
                       </p>
                     </div>
                   ) : suggestionStatus === "generating" ? (
-                    <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
-                      <h4 className="font-bold text-red-600 mb-4">
-                        Generating suggestions...
-                      </h4>
-                      <LoadingSpinner size="sm" fullScreen={false} message="" />
-                    </div>
-                  ) : streamedResponse ? (
-                    <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors">
-                      <p className="text-md text-gray-300 mt-1">
-                        {streamedResponse}
-                      </p>
-                    </div>
+                    <>
+                      {/* Show current streaming suggestion if available */}
+                      {!streamedResponse &&
+                        suggestionStatus === "generating" && (
+                          <LoadingSpinner
+                            size="sm"
+                            fullScreen={false}
+                            message=""
+                          />
+                        )}
+                      {streamedResponse && (
+                        <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-red-600 transition-colors">
+                          <div className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
+                            <p className="text-md text-gray-300">
+                              {streamedResponse}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                      {/* Show previous suggestions */}
+                      {suggestions.map((suggestion, index) => (
+                        <div
+                          key={index}
+                          className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <p className="text-md text-gray-300">
+                              {suggestion}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                      {/* Show generating indicator if no streaming response yet */}
+                    </>
+                  ) : suggestions.length > 0 ? (
+                    /* Show all suggestions when ready or waiting */
+                    suggestions.map((suggestion, index) => (
+                      <div
+                        key={index}
+                        className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={`w-2 h-2 ${index === 0 ? "bg-red-500" : "bg-green-500"} rounded-full mt-2 flex-shrink-0`}
+                          ></div>
+                          <p className="text-md text-gray-300">{suggestion}</p>
+                        </div>
+                      </div>
+                    ))
                   ) : (
                     <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
                       <h4 className="font-bold text-gray-400">
@@ -658,6 +730,9 @@ function Session() {
                 <div className="flex justify-between items-center mb-4 flex-shrink-0">
                   <h2 className="text-xl font-bold">Real-time Suggestions</h2>
                 </div>
+                {!streamedResponse && suggestionStatus === "generating" && (
+                  <LoadingSpinner size="sm" fullScreen={false} message="" />
+                )}
                 <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-grow">
                   {suggestionStatus === "waiting" ? (
                     <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
@@ -669,18 +744,61 @@ function Session() {
                       </p>
                     </div>
                   ) : suggestionStatus === "generating" ? (
-                    <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
-                      <h4 className="font-bold text-red-600 mb-4">
-                        Generating suggestions...
-                      </h4>
-                      <LoadingSpinner size="sm" fullScreen={false} message="" />
-                    </div>
-                  ) : streamedResponse ? (
-                    <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors">
-                      <p className="text-md text-gray-300 mt-1">
-                        {streamedResponse}
-                      </p>
-                    </div>
+                    <>
+                      {/* Show current streaming suggestion if available */}
+                      {streamedResponse && (
+                        <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-red-600 transition-colors">
+                          <div className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
+                            <p className="text-md text-gray-300">
+                              {streamedResponse}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                      {/* Show previous suggestions */}
+                      {suggestions.map((suggestion, index) => (
+                        <div
+                          key={index}
+                          className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <p className="text-md text-gray-300">
+                              {suggestion}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                      {/* Show generating indicator if no streaming response yet */}
+                      {!streamedResponse && (
+                        <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
+                          <h4 className="font-bold text-red-600 mb-4">
+                            Generating suggestions...
+                          </h4>
+                          <LoadingSpinner
+                            size="sm"
+                            fullScreen={false}
+                            message=""
+                          />
+                        </div>
+                      )}
+                    </>
+                  ) : suggestions.length > 0 ? (
+                    /* Show all suggestions when ready or waiting */
+                    suggestions.map((suggestion, index) => (
+                      <div
+                        key={index}
+                        className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={`w-2 h-2 ${index === 0 ? "bg-red-500" : "bg-green-500"} rounded-full mt-2 flex-shrink-0`}
+                          ></div>
+                          <p className="text-md text-gray-300">{suggestion}</p>
+                        </div>
+                      </div>
+                    ))
                   ) : (
                     <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
                       <h4 className="font-bold text-gray-400">

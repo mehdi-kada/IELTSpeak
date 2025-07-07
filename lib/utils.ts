@@ -23,11 +23,11 @@ export const configureAssistant = () => {
         onNoPunctuationSeconds: 1.5,
         onNumberSeconds: 0.5,
       },
-      waitSeconds: 1,
+      waitSeconds: 0.6,
     },
 
-    firstMessage:
-      "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the IELTS  speaking test based on your level: {{level}}. I'll ask you questions and listen to your responses. Let's start with a quick introduction—what's your name?",
+    firstMessage: "hi there",
+    //"Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the IELTS  speaking test based on your level: {{level}}. I'll ask you questions and listen to your responses. Let's start with a quick introduction—what's your name?",
     //" hi there lets start our conversation , what is your name ? ",
 
     // Silence timeout configuration (in seconds)
@@ -48,8 +48,8 @@ export const configureAssistant = () => {
       similarityBoost: 0.2,
     },
     model: {
-      provider: "anthropic",
-      model: "claude-sonnet-4-20250514",
+      provider: "openai",
+      model: "gpt-4o",
       maxTokens: 500, // Control max tokens for AI responses
       temperature: 0.7, // Add some variability to responses
       messages: [

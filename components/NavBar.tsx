@@ -10,16 +10,17 @@ import { navItems } from "@/constants/constants";
 import { cn } from "@/lib/utils";
 import { LogoutButton } from "./logout-button";
 import { ContactModal } from "./ContactModal";
+import ProfileDropDown from "./ProfileDropDown";
 
 function NavBar() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [showContactModal, setShowContactModal] = useState(false);
+
   const userAvatar = useCurrentUserImage();
   const userName = useCurrentUserName();
   const path = usePathname();
   return (
     <>
-      <nav className="bg-[#2F2F7F]/70 backdrop-blur-md p-4 shadow-lg sticky top-0 z-40">
+      <nav className="bg-[#2F2F7F]/70 backdrop-blur-md p-4 shadow-lg sticky top-0 z-10">
         <div className="container mx-auto flex justify-between items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
@@ -76,45 +77,11 @@ function NavBar() {
             </button>
 
             {/* Profile Dropdown Menu */}
-            <div
-              className={`absolute top-full right-0 mt-3 w-48 bg-[#2a2a68] border border-white/10 rounded-lg shadow-xl z-50 transition-all duration-200 ${
-                isProfileMenuOpen
-                  ? "opacity-100 visible"
-                  : "opacity-0 invisible"
-              }`}
-            >
-              <div className="p-1">
-                <Link
-                  href="/profile"
-                  className="block w-full text-left px-4 py-2 text-gray-300 rounded-md hover:bg-[#E62136]/20 transition-colors duration-300"
-                >
-                  My Profile
-                </Link>
-
-                <button
-                  onClick={() => setShowContactModal(true)}
-                  className="block w-full text-left px-4 py-2 text-gray-300 rounded-md hover:bg-[#E62136]/20 transition-colors duration-300"
-                >
-                  Contact
-                </button>
-
-                <div className="border-t border-gray-600 my-1"></div>
-                <LogoutButton
-                  className={
-                    "block w-full text-left px-4 py-2 text-red-400 rounded-md hover:bg-[#E62136]/20 transition-colors duration-300"
-                  }
-                />
-              </div>
-            </div>
+            <ProfileDropDown isProfileMenuOpen={isProfileMenuOpen} />
           </div>
-
           {/* Contact Modal - Move outside the dropdown */}
         </div>
       </nav>
-      <ContactModal
-        isOpen={showContactModal}
-        onClose={() => setShowContactModal(false)}
-      />
     </>
   );
 }
