@@ -26,7 +26,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { profileValues, userProfileSchema } from "@/types/schemas";
 import { educationLevels, genders, hobbyOptions } from "@/constants/constants";
-import { insertProfileData } from "@/lib/actions";
+import { fetchUserProfileData, insertProfileData } from "@/lib/actions";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
@@ -55,14 +55,33 @@ export function ProfileForm({ userId }: { userId: string }) {
   });
 
   useEffect(() => {
-    try {
-      const savedProfile = localStorage.getItem(`${userId}_userProfile`);
-      if (savedProfile) {
-        const profileData = JSON.parse(savedProfile);
-        form.reset(profileData);
+    if (!userId) return; // Don't proceed without userId
+
+    const loadProfileData = async () => {
+      try {
+        const savedProfile = localStorage.getItem(`${userId}_userProfile`);
+        if (savedProfile) {
+          const profileDataLS = JSON.parse(savedProfile);
+          form.reset(profileDataLS);
+        } else {
+          // Fetch from database if no localStorage data
+          const profileDataDB = await fetchUserProfileData(userId);
+          if (profileDataDB) {
+            form.reset(profileDataDB);
+            // Save to localStorage for future use
+            localStorage.setItem(
+              `${userId}_userProfile`,
+              JSON.stringify(profileDataDB)
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error loading profile data:", error);
       }
-    } catch (error) {}
-  }, [form]);
+    };
+
+    loadProfileData();
+  }, [form, userId]);
 
   // New useEffect for toast
   useEffect(() => {
@@ -72,10 +91,9 @@ export function ProfileForm({ userId }: { userId: string }) {
       );
       toastShown.current = true;
     }
-  }, []); // Empty dependency array to run only once on mount
-  const onSubmit = async (data: profileValues) => {
-    // try to get data from local storage if it exists
+  }, []);
 
+  const onSubmit = async (data: profileValues) => {
     setIsSubmitting(true);
     try {
       // save in local storage
@@ -159,7 +177,11 @@ export function ProfileForm({ userId }: { userId: string }) {
                       </FormControl>
                       <SelectContent className="bg-[#1a1a3a] border border-white/20 text-white">
                         {educationLevels.map((l, index) => (
-                          <SelectItem className="hover:bg-white/10" key={index} value={l}>
+                          <SelectItem
+                            className="hover:bg-white/10"
+                            key={index}
+                            value={l}
+                          >
                             {l}
                           </SelectItem>
                         ))}
@@ -184,7 +206,11 @@ export function ProfileForm({ userId }: { userId: string }) {
                       </FormControl>
                       <SelectContent className="bg-[#1a1a3a] border border-white/20 text-white">
                         {genders.map((g, index) => (
-                          <SelectItem className="hover:bg-white/10" key={index} value={g}>
+                          <SelectItem
+                            className="hover:bg-white/10"
+                            key={index}
+                            value={g}
+                          >
                             {g}
                           </SelectItem>
                         ))}

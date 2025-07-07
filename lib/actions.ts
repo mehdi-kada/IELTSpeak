@@ -4,6 +4,7 @@ import { createClient } from "./supabase/server";
 import { checkUserPremiumStatus } from "./lemonsqueezy/subscription-helpers";
 import { sessionUpdateProps } from "@/types/types";
 import { profileValues } from "@/types/schemas";
+import { requiredFields } from "@/constants/constants";
 
 export const insertSession = async ({ level }: { level: string }) => {
   // get the user id insert it , return the session id for future update and redirect
@@ -35,20 +36,6 @@ export const insertSession = async ({ level }: { level: string }) => {
     );
   }
   // Check for missing fields
-  const requiredFields = [
-    "name",
-    "age",
-    "gender",
-    "hometown",
-    "country",
-    "occupation",
-    "education_level",
-    "favorite_subject",
-    "hobbies",
-    "travel_experience",
-    "favorite_food",
-    "life_goal",
-  ];
 
   const isProfileComplete = requiredFields.every(
     (field) =>
@@ -105,7 +92,6 @@ export const insertSession = async ({ level }: { level: string }) => {
   };
 };
 
-
 export const updateSession = async ({
   sessionId,
   ielts,
@@ -158,5 +144,37 @@ export const insertProfileData = async (
     }
   } catch (error) {
     console.log("error inserting data action");
+  }
+};
+
+export const fetchUserProfileData = async (
+  userId: string
+): Promise<profileValues | null> => {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("profiles")
+      .select(requiredFields.join(","))
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      // If no rows found, return null instead of throwing
+      if (error.code === "PGRST116") {
+        return null;
+      }
+      console.error("Database error fetching profile:", error.message);
+      return null;
+    }
+
+    // Ensure we have valid data before returning
+    if (!data) {
+      return null;
+    }
+
+    return data as unknown as profileValues;
+  } catch (error) {
+    console.error("Error fetching profile data from database:", error);
+    return null;
   }
 };

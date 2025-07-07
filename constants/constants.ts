@@ -77,7 +77,7 @@ User Profile Context:
     Favorite Food: ${profileData?.favorite_food || "Not provided"}
     Life Goals: ${profileData?.life_goal || "Not provided"}
 
-    only include the required info for the answer dont try to fit them all in one answer , and keep the answer short unless prompted otherwise 
+    only include the required info for the answer dont try to fit them all in one answer , and keep the answer short unless its the second part of the test
   `;
 };
 
@@ -105,3 +105,18 @@ export const educationLevels = [
 ];
 
 export const genders = ["Male", "Female", "Other"];
+
+export const requiredFields = [
+  "name",
+  "age",
+  "gender",
+  "hometown",
+  "country",
+  "occupation",
+  "education_level",
+  "favorite_subject",
+  "hobbies",
+  "travel_experience",
+  "favorite_food",
+  "life_goal",
+];

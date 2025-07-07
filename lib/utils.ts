@@ -41,12 +41,11 @@ export const configureAssistant = () => {
     },
 
     voice: {
-      provider: "playht",
-      voiceId: "melissa", // Using a valid voice ID from constants
-
+      provider: "11labs",
+      voiceId: "aTbnroHRGIomiKpqAQR8", // Using a valid voice ID from constants
       speed: 0.9,
-
-
+      stability: 0.3,
+      similarityBoost: 0.2,
     },
     model: {
       provider: "anthropic",

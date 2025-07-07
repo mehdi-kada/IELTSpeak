@@ -1,8 +1,10 @@
 "use client";
 import LoadingSpinner from "@/components/Loading";
 import { geminiPrompt } from "@/constants/constants";
+import { fetchUserProfileData } from "@/lib/actions";
 import { createClient } from "@/lib/supabase/client";
 import { configureAssistant } from "@/lib/utils";
+import { profileValues } from "@/types/schemas";
 import Vapi from "@vapi-ai/web";
 
 import { Metadata } from "next";
@@ -29,7 +31,6 @@ interface SavedMessage {
 let globalVapiInstance: Vapi | null = null;
 
 function Session() {
-  const [ended, setEnded] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
@@ -44,6 +45,9 @@ function Session() {
     "waiting" | "generating" | "ready"
   >("waiting");
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  const [profileData, setProfileData] = useState<profileValues | null>(null);
+
   const callStartRef = useRef(false);
   const vapiRef = useRef<Vapi | null>(null);
 
@@ -56,7 +60,6 @@ function Session() {
 
   // for updating session and processing conversation
   const [isSavingResults, setIsSavingResults] = useState(false);
-
   const sendCoversationToAPI = async () => {
     setIsSavingResults(true);
     try {
@@ -142,14 +145,23 @@ function Session() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt }),
         });
-        if (!res.ok) throw new Error("Bad status from suggestions API");
+        
+        console.log("Suggestions API response status:", res.status);
+        
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error("Suggestions API error:", errorText);
+          throw new Error(`Bad status from suggestions API: ${res.status}`);
+        }
 
         const reader = res.body!.getReader();
         const dec = new TextDecoder();
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          setStreamedResponse((r) => r + dec.decode(value, { stream: true }));
+          const chunk = dec.decode(value, { stream: true });
+          console.log("Received suggestion chunk:", chunk);
+          setStreamedResponse((r) => r + chunk);
         }
         setSuggestionStatus("ready");
       } catch (err) {
@@ -160,10 +172,46 @@ function Session() {
     generate();
   }, [prompt]);
 
+  //effect for getting profile data either from localstorage or database
+  useEffect(() => {
+    if (!userId) return;
+
+    const handleProfileData = async () => {
+      try {
+        const savedProfile = localStorage.getItem(`${userId}_userProfile`);
+        console.log("Saved profile from localStorage:", savedProfile);
+        
+        if (savedProfile) {
+          const profileData = JSON.parse(savedProfile);
+          console.log("Using cached profile data:", profileData);
+          setProfileData(profileData);
+        } else {
+          console.log("Fetching profile data from database for userId:", userId);
+          const profileData = await fetchUserProfileData(userId);
+          if (!profileData) {
+            console.log("No profile data found, redirecting to profile page");
+            window.location.href = "/profile?reason=empty";
+            return;
+          }
+          console.log("Profile data fetched from database:", profileData);
+          localStorage.setItem(
+            `${userId}_userProfile`,
+            JSON.stringify(profileData)
+          );
+          setProfileData(profileData);
+        }
+      } catch (error) {
+        console.error("Error handling profile data:", error);
+      }
+    };
+
+    handleProfileData();
+  }, [userId]);
+
   // Vapi setup + cleanup
   useEffect(() => {
     // first wait for the user id before initializing vapi
-    if (!userId) {
+    if (!userId || !profileData) {
       return;
     }
     let cancelled = false;
@@ -184,27 +232,25 @@ function Session() {
         setCallStatus(CallStatus.FINISHED);
       };
       const onMessage = (msg: any) => {
+        console.log("Received VAPI message:", msg);
         if (msg.type === "transcript" && msg.transcriptType === "final") {
           const m = { role: msg.role, content: msg.transcript };
+          console.log("Adding message to state:", m);
           setMessages((ms) => [...ms, m]);
 
           if (m.role === "assistant") {
             try {
-              const savedProfile = localStorage.getItem(
-                `${userId}_userProfile`
-              );
-              console.log(" the user profile data is : ", savedProfile);
-              if (savedProfile) {
-                const profileData = JSON.parse(savedProfile);
-                console.log(" the user profile data is : ", savedProfile);
+              if (profileData) {
+                console.log("Profile data available for suggestions:", profileData);
                 const newPrompt = geminiPrompt(level, m.content, profileData);
-                console.log(
-                  " the prompt sent to the gemini api for suggestions is : ",
-                  newPrompt
-                );
+                console.log("Generated prompt for suggestions:", newPrompt);
                 setPrompt(newPrompt);
+              } else {
+                console.log("Profile data not available yet for suggestions");
               }
-            } catch (error) {}
+            } catch (error) {
+              console.error("Error generating prompt for suggestions:", error);
+            }
           }
         }
       };
@@ -232,7 +278,7 @@ function Session() {
 
       // Kickoff
       const startCall = async () => {
-        if (callStartRef.current || ended) return;
+        if (callStartRef.current) return;
         callStartRef.current = true;
         setCallStatus(CallStatus.CONNECTING);
 
@@ -276,40 +322,33 @@ function Session() {
       }
       callStartRef.current = false;
     };
-  }, [level, sessionId, userId]);
+  }, [level, sessionId, userId, profileData]);
   const EndCall = async () => {
     console.log("Ending call with messages:", messages);
     setCallStatus(CallStatus.FINISHED);
-    setEnded(true);
+
     if (vapiRef.current) {
       vapiRef.current.stop();
       vapiRef.current = null;
       globalVapiInstance = null;
     }
 
-    setCallStatus(CallStatus.FINISHED);
     // Send messages to rating API before redirecting
     try {
-      if (messages.length > 5) {
+      if (messages.length > 0) {
         console.log("Sending evaluation request...");
         await sendCoversationToAPI();
         console.log("Evaluation completed successfully");
-        // redirect to results only if we have enough messages for AI processing
-        route.push(`/results/${sessionId}`);
       } else {
-        // redirect to too-short page if insufficient messages for AI processing
-        window.location.href = "/too-short";
-        return;
+        console.warn("No messages to evaluate");
       }
     } catch (error) {
       console.error("Failed to get evaluation:", error);
-      // Only redirect to results if we had enough messages, otherwise go to too-short
-      if (messages.length > 5) {
-        route.push(`/results/${sessionId}`);
-      } else {
-        window.location.href = "/too-short";
-      }
+      // Continue with redirect even if evaluation fails
     }
+
+    // redirect
+    route.push(`/results/${sessionId}`);
   };
 
   const toggleMicrophone = () => {
