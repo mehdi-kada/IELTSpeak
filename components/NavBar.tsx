@@ -20,7 +20,7 @@ function NavBar() {
   const path = usePathname();
   return (
     <>
-      <nav className="bg-[#2F2F7F]/70 backdrop-blur-md p-4 shadow-lg sticky top-0 z-10">
+      <nav className="bg-[#2F2F7F]/70 backdrop-blur-md p-4 shadow-lg sticky top-0 z-50">
         <div className="container mx-auto flex justify-between items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
