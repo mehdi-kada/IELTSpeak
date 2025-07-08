@@ -109,3 +109,14 @@ export interface sessionUpdateProps {
 }
 
 
+export interface PracticeSession {
+  id: string;
+  date: string;
+  level: string;
+  ieltsScore: number;
+  resultsUrl: string;
+}
+
+export interface PracticeHistoryProps {
+  sessions: PracticeSession[];
+}

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function ConversationTooShort() {
   return (
-    <main className="flex-grow flex flex-col items-center mt-8 sm:mt sm:justify-center p-4 text-center">
+    <main className="flex-grow flex flex-col items-center mt-8 p-4 text-center">
 
       <div className="w-24 h-24 bg-[#2F2F7F]/50 rounded-full flex items-center justify-center border-2 border-dashed border-white/20 mb-8">
         <svg

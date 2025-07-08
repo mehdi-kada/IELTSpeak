@@ -17,22 +17,15 @@ export const configureAssistant = () => {
       // Enable Fourier Denoising (optional)
     },
 
-    startSpeakingPlan: {
-      transcriptionEndpointingPlan: {
-        onPunctuationSeconds: 0.1,
-        onNoPunctuationSeconds: 1.5,
-        onNumberSeconds: 0.5,
-      },
-      waitSeconds: 0.6,
-    },
+    
 
     firstMessage: 
-    "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the IELTS  speaking test based on your level: {{level}}. I'll ask you questions and listen to your responses. Let's start with a quick introduction—what's your name?",
+    "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the International English Language speaking test based on your level: {{level}}. I'll ask you questions and listen to your responses. Let's start with a quick introduction—what's your name?",
     //" hi there lets start our conversation , what is your name ? ",
 
     // Silence timeout configuration (in seconds)
     silenceTimeoutSeconds: 120, // How long to wait for user speech before timing out
-    maxDurationSeconds: 900, // Maximum call duration (30 minutes)
+    maxDurationSeconds: 900, // Maximum call duration (18 minutes)
 
     transcriber: {
       provider: "11labs",
@@ -44,7 +37,7 @@ export const configureAssistant = () => {
       provider: "11labs",
       voiceId: "aTbnroHRGIomiKpqAQR8", // Using a valid voice ID from constants
       speed: 0.9,
-      stability: 0.3,
+      stability: 0.4,
       similarityBoost: 0.2,
     },
     model: {

@@ -1,16 +1,6 @@
+import { PracticeHistoryProps } from "@/types/types";
 import Link from "next/link";
 
-interface PracticeSession {
-  id: string;
-  date: string;
-  level: string;
-  ieltsScore: number;
-  resultsUrl: string;
-}
-
-interface PracticeHistoryProps {
-  sessions: PracticeSession[];
-}
 
 export function PracticeHistory({ sessions }: PracticeHistoryProps) {
   return (
