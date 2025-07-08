@@ -20,14 +20,14 @@ export function SubscriptionCard({
   variantId,
   isPopular,
 }: SubscriptionCardProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
   // Keep empty dependency array
 
   const handleSubscribe = async () => {
-    setIsLoading(true);
+    setLoading(true);
     try {
       const response = await fetch("/api/subscriptions/create-checkout", {
         method: "POST",
@@ -46,7 +46,7 @@ export function SubscriptionCard({
       console.error("Error creating checkout:", error);
       alert("Failed to start checkout process. Please try again.");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
   return (
@@ -103,8 +103,8 @@ export function SubscriptionCard({
       <CardFooter className="flex-col gap-2">
         <button
           onClick={handleSubscribe}
-          disabled={true} // replace with loading
-          className={`w-full font-bold py-3 px-6 rounded-lg transition-colors cursor-not-allowed ${
+          disabled={loading}
+          className={`w-full font-bold py-3 px-6 rounded-lg transition-colors ${loading ? "cursor-not-allowed" : ""} ${
             isPopular
               ? "bg-red-600/20 hover:shadow-md hover:shadow-red-600/50"
               : "bg-white/20 hover:bg-white/20"

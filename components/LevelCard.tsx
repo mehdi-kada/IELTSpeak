@@ -1,7 +1,7 @@
 "use client";
 import { insertSession } from "@/lib/actions";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 interface cardProps {
   level: string;
@@ -11,10 +11,11 @@ interface cardProps {
 
 function LevelCard({ level, title, description }: cardProps) {
   const router = useRouter();
-
+  const [loading, setLoading] = useState(false);
 
   // Use client-side navigation instead of server action redirect
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       const result = await insertSession({ level });
       console.log("Session result:", result); // Add this debug log
@@ -31,7 +32,7 @@ function LevelCard({ level, title, description }: cardProps) {
   };
 
   return (
-    <div className="group relative bg-[#2F2F7F]/50 border space-y-8 sm:space-y-0 border-white/10 p-6 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:border-[#E62136]">
+    <div className="group relative bg-[#2F2F7F]/50 border space-y-12 sm:space-y-0 border-white/10 p-6 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:border-[#E62136]">
       <div className="relative z-10 pointer-events-none ">
         <h3 className="text-4xl font-black text-[#E62136]">{level}</h3>
         <h4 className="font-bold text-2xl mb-2 mt-2 text-white">{title}</h4>
@@ -42,10 +43,11 @@ function LevelCard({ level, title, description }: cardProps) {
       <div className="absolute inset-0 p-8 flex flex-col justify-end items-center opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
         <div className="flex flex-col gap-4 w-full">
           <button
+            disabled={loading}
             onClick={() => handleSubmit()}
-            className="w-full text-center  bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-3 px-4 rounded-lg"
+            className={`w-full text-center ${loading ? "bg-red-600/20" : "bg-[#E62136]"} bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-3 px-4 rounded-lg`}
           >
-            Start Session
+            {loading ? "Starting Session..." : "Start Session"}
           </button>
         </div>
       </div>

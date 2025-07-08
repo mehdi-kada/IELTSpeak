@@ -47,11 +47,15 @@ function Session() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
-
   const [profileData, setProfileData] = useState<profileValues | null>(null);
+
+  // Better state management for session lifecycle
+  const [isSessionEnding, setIsSessionEnding] = useState(false);
+  const [canEndSession, setCanEndSession] = useState(false);
 
   const callStartRef = useRef(false);
   const vapiRef = useRef<Vapi | null>(null);
+  const isComponentMountedRef = useRef(true);
 
   const params = useParams();
   const searchParams = useSearchParams();
@@ -238,28 +242,55 @@ function Session() {
 
   // Vapi setup + cleanup
   useEffect(() => {
+    // Set component as mounted
+    isComponentMountedRef.current = true;
+
     // first wait for the user id before initializing vapi
-    if (!userId || !profileData) {
+    if (!userId || !profileData || isSessionEnding) {
       return;
     }
+
     let cancelled = false;
     let vapi: Vapi | null = null;
 
     if (globalVapiInstance || vapiRef.current) return;
     callStartRef.current = false;
+
     const init = async () => {
       await new Promise((r) => setTimeout(r, 100));
-      if (cancelled || globalVapiInstance || vapiRef.current) return;
+      if (
+        cancelled ||
+        globalVapiInstance ||
+        vapiRef.current ||
+        isSessionEnding ||
+        !isComponentMountedRef.current
+      )
+        return;
 
       vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY!);
       vapiRef.current = vapi;
-      globalVapiInstance = vapi; // Define handlers
-      const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
+      globalVapiInstance = vapi;
+
+      // Mark that we can now safely end the session
+      setCanEndSession(true);
+
+      // Define handlers
+      const onCallStart = () => {
+        if (isComponentMountedRef.current && !isSessionEnding) {
+          setCallStatus(CallStatus.ACTIVE);
+        }
+      };
+
       const onCallEnd = () => {
         console.log("call ended");
-        setCallStatus(CallStatus.FINISHED);
+        if (isComponentMountedRef.current) {
+          setCallStatus(CallStatus.FINISHED);
+        }
       };
+
       const onMessage = (msg: any) => {
+        if (!isComponentMountedRef.current || isSessionEnding) return;
+
         console.log("Received VAPI message:", msg);
         if (msg.type === "transcript" && msg.transcriptType === "final") {
           const m = { role: msg.role, content: msg.transcript };
@@ -285,6 +316,7 @@ function Session() {
           }
         }
       };
+
       const onError = (err: any) => {
         console.error("Vapi SDK error event:", {
           err,
@@ -294,10 +326,22 @@ function Session() {
           code: err?.code,
           info: err?.info,
         });
-        setCallStatus(CallStatus.INACTIVE);
+        if (isComponentMountedRef.current && !isSessionEnding) {
+          setCallStatus(CallStatus.INACTIVE);
+        }
       };
-      const onSpeechStart = () => setIsSpeaking(true);
-      const onSpeechEnd = () => setIsSpeaking(false);
+
+      const onSpeechStart = () => {
+        if (isComponentMountedRef.current && !isSessionEnding) {
+          setIsSpeaking(true);
+        }
+      };
+
+      const onSpeechEnd = () => {
+        if (isComponentMountedRef.current && !isSessionEnding) {
+          setIsSpeaking(false);
+        }
+      };
 
       // Attach handlers
       vapi.on("call-start", onCallStart);
@@ -309,7 +353,12 @@ function Session() {
 
       // Kickoff
       const startCall = async () => {
-        if (callStartRef.current) return;
+        if (
+          callStartRef.current ||
+          isSessionEnding ||
+          !isComponentMountedRef.current
+        )
+          return;
         callStartRef.current = true;
         setCallStatus(CallStatus.CONNECTING);
 
@@ -326,7 +375,9 @@ function Session() {
             stack: err?.stack,
             ...err,
           });
-          setCallStatus(CallStatus.INACTIVE);
+          if (isComponentMountedRef.current && !isSessionEnding) {
+            setCallStatus(CallStatus.INACTIVE);
+          }
           callStartRef.current = false;
         }
       };
@@ -339,6 +390,8 @@ function Session() {
 
     return () => {
       cancelled = true;
+      isComponentMountedRef.current = false;
+
       const v = vapiRef.current;
       if (v) {
         try {
@@ -352,40 +405,56 @@ function Session() {
         globalVapiInstance = null;
       }
       callStartRef.current = false;
+      setCanEndSession(false);
     };
-  }, [level, sessionId, userId, profileData]);
+  }, [level, sessionId, userId, profileData, isSessionEnding]);
+
   const EndCall = async () => {
+    // Prevent multiple calls
+    if (isSessionEnding) return;
+
     console.log("Ending call with messages:", messages);
+    setIsSessionEnding(true);
     setCallStatus(CallStatus.FINISHED);
 
+    // Safely stop Vapi if it exists
     if (vapiRef.current) {
-      vapiRef.current.stop();
+      try {
+        vapiRef.current.stop();
+      } catch (error) {
+        console.error("Error stopping Vapi during EndCall:", error);
+      }
       vapiRef.current = null;
       globalVapiInstance = null;
     }
 
-    // Send messages to rating API before redirecting
     try {
-      if (messages.length > 0) {
+      if (messages.length > 5) {
         console.log("Sending evaluation request...");
         await sendCoversationToAPI();
         console.log("Evaluation completed successfully");
+        // redirect to results only if we have enough messages for AI processing
+        route.push(`/results/${sessionId}`);
       } else {
-        console.warn("No messages to evaluate");
+        // redirect to too-short page if insufficient messages for AI processing
+        window.location.href = "/too-short";
+        return;
       }
     } catch (error) {
       console.error("Failed to get evaluation:", error);
-      // Continue with redirect even if evaluation fails
+      // Only redirect to results if we had enough messages, otherwise go to too-short
+      if (messages.length > 5) {
+        route.push(`/results/${sessionId}`);
+      } else {
+        window.location.href = "/too-short";
+      }
     }
-
-    // redirect
-    route.push(`/results/${sessionId}`);
   };
 
   const toggleMicrophone = () => {
     // Check if Vapi instance exists and is ready
-    if (!vapiRef.current) {
-      console.warn("Vapi instance not available yet");
+    if (!vapiRef.current || isSessionEnding) {
+      console.warn("Vapi instance not available or session is ending");
       return;
     }
 
@@ -395,7 +464,6 @@ function Session() {
       setIsMuted(!muted);
     } catch (error) {
       console.error("Error toggling microphone:", error);
-      // Optionally show user feedback here
     }
   };
 
@@ -417,15 +485,23 @@ function Session() {
           <div className="flex items-center">
             <button
               onClick={toggleMicrophone}
-              disabled={!vapiRef.current || callStatus === CallStatus.INACTIVE}
+              disabled={
+                !vapiRef.current ||
+                callStatus === CallStatus.INACTIVE ||
+                isSessionEnding
+              }
               className={`${isMuted ? "bg-red-600" : "bg-white/10"} ${
-                !vapiRef.current || callStatus === CallStatus.INACTIVE
+                !vapiRef.current ||
+                callStatus === CallStatus.INACTIVE ||
+                isSessionEnding
                   ? "opacity-50 cursor-not-allowed"
                   : "hover:bg-white/20"
               } p-2 rounded-full transition-colors`}
               aria-label="Mute Microphone"
               title={
-                !vapiRef.current || callStatus === CallStatus.INACTIVE
+                !vapiRef.current ||
+                callStatus === CallStatus.INACTIVE ||
+                isSessionEnding
                   ? "Microphone will be available when session starts"
                   : isMuted
                     ? "Unmute microphone"
@@ -481,10 +557,10 @@ function Session() {
 
           <button
             onClick={EndCall}
-            disabled={isSavingResults}
+            disabled={isSavingResults || isSessionEnding}
             className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed transition-colors text-white font-bold py-2 px-2 md:px-4 rounded-lg flex items-center gap-2 text-sm md:text-base"
           >
-            {isSavingResults ? (
+            {isSavingResults || isSessionEnding ? (
               <>
                 <span>Processing... </span>
               </>

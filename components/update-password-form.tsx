@@ -25,7 +25,7 @@ export function UpdatePasswordForm({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleForgotPassword = async (e: React.FormEvent) => {
@@ -38,7 +38,7 @@ export function UpdatePasswordForm({
     }
 
     const supabase = createClient();
-    setIsLoading(true);
+    setLoading(true);
 
     try {
       const { error } = await supabase.auth.updateUser({ password });
@@ -47,7 +47,7 @@ export function UpdatePasswordForm({
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -116,9 +116,9 @@ export function UpdatePasswordForm({
               <Button
                 type="submit"
                 className="w-full bg-red-600 hover:shadow-md hover:shadow-red-800"
-                disabled={isLoading}
+                disabled={loading}
               >
-                {isLoading ? "Saving..." : "Save new password"}
+                {loading ? "Saving..." : "Save new password"}
               </Button>
             </div>
           </form>

@@ -12,12 +12,12 @@ export function ForgotPasswordForm({
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     const supabase = createClient();
-    setIsLoading(true);
+    setLoading(true);
     setError(null);
 
     try {
@@ -29,7 +29,7 @@ export function ForgotPasswordForm({
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -86,10 +86,10 @@ export function ForgotPasswordForm({
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={loading}
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1a1a3a] focus:ring-[#E62136] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? "Sending..." : "Send Password Reset Link"}
+                {loading ? "Sending..." : "Send Password Reset Link"}
               </button>
             </div>
           </form>

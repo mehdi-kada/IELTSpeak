@@ -14,13 +14,13 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     const supabase = createClient();
-    setIsLoading(true);
     setError(null);
 
     try {
@@ -32,15 +32,13 @@ export function LoginForm({
       router.push("/dashboard");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleSocialLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const supabase = createClient();
-    setIsLoading(true);
+    setLoading(true);
     setError(null);
 
     try {
@@ -54,7 +52,7 @@ export function LoginForm({
       if (error) throw error;
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -119,10 +117,10 @@ export function LoginForm({
           <div>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={loading}
               className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1a1a3a] focus:ring-[#E62136] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Signing in..." : "Sign in"}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </div>
         </form>
@@ -139,7 +137,7 @@ export function LoginForm({
           <button
             type="button"
             onClick={handleSocialLogin}
-            disabled={isLoading}
+            disabled={loading}
             className="w-full flex items-center justify-center py-3 px-4 border border-white/20 rounded-lg shadow-sm text-sm font-medium text-white bg-[#2F2F7F] hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1a1a3a] focus:ring-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg
