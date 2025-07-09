@@ -57,7 +57,7 @@ function NavBar() {
               {userAvatar ? (
                 <CurrentUserAvatar />
               ) : (
-                <div className="h-10 w-10 rounded-full bg-blue-900/50 border-2 border-[#E62136] flex items-center justify-center">
+                <div className="h-10 w-10 rounded-full bg-blue-900/50 shadow-md border-2 border-[#E62136] flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6 text-gray-400"
@@ -78,8 +78,10 @@ function NavBar() {
 
             {/* Profile Dropdown Menu */}
             <div
-              className={`absolute top-full right-0 mt-3 w-48 bg-[#2F2F7F]/70 backdrop-blur-md border  border-white/10 rounded-lg shadow-xl z-50 transition-all duration-200 ${
-                isProfileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+              className={`absolute top-full right-0 mt-3 w-48 bg-[#2F2F7F] border border-white/10 rounded-lg shadow-xl z-50 transition-all duration-200 ${
+                isProfileMenuOpen
+                  ? "opacity-100 visible "
+                  : "opacity-0 invisible"
               }`}
             >
               <div className="p-1">
@@ -106,7 +108,6 @@ function NavBar() {
               </div>
             </div>
           </div>
-          {/* Contact Modal - Move outside the dropdown */}
         </div>
       </nav>
       <ContactModal

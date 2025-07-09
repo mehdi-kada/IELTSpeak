@@ -13,12 +13,11 @@ function LevelCard({ level, title, description }: cardProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  // Use client-side navigation instead of server action redirect
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
       const result = await insertSession({ level });
-      console.log("Session result:", result); // Add this debug log
       if (result?.redirect) {
         router.push(result.redirect);
         return;
@@ -45,7 +44,12 @@ function LevelCard({ level, title, description }: cardProps) {
           <button
             disabled={loading}
             onClick={() => handleSubmit()}
-            className={`w-full text-center ${loading ? "bg-red-600/20" : "bg-[#E62136]"} bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-3 px-4 rounded-lg`}
+            className={`w-full text-center font-bold py-3 px-4 rounded-lg transition-all duration-200
+              ${
+                loading
+                  ? "bg-red-600/20 text-gray-600 cursor-not-allowed"
+                  : "bg-[#E62136] text-white hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px"
+              }`}
           >
             {loading ? "Starting Session..." : "Start Session"}
           </button>

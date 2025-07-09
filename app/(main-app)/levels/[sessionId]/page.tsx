@@ -1,5 +1,9 @@
 "use client";
 import LoadingSpinner from "@/components/Loading";
+import AIAgentStatus from "@/components/session/AIAgentStatus";
+import MessageList from "@/components/session/MessageList";
+import SessionNavigation from "@/components/session/SessionNav";
+import SuggestionsList from "@/components/session/SuggestionList";
 import { geminiPrompt } from "@/constants/constants";
 import { fetchUserProfileData } from "@/lib/actions";
 import { createClient } from "@/lib/supabase/client";
@@ -11,10 +15,6 @@ import { Metadata } from "next";
 import { useParams, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
-const metadata: Metadata = {
-  title: "Session",
-};
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -45,7 +45,7 @@ function Session() {
     "waiting" | "generating" | "ready"
   >("waiting");
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null!) as React.RefObject<HTMLDivElement>;
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
   const [profileData, setProfileData] = useState<profileValues | null>(null);
 
@@ -250,12 +250,7 @@ function Session() {
 
     const init = async () => {
       await new Promise((r) => setTimeout(r, 100));
-      if (
-        cancelled ||
-        globalVapiInstance ||
-        vapiRef.current
-      )
-        return;
+      if (cancelled || globalVapiInstance || vapiRef.current) return;
 
       vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY!);
       vapiRef.current = vapi;
@@ -441,127 +436,25 @@ function Session() {
   return (
     <div className="bg-[#1a1a3a] text-white flex flex-col h-screen overflow-hidden">
       {/* Session Navigation */}
-      <nav className="bg-[#2F2F7F] z-5 p-4  shadow-lg flex-shrink-0">
-        <div className="container mx-auto flex justify-between items-center">
-          {/* Mute button replaces logo on all screens */}
-          <div className="flex items-center">
-            <button
-              onClick={toggleMicrophone}
-              disabled={
-                !vapiRef.current ||
-                callStatus === CallStatus.INACTIVE
-              }
-              className={`${isMuted ? "bg-red-600" : "bg-white/10"} ${
-                !vapiRef.current ||
-                callStatus === CallStatus.INACTIVE
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-white/20"
-              } p-2 rounded-full transition-colors`}
-              aria-label="Mute Microphone"
-              title={
-                !vapiRef.current ||
-                callStatus === CallStatus.INACTIVE
-                  ? "Microphone will be available when session starts"
-                  : isMuted
-                    ? "Unmute microphone"
-                    : "Mute microphone"
-              }
-            >
-              {isMuted ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  {/* Microphone paths */}
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
-                  />
-                  {/* Diagonal slash */}
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 3l18 18"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
-                  />
-                </svg>
-              )}
-            </button>
-          </div>
+      <SessionNavigation
+        isMuted={isMuted}
+        callStatus={callStatus}
+        level={level}
+        isSavingResults={isSavingResults}
+        onToggleMicrophone={toggleMicrophone}
+        onEndCall={EndCall}
+        vapiRef={vapiRef}
+      />
 
-          <div className="absolute left-1/2 transform -translate-x-1/2 ">
-            <span className="font-semibold text-sm md:text-lg  ">
-              IELTS Speaking {level}
-            </span>
-          </div>
-
-          <button
-            onClick={EndCall}
-            disabled={isSavingResults}
-            className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed transition-colors text-white font-bold py-2 px-2 md:px-4 rounded-lg flex items-center gap-2 text-sm md:text-base"
-          >
-            {isSavingResults ? (
-              <>
-                <span>Processing... </span>
-              </>
-            ) : (
-              <>
-                <span>End Session</span>
-              </>
-            )}
-          </button>
-        </div>
-      </nav>
-
-      {/* Rest of your existing JSX remains exactly the same... */}
       {/* Main Content Area */}
       <div className="flex-grow flex flex-col overflow-hidden">
         {/* Top Section: AI Agent Status */}
-        <div className="h-1/4 min-h-[200px] flex-shrink-0 bg-[#2F2F7F]/30 p-4 text-center flex flex-col items-center justify-center border-b border-white/10 relative">
-          <div className="relative inline-flex items-center justify-center w-28 h-28 mx-auto">
-            <div
-              className={`absolute w-full h-full bg-[#E62136]/50 rounded-full ${
-                isSpeaking ? "animate-pulse" : ""
-              }`}
-            ></div>
-            <div className="relative w-24 h-24 bg-[#1a1a3a] rounded-full flex items-center justify-center">
-              <p className="font-bold text-2xl text-[#E62136]">{level}</p>
-            </div>
-          </div>
-          <p className="text-xl font-bold mt-4">
-            {callStatus === CallStatus.CONNECTING
-              ? "Connecting..."
-              : callStatus === CallStatus.ACTIVE
-                ? isSpeaking
-                  ? "AI is speaking"
-                  : "Your turn to speak"
-                : callStatus === CallStatus.FINISHED
-                  ? "Session ended"
-                  : "Ready to start"}
-          </p>
-          <p className="text-gray-400 text-sm">
-            Session Timer: {formatTime(sessionTime)}
-          </p>
-        </div>
+        <AIAgentStatus
+          callStatus={callStatus}
+          isSpeaking={isSpeaking}
+          level={level}
+          sessionTime={sessionTime}
+        />
 
         {/* Bottom Section: Suggestions and Transcript */}
         <div className="flex-grow flex flex-col sm:flex-row overflow-hidden">
@@ -607,75 +500,11 @@ function Session() {
                   ref={suggestionsContainerRef}
                   className="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-grow"
                 >
-                  {suggestionStatus === "waiting" ? (
-                    <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
-                      <h4 className="font-bold text-gray-400 mb-2">
-                        Waiting for conversation to start...
-                      </h4>
-                      <p className="text-sm text-gray-500">
-                        Once the conversation starts you will get suggestions on
-                        what to say next
-                      </p>
-                    </div>
-                  ) : suggestionStatus === "generating" ? (
-                    <>
-                      {/* Show current streaming suggestion if available */}
-                      {!streamedResponse &&
-                        suggestionStatus === "generating" && (
-                          <LoadingSpinner
-                            size="sm"
-                            fullScreen={false}
-                            message=""
-                          />
-                        )}
-                      {streamedResponse && (
-                        <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-red-600 transition-colors">
-                          <div className="flex items-start gap-3">
-                            <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
-                            <p className="text-md text-gray-300">
-                              {streamedResponse}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                      {/* Show previous suggestions */}
-                      {suggestions.map((suggestion, index) => (
-                        <div
-                          key={index}
-                          className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors"
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                            <p className="text-md text-gray-300">
-                              {suggestion}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                      {/* Show generating indicator if no streaming response yet */}
-                    </>
-                  ) : suggestions.length > 0 ? (
-                    /* Show all suggestions when ready or waiting */
-                    suggestions.map((suggestion, index) => (
-                      <div
-                        key={index}
-                        className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div
-                            className={`w-2 h-2 ${index === 0 ? "bg-red-500" : "bg-green-500"} rounded-full mt-2 flex-shrink-0`}
-                          ></div>
-                          <p className="text-md text-gray-300">{suggestion}</p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
-                      <h4 className="font-bold text-gray-400">
-                        No suggestions available
-                      </h4>
-                    </div>
-                  )}
+                  <SuggestionsList
+                    suggestionStatus={suggestionStatus}
+                    suggestions={suggestions}
+                    streamedResponse={streamedResponse}
+                  />
                 </div>
               </div>
             </div>
@@ -685,76 +514,10 @@ function Session() {
               <h2 className="text-xl font-bold mb-4 flex-shrink-0">
                 Live Transcript
               </h2>
-              <div
-                ref={messagesContainerRef}
-                className="flex-grow overflow-y-auto pr-4 space-y-6 custom-scrollbar"
-              >
-                {messages.length === 0 ? (
-                  <div className="text-center text-gray-400 mt-8">
-                    <p>
-                      Conversation will appear here once the session starts...
-                    </p>
-                  </div>
-                ) : (
-                  messages
-                    .slice()
-                    .reverse()
-                    .map((message, index) => (
-                      <div
-                        key={index}
-                        className={`flex items-start gap-4 ${
-                          message.role === "user" ? "justify-end" : ""
-                        }`}
-                      >
-                        {message.role === "assistant" && (
-                          <div className="flex-shrink-0 h-10 w-10 bg-[#1a1a3a] rounded-full flex items-center justify-center border border-[#E62136]">
-                            <svg
-                              className="mx-auto h-6 w-6 text-red-500"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
-                              />
-                            </svg>
-                          </div>
-                        )}
-                        <div
-                          className={`p-4 max-w-xl ${
-                            message.role === "assistant"
-                              ? "bg-[#2F2F7F] rounded-r-xl rounded-bl-xl"
-                              : "bg-[#E62136] rounded-l-xl rounded-br-xl"
-                          }`}
-                        >
-                          <p>{message.content}</p>
-                        </div>
-                        {message.role === "user" && (
-                          <div className="flex-shrink-0 h-10 w-10 bg-gray-700 rounded-full flex items-center justify-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-6 w-6 text-gray-400"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                              />
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-                    ))
-                )}
-              </div>
+              <MessageList
+                messages={messages}
+                messagesContainerRef={messagesContainerRef}
+              />
             </div>
           </div>
 

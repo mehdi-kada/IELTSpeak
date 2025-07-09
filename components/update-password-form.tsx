@@ -55,12 +55,12 @@ export function UpdatePasswordForm({
     <div className={cn("flex flex-col gap-6 ", className)} {...props}>
       <div className="flex items-center justify-center mb-2 gap-1">
         <Link href="/">
-          <h1 className="text-4xl text-center font-bold">IELTSpeak</h1>
+          <h1 className="text-4xl text-center font-bold text-red-600">IELTSpeak</h1>
         </Link>
       </div>
       <Card className="bg-[#2F2F7F]/70 backdrop-blur-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-red-600">
+          <CardTitle className="text-2xl text-white">
             Reset Your Password
           </CardTitle>
           <CardDescription>
