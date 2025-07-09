@@ -4,402 +4,85 @@ import AIAgentStatus from "@/components/session/AIAgentStatus";
 import MessageList from "@/components/session/MessageList";
 import SessionNavigation from "@/components/session/SessionNav";
 import SuggestionsList from "@/components/session/SuggestionList";
-import { geminiPrompt } from "@/constants/constants";
-import { fetchUserProfileData } from "@/lib/actions";
-import { createClient } from "@/lib/supabase/client";
-import { configureAssistant } from "@/lib/utils";
-import { profileValues } from "@/types/schemas";
-import Vapi from "@vapi-ai/web";
-
-import { Metadata } from "next";
+import { useAuth } from "@/hooks/sessions/useAuth";
+import { useUserProfile } from "@/hooks/sessions/useProfileData";
+import { useSessionRating } from "@/hooks/sessions/useSessionRating";
+import { useSessionTimer } from "@/hooks/sessions/useSessionTimer";
+import { useSuggestions } from "@/hooks/sessions/useSuggestions";
+import { useVapi } from "@/hooks/sessions/useVapi";
 import { useParams, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-
-enum CallStatus {
-  INACTIVE = "INACTIVE",
-  CONNECTING = "CONNECTING",
-  ACTIVE = "ACTIVE",
-  FINISHED = "FINISHED",
-}
-
-interface SavedMessage {
-  role: string;
-  content: string;
-}
-
-let globalVapiInstance: Vapi | null = null;
+import { useEffect, useRef, useState, useCallback } from "react";
 
 function Session() {
-  const [userId, setUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [messages, setMessages] = useState<SavedMessage[]>([]);
-  const [isMuted, setIsMuted] = useState(false);
-  const [sessionTime, setSessionTime] = useState(0);
-  const [prompt, setPrompt] = useState("");
-  const [streamedResponse, setStreamedResponse] = useState("");
   const [suggestionsVisible, setSuggestionsVisible] = useState(true);
-  const [suggestionStatus, setSuggestionStatus] = useState<
-    "waiting" | "generating" | "ready"
-  >("waiting");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const messagesContainerRef = useRef<HTMLDivElement>(null!) as React.RefObject<HTMLDivElement>;
-  const suggestionsContainerRef = useRef<HTMLDivElement>(null);
-  const [profileData, setProfileData] = useState<profileValues | null>(null);
-
-  const callStartRef = useRef(false);
-  const vapiRef = useRef<Vapi | null>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(
+    null!
+  ) as React.RefObject<HTMLDivElement>;
+  const suggestionsContainerRef = useRef<HTMLDivElement>(
+    null!
+  ) as React.RefObject<HTMLDivElement>;
 
   const params = useParams();
   const searchParams = useSearchParams();
   const sessionId = params.sessionId as string;
-  const level = searchParams.get("level") || "1";
-
+  const level = searchParams.get("level") || "6.5";
   const route = useRouter();
 
+  // get the user id
+  const { userId, loading: authLoading, error: authError } = useAuth();
+  
+  // getting profile data either from localstorage or database
+  const {
+    profileData,
+    loading: profileDataLoading,
+    error,
+  } = useUserProfile(userId);
+
   // for updating session and processing conversation
-  const [isSavingResults, setIsSavingResults] = useState(false);
-  const sendCoversationToAPI = async () => {
-    setIsSavingResults(true);
-    try {
-      console.log("Sending messages to rating API:", messages);
+  const { isSavingResults, sendConversationToAPI } = useSessionRating();
+  // streamed suggestions from gemini , use the function inside the messages webhook
+  const {
+    suggestions,
+    streamedResponse,
+    suggestionStatus,
+    generateSuggestion,
+  } = useSuggestions();
 
-      const res = await fetch(`/api/rating/${sessionId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: messages,
-          level: level,
-        }),
-      });
+  // Vapi setup + cleanup
+  const {
+    callStatus,
+    isSpeaking,
+    messages,
+    isMuted,
+    loading: vapiLoading,
+    vapiRef,
+    toggleMicrophone,
+    endCall,
+  } = useVapi(userId, profileData, level, sessionId, generateSuggestion);
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("API Error Response:", errorText);
-        throw new Error(
-          `API responded with status ${res.status}: ${errorText}`
-        );
-      }
-
-      const result = await res.json();
-      console.log("Rating API response:", result);
-
-      // Store result for results page
-      localStorage.setItem(`evaluation_${sessionId}`, JSON.stringify(result));
-
-      return result;
-    } catch (error) {
-      console.error("Error sending messages to rating api:", error);
-      throw error;
-    } finally {
-      setIsSavingResults(false);
-    }
-  };
-
-  // get the user id for localstorage fetch
-  useEffect(() => {
-    const getUserId = async () => {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        setUserId(user.id);
-      }
-    };
-    getUserId();
-  }, []);
-
-  // Timer
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (callStatus === CallStatus.ACTIVE) {
-      interval = setInterval(() => setSessionTime((s) => s + 1), 1000);
-    }
-    return () => clearInterval(interval);
-  }, [callStatus]);
-
-  // Auto‑scroll transcript
+  const sessionTime = useSessionTimer(callStatus);
+  // ref for scrolling to the top of the messages
   useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = 0;
     }
   }, [messages]);
 
-  // Streamed suggestions
-  useEffect(() => {
-    if (!prompt) {
-      setSuggestionStatus("waiting");
-      return;
-    }
-
-    const generate = async () => {
-      setSuggestionStatus("generating");
-      setStreamedResponse("");
-      try {
-        const res = await fetch("/api/suggestions", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt }),
-        });
-
-        console.log("Suggestions API response status:", res.status);
-
-        if (!res.ok) {
-          const errorText = await res.text();
-          console.error("Suggestions API error:", errorText);
-          throw new Error(`Bad status from suggestions API: ${res.status}`);
-        }
-
-        const reader = res.body!.getReader();
-        const dec = new TextDecoder();
-        let fullResponse = "";
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = dec.decode(value, { stream: true });
-          fullResponse += chunk;
-          console.log("Received suggestion chunk:", chunk);
-          setStreamedResponse(fullResponse);
-        }
-
-        // Add completed suggestion to the top of suggestions array
-        if (fullResponse.trim()) {
-          console.log("Adding suggestion to array:", fullResponse.trim());
-          setSuggestions((prev) => {
-            const newSuggestions = [fullResponse.trim(), ...prev];
-            console.log("Updated suggestions array:", newSuggestions);
-            return newSuggestions;
-          });
-        }
-
-        // Clear the streamed response since it's now in the suggestions array
-        setStreamedResponse("");
-        setSuggestionStatus("ready");
-        console.log("Suggestions generation completed");
-      } catch (err) {
-        console.error("Suggestions error:", err);
-        setSuggestionStatus("waiting");
-      }
-    };
-    generate();
-  }, [prompt]);
-
-  // Auto-scroll suggestions to top when new suggestion is added
-  useEffect(() => {
-    if (suggestionsContainerRef.current && suggestions.length > 0) {
-      suggestionsContainerRef.current.scrollTop = 0;
-    }
-  }, [suggestions]);
-
-  //effect for getting profile data either from localstorage or database
-  useEffect(() => {
-    if (!userId) return;
-
-    const handleProfileData = async () => {
-      try {
-        const savedProfile = localStorage.getItem(`${userId}_userProfile`);
-        console.log("Saved profile from localStorage:", savedProfile);
-
-        if (savedProfile) {
-          const profileData = JSON.parse(savedProfile);
-          console.log("Using cached profile data:", profileData);
-          setProfileData(profileData);
-        } else {
-          console.log(
-            "Fetching profile data from database for userId:",
-            userId
-          );
-          const profileData = await fetchUserProfileData(userId);
-          if (!profileData) {
-            console.log("No profile data found, redirecting to profile page");
-            window.location.href = "/profile?reason=empty";
-            return;
-          }
-          console.log("Profile data fetched from database:", profileData);
-          localStorage.setItem(
-            `${userId}_userProfile`,
-            JSON.stringify(profileData)
-          );
-          setProfileData(profileData);
-        }
-      } catch (error) {
-        console.error("Error handling profile data:", error);
-      }
-    };
-
-    handleProfileData();
-  }, [userId]);
-
-  // Vapi setup + cleanup
-  useEffect(() => {
-    // first wait for the user id before initializing vapi
-    if (!userId || !profileData) {
-      return;
-    }
-
-    let cancelled = false;
-    let vapi: Vapi | null = null;
-
-    if (globalVapiInstance || vapiRef.current) return;
-    callStartRef.current = false;
-
-    const init = async () => {
-      await new Promise((r) => setTimeout(r, 100));
-      if (cancelled || globalVapiInstance || vapiRef.current) return;
-
-      vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY!);
-      vapiRef.current = vapi;
-      globalVapiInstance = vapi;
-
-      // Define handlers
-      const onCallStart = () => {
-        setCallStatus(CallStatus.ACTIVE);
-      };
-
-      const onCallEnd = () => {
-        console.log("call ended");
-        setCallStatus(CallStatus.FINISHED);
-      };
-
-      const onMessage = (msg: any) => {
-        console.log("Received VAPI message:", msg);
-        if (msg.type === "transcript" && msg.transcriptType === "final") {
-          const m = { role: msg.role, content: msg.transcript };
-          console.log("Adding message to state:", m);
-          setMessages((ms) => [...ms, m]);
-
-          if (m.role === "assistant") {
-            try {
-              if (profileData) {
-                console.log(
-                  "Profile data available for suggestions:",
-                  profileData
-                );
-                const newPrompt = geminiPrompt(level, m.content, profileData);
-                console.log("Generated prompt for suggestions:", newPrompt);
-                setPrompt(newPrompt);
-              } else {
-                console.log("Profile data not available yet for suggestions");
-              }
-            } catch (error) {
-              console.error("Error generating prompt for suggestions:", error);
-            }
-          }
-        }
-      };
-
-      const onError = (err: any) => {
-        console.error("Vapi SDK error event:", {
-          err,
-          name: err?.name,
-          message: err?.message,
-          stack: err?.stack,
-          code: err?.code,
-          info: err?.info,
-        });
-        setCallStatus(CallStatus.INACTIVE);
-      };
-
-      const onSpeechStart = () => {
-        setIsSpeaking(true);
-      };
-
-      const onSpeechEnd = () => {
-        setIsSpeaking(false);
-      };
-
-      // Attach handlers
-      vapi.on("call-start", onCallStart);
-      vapi.on("call-end", onCallEnd);
-      vapi.on("message", onMessage);
-      vapi.on("error", onError);
-      vapi.on("speech-start", onSpeechStart);
-      vapi.on("speech-end", onSpeechEnd);
-
-      // Kickoff
-      const startCall = async () => {
-        if (callStartRef.current) return;
-        callStartRef.current = true;
-        setCallStatus(CallStatus.CONNECTING);
-
-        const assistantConfig = configureAssistant();
-        const overrides = { variableValues: { level } };
-        console.log("Starting Vapi with:", { assistantConfig, overrides });
-        try {
-          await vapi!.start(assistantConfig, overrides);
-        } catch (err: any) {
-          console.error("vapi.start() failed:", {
-            err,
-            name: err?.name,
-            message: err?.message,
-            stack: err?.stack,
-            ...err,
-          });
-          setCallStatus(CallStatus.INACTIVE);
-          callStartRef.current = false;
-        }
-      };
-
-      startCall();
-    };
-
-    init();
-    setLoading(false);
-
-    return () => {
-      cancelled = true;
-
-      const v = vapiRef.current;
-      if (v) {
-        try {
-          v.stop();
-        } catch (error) {
-          console.error("Error stopping Vapi:", error);
-        }
-        vapiRef.current = null;
-      }
-      if (globalVapiInstance) {
-        globalVapiInstance = null;
-      }
-      callStartRef.current = false;
-    };
-  }, [level, sessionId, userId, profileData]);
-
-  const EndCall = async () => {
-    console.log("Ending call with messages:", messages);
-    setCallStatus(CallStatus.FINISHED);
-
-    // Safely stop Vapi if it exists
-    if (vapiRef.current) {
-      try {
-        vapiRef.current.stop();
-      } catch (error) {
-        console.error("Error stopping Vapi during EndCall:", error);
-      }
-      vapiRef.current = null;
-      globalVapiInstance = null;
-    }
-
+  // Handle end call with conversation evaluation
+  const handleEndCall = async () => {
     try {
+      endCall();
       if (messages.length > 5) {
-        console.log("Sending evaluation request...");
-        await sendCoversationToAPI();
+        await sendConversationToAPI(sessionId, messages);
         console.log("Evaluation completed successfully");
-        // redirect to results only if we have enough messages for AI processing
         route.push(`/results/${sessionId}`);
       } else {
-        // redirect to too-short page if insufficient messages for AI processing
         window.location.href = "/too-short";
         return;
       }
     } catch (error) {
       console.error("Failed to get evaluation:", error);
-      // Only redirect to results if we had enough messages, otherwise go to too-short
       if (messages.length > 5) {
         route.push(`/results/${sessionId}`);
       } else {
@@ -407,31 +90,6 @@ function Session() {
       }
     }
   };
-
-  const toggleMicrophone = () => {
-    // Check if Vapi instance exists and is ready
-    if (!vapiRef.current) {
-      console.warn("Vapi instance not available");
-      return;
-    }
-
-    try {
-      const muted = vapiRef.current.isMuted();
-      vapiRef.current.setMuted(!muted);
-      setIsMuted(!muted);
-    } catch (error) {
-      console.error("Error toggling microphone:", error);
-    }
-  };
-
-  const formatTime = (s: number) =>
-    `${Math.floor(s / 60)
-      .toString()
-      .padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
-
-  if (loading) {
-    return <LoadingSpinner message="callibrating AI" />;
-  }
 
   return (
     <div className="bg-[#1a1a3a] text-white flex flex-col h-screen overflow-hidden">
@@ -442,7 +100,7 @@ function Session() {
         level={level}
         isSavingResults={isSavingResults}
         onToggleMicrophone={toggleMicrophone}
-        onEndCall={EndCall}
+        onEndCall={handleEndCall}
         vapiRef={vapiRef}
       />
 

@@ -3,22 +3,6 @@ import { AIAgentStatusProps, CallStatus } from '@/types/sessionTypes';
 import React from 'react';
 
 
-/**
- * AIAgentStatus Component
- *
- * Purpose: Displays the current status of the AI agent and session timer
- *
- * Features:
- * - Visual indicator with pulsing animation
- * - Status text based on call state
- * - Session timer display
- * - Responsive design
- *
- * Best Practices:
- * - Pure component (no side effects)
- * - Clear status messaging
- * - Visual feedback for user
- */
 export default function AIAgentStatus({
   callStatus,
   isSpeaking,

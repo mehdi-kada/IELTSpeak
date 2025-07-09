@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCurrentUserImage } from "@/hooks/use-current-user-image";
-import { useCurrentUserName } from "@/hooks/use-current-user-name";
+import { useCurrentUserImage } from "@/hooks/supabase/use-current-user-image";
+import { useCurrentUserName } from "@/hooks/supabase/use-current-user-name";
 import { CurrentUserAvatar } from "./user-avatar";
 import { usePathname } from "next/navigation";
 import { navItems } from "@/constants/constants";

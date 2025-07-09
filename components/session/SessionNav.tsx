@@ -5,21 +5,7 @@ import MuteButton from './MuteSession';
 import EndSessionButton from './EndSession';
 
 
-/**
- * SessionNavigation Component
- *
- * Purpose: Manages the top navigation bar of the session
- *
- * Composition Pattern:
- * - Uses smaller components (MuteButton, EndSessionButton)
- * - Handles layout and positioning
- * - Passes props down to child components
- *
- * Best Practices:
- * - Composition over large monolithic components
- * - Clear prop drilling (passing props to children)
- * - Responsive design considerations
- */
+
 export default function SessionNavigation({
   isMuted,
   callStatus,
