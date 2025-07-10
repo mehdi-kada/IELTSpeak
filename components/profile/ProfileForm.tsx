@@ -60,17 +60,49 @@ export function ProfileForm({ userId }: { userId: string }) {
 
     const loadProfileData = async () => {
       try {
+        // Define default values to merge with loaded data
+        const defaultValues = {
+          name: "",
+          age: 0,
+          gender: "Other",
+          hometown: "",
+          country: "",
+          education_level: "",
+          occupation: "",
+          favorite_subject: "",
+          hobbies: [],
+          travel_experience: "",
+          favorite_food: "",
+          life_goal: "",
+        };
+
         const savedProfile = localStorage.getItem(`${userId}_userProfile`);
         if (savedProfile) {
           const profileDataLS = JSON.parse(savedProfile);
-          form.reset(profileDataLS);
+          // Merge with defaults to ensure all fields have values
+          const mergedData = {
+            ...defaultValues,
+            ...profileDataLS,
+            hobbies: Array.isArray(profileDataLS.hobbies)
+              ? profileDataLS.hobbies
+              : [],
+          };
+          form.reset(mergedData);
         } else {
           const profileDataDB = await fetchUserProfileData(userId);
           if (profileDataDB) {
-            form.reset(profileDataDB);
+            // Merge with defaults to ensure all fields have values
+            const mergedData = {
+              ...defaultValues,
+              ...profileDataDB,
+              hobbies: Array.isArray(profileDataDB.hobbies)
+                ? profileDataDB.hobbies
+                : [],
+            };
+            form.reset(mergedData);
             localStorage.setItem(
               `${userId}_userProfile`,
-              JSON.stringify(profileDataDB)
+              JSON.stringify(mergedData)
             );
           }
         }
@@ -86,7 +118,9 @@ export function ProfileForm({ userId }: { userId: string }) {
   // Show toast notification only once for empty profile
   useEffect(() => {
     if (emptyProfile && !toastShown.current) {
-      toast.info("Please complete your profile to get a personalized IELTS experience.");
+      toast.info(
+        "Please complete your profile to get a personalized IELTS experience."
+      );
       toastShown.current = true;
     }
   }, [emptyProfile]);
@@ -131,6 +165,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                       placeholder="Enter your full name"
                       aria-label="Full Name"
                       {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -152,8 +187,17 @@ export function ProfileForm({ userId }: { userId: string }) {
                       placeholder="Enter your age"
                       aria-label="Age"
                       {...field}
-                      value={field.value === 0 ? "" : field.value}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      value={
+                        field.value === 0 ||
+                        field.value === null ||
+                        field.value === undefined
+                          ? ""
+                          : field.value
+                      }
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(value === "" ? 0 : parseInt(value) || 0);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -172,7 +216,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 focus:ring-2 px-4 py-3 text-white">
-                          <SelectValue placeholder="Education" />
+                          <SelectValue placeholder="Select Education Level" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-[#1a1a3a] border border-white/20 text-white">
@@ -202,7 +246,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 focus:ring-2 px-4 py-3 text-white">
-                          <SelectValue placeholder="Gender" />
+                          <SelectValue placeholder="Select Gender" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-[#1a1a3a] border border-white/20 text-white">
@@ -236,6 +280,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                       placeholder="Enter your country"
                       aria-label="Country"
                       {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -256,6 +301,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                       placeholder="Enter your hometown"
                       aria-label="Hometown"
                       {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -276,6 +322,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                       placeholder="e.g., Student, Software Engineer, Teacher"
                       aria-label="Occupation"
                       {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -296,6 +343,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                       placeholder="e.g., Math, English, History"
                       aria-label="Favorite Subject"
                       {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -324,12 +372,18 @@ export function ProfileForm({ userId }: { userId: string }) {
                         <FormControl>
                           <Checkbox
                             className="bg-[#1a1a3a]/60 border border-white/20 focus:bg-red-600 focus:ring-2 focus:ring-red-600"
-                            checked={field.value?.includes(hobby)}
+                            checked={
+                              Array.isArray(field.value) &&
+                              field.value.includes(hobby)
+                            }
                             onCheckedChange={(checked) => {
+                              const currentHobbies = Array.isArray(field.value)
+                                ? field.value
+                                : [];
                               return checked
-                                ? field.onChange([...field.value, hobby])
+                                ? field.onChange([...currentHobbies, hobby])
                                 : field.onChange(
-                                    field.value?.filter(
+                                    currentHobbies.filter(
                                       (value) => value !== hobby
                                     )
                                   );
@@ -360,6 +414,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                       className="resize-none bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
                       aria-label="Travel Experience"
                       {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormDescription>
@@ -383,6 +438,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                       placeholder="e.g., Pizza, Sushi, Pasta"
                       aria-label="Favorite Food"
                       {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -403,6 +459,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                       className="resize-none bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
                       aria-label="Life Goal"
                       {...field}
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormDescription>
