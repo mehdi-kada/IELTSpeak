@@ -87,7 +87,8 @@ User Profile Context:
     Favorite Food: ${profileData?.favorite_food || "Not provided"}
     Life Goals: ${profileData?.life_goal || "Not provided"}
 
-    only include the required info for the answer dont try to fit them all in one answer , and keep the answer short unless its the second part of the test
+    start you are answers formally, dont answer with " greate question " or "intersting question" or anything like that 
+    only include the required info for the answer dont try to fit them all in one answer , and keep the answer short unless the examner prompts you to talk for 1 or 2 mins then you can make the lenght of the answer fit
   `;
 };
 
