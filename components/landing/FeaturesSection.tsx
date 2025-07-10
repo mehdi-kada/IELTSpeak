@@ -1,6 +1,9 @@
-import React from "react";
+"use client";
+// Import React and necessary hooks
+import React, { useRef, useEffect, useState } from "react";
 
 const FeaturesSection = () => {
+  // Define the features array, each with an icon, title, and description
   const features = [
     {
       icon: (
@@ -21,7 +24,7 @@ const FeaturesSection = () => {
       ),
       title: "Personalized Levels",
       description:
-        "From A1 to C2, practice at a level that challenges you without being overwhelming. We adapt to your progress.",
+        "From 6.5 to 9, practice at a level that challenges you without being overwhelming. We adapt to your progress.",
     },
 
     {
@@ -43,7 +46,7 @@ const FeaturesSection = () => {
       ),
       title: "Realistic AI Partner",
       description:
-        "Powered by advanced Vapi AI, our conversation partner provides natural, context-aware interactions for a true-to-life practice session.",
+        "Powered by advanced AI, our conversation partner provides natural, context-aware interactions for a true-to-life practice session.",
     },
     {
       icon: (
@@ -64,7 +67,7 @@ const FeaturesSection = () => {
       ),
       title: "Smart Suggestions",
       description:
-        "Suggestions that know you. Instantly get words, synonyms, and ideas based on your profile to keep the conversation flowing and expand your vocabulary.",
+        "Suggestions that know you. Instantly get words, and ideas based on your profile to keep the conversation flowing and expand your vocabulary.",
     },
     {
       icon: (
@@ -89,9 +92,30 @@ const FeaturesSection = () => {
     },
   ];
 
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new window.IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section id="features" className="py-20 px-5">
-      <div className="container mx-auto">
+      <div className="container mx-auto" ref={sectionRef}>
         <div className="text-center mb-12">
           <h3 className="text-3xl md:text-4xl font-bold mb-3">
             Everything You Need to Succeed
@@ -101,15 +125,23 @@ const FeaturesSection = () => {
             give you the feedback you can't get anywhere else.
           </p>
         </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {features.map((feature, index) => (
+            // Outer div handles pop-in animation only
             <div
               key={index}
-              className="feature-card p-6 rounded-xl max-w-3xl mx-auto "
+              className={`transition-all duration-300 ease-out
+                ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
+              `}
+              style={{ transitionDelay: visible ? `${index * 250}ms` : "0ms" }}
             >
-              <div className="text-red-500 mb-4">{feature.icon}</div>
-              <h4 className="font-bold text-xl mb-2">{feature.title}</h4>
-              <p className="text-gray-400">{feature.description}</p>
+              {/* Inner card handles hover effect instantly */}
+              <div className=" p-6 rounded-xl max-w-3xl mx-auto bg-[#2F2F7F]/50 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-[#e62136]">
+                <div className="text-red-500 mb-4">{feature.icon}</div>
+                <h4 className="font-bold text-xl mb-2">{feature.title}</h4>
+                <p className="text-gray-400">{feature.description}</p>
+              </div>
             </div>
           ))}
         </div>

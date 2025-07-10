@@ -16,16 +16,22 @@ export const configureAssistant = () => {
       },
       // Enable Fourier Denoising (optional)
     },
+    startSpeakingPlan: {
+      transcriptionEndpointingPlan: {
+        onPunctuationSeconds: 0.5,
+        onNoPunctuationSeconds: 0.5,
+        onNumberSeconds: 0.3,
+      },
+      waitSeconds: 0.3,
+    },
 
-    
-
-    firstMessage: 
-    "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the International English Language speaking test based on your level: {{level}}. I'll ask you questions and listen to your responses. Let's start with a quick introduction—what's your name?",
+    firstMessage:
+      "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the International English Language speaking test based on your level: {{level}}. I'll ask you questions and listen to your responses. Let's start with a quick introduction—what's your name?",
     //" hi there lets start our conversation , what is your name ? ",
 
     // Silence timeout configuration (in seconds)
     silenceTimeoutSeconds: 120, // How long to wait for user speech before timing out
-    maxDurationSeconds: 900, // Maximum call duration (18 minutes)
+    maxDurationSeconds: 900, // Maximum call duration (15 minutes)
 
     transcriber: {
       provider: "11labs",
@@ -63,7 +69,6 @@ You must conduct the test in three distinct parts. Announce each part clearly.
         Introduce the section clearly: "Now, I'm going to give you a topic, and I'd like you to talk about it for one to two minutes."
         State the topic from the cue card clearly.
         Announce the preparation time explicitly: "Before you speak, you'll have one minute to think about what you're going to say. You can make some notes if you wish."
-        After a one-minute pause, announce the start of the speaking time: "Alright? Remember you have one to two minutes for this, so don't worry if I stop you. I'll tell you when the time is up. Can you start speaking now, please?"
     Part 3 (Discussion - Approx. 4-5 minutes):
         After the user finishes Part 2, transition to the discussion.
         Ask more abstract, detailed, and complex follow-up questions related to the topic presented in Part 2.

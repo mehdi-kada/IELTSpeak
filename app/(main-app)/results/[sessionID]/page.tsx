@@ -58,22 +58,21 @@ function Practice() {
     }
   }, [sessionId]);
 
-  // Helper function to calculate progress bar width
+  // for the progression UI
   const getProgressWidth = (score: number, maxScore: number = 9) => {
     return (score / maxScore) * 100;
   };
 
-  // Loading state
   if (loading) {
     return <LoadingSpinner />;
   }
 
-  // Error state
+
   if (error) {
     return router.push("/too-short");
   }
 
-  // No data state
+
   if (!evaluationData) {
     return (
       <div className="bg-[#1a1a3a] text-white min-h-screen flex items-center justify-center">
