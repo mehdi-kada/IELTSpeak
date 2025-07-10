@@ -31,7 +31,7 @@ function Session() {
 
   // get the user id
   const { userId, loading: authLoading, error: authError } = useAuth();
-  
+
   // getting profile data either from localstorage or database
   const {
     profileData,
@@ -59,7 +59,14 @@ function Session() {
     vapiRef,
     toggleMicrophone,
     endCall,
-  } = useVapi(userId, profileData, level, sessionId, generateSuggestion);
+  } = useVapi(
+    userId,
+    profileData,
+    level,
+    sessionId,
+    suggestions,
+    generateSuggestion
+  );
 
   const sessionTime = useSessionTimer(callStatus);
   // ref for scrolling to the top of the messages
@@ -228,18 +235,7 @@ function Session() {
                         </div>
                       ))}
                       {/* Show generating indicator if no streaming response yet */}
-                      {!streamedResponse && (
-                        <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
-                          <h4 className="font-bold text-red-600 mb-4">
-                            Generating suggestions...
-                          </h4>
-                          <LoadingSpinner
-                            size="sm"
-                            fullScreen={false}
-                            message=""
-                          />
-                        </div>
-                      )}
+                     
                     </>
                   ) : suggestions.length > 0 ? (
                     /* Show all suggestions when ready or waiting */

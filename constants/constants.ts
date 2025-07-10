@@ -53,14 +53,24 @@ export const voices = {
 export const geminiPrompt = (
   level: string | null,
   message: string,
-  profileData: profileValues | null
+  profileData: profileValues | null,
+  suggestions: string[]
 ) => {
+  const previousSuggestions =
+    suggestions && suggestions.length > 0
+      ? `Previous suggestions you provided (do not repeat these, and if the question is similar, provide a new angle or politely mention it was already answered. If the previous answer was cutoff, continue it smoothly): ${suggestions.join(" | ")}`
+      : "This is the first suggestion - no previous responses to avoid.";
+
   return `
 You are an AI assistant for the app IELTSpeak. Your task is to help a user prepare for their IELTS speaking test by generating a spoken answer as if you are the user.
     The user's target band score is ${level}.
     The examiner's question is: "${message}"
+${previousSuggestions}
 Instructions:
-    Start Immediately: Begin answering right away, even if the prompt says “You have one minute to prepare.” Never say things like “I’m ready” or “Let me think.”
+    The questions are asked by another AI and it can make mistakes, ask repetitive questions, or sometimes cut off your previous answer. Handle these gracefully:
+    - If the question is a repeat, do not repeat your previous answer. Instead, provide a new perspective or politely mention you have already answered it.
+    - If your previous answer was cutoff, continue it naturally and smoothly.
+    - If the question is unclear or seems like a mistake, answer as best as possible or ask for clarification in a natural way.
     Answer Naturally and Concisely: Give a clear and natural response that fits the IELTS speaking style for band ${level}. Avoid long or overly detailed answers unless the question requires it.
     Only Include Relevant Personal Info: Use the User Profile Context only if it directly relates to the question. Never force unrelated details into the answer.
     Language Quality: Use vocabulary, sentence structures, and linking words that reflect the target band. Keep it polite, fluent, and appropriate.

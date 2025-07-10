@@ -12,6 +12,7 @@ function LandingPage() {
       <Header />
       <HeroSection />
       <FeaturesSection />
+      
       <HowItWorksSection />
       <FinalCTASection />
       <Footer />

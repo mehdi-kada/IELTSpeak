@@ -177,7 +177,7 @@ function Dashboard() {
     );
   }
 
-  // Prepare sessions data for components
+  // prepare sessions data for components
   const sessions = dashboardData.sessions.map((session) => ({
     id: session.id,
     date: session.date,

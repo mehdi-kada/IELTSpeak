@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-
 export function useSuggestions() {
   const [prompt, setPrompt] = useState("");
   const [streamedResponse, setStreamedResponse] = useState("");
@@ -10,7 +9,6 @@ export function useSuggestions() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
 
- 
   useEffect(() => {
     if (!prompt) {
       setSuggestionStatus("waiting");
@@ -50,30 +48,29 @@ export function useSuggestions() {
           setStreamedResponse(fullResponse);
         }
 
-        // add new suggestion to previous suggestions 
+        // add new suggestion to previous suggestions
         if (fullResponse.trim()) {
-          setSuggestions((prev) => {
-            const newSuggestions = [fullResponse.trim(), ...prev];
-            return newSuggestions;
-          });
+          setSuggestions((prev) => [fullResponse.trim(), ...prev]);
         }
+        console.log("suggestions in suggestion hook are : ", suggestions);
         setStreamedResponse("");
         setSuggestionStatus("ready");
       } catch (err) {
-        console.error("Suggestions error:", err);
+        console.error("Suggestions in suggestion  error:", err);
         setSuggestionStatus("waiting");
       }
     };
     generateSuggestions();
   }, [prompt]);
 
-  // auto scroll to the top of the dic for the suggestions 
+  // auto scroll to the top of the dic for the suggestions
   useEffect(() => {
     if (suggestionsContainerRef.current && suggestions.length > 0) {
       suggestionsContainerRef.current.scrollTop = 0;
     }
   }, [suggestions]);
 
+  // use callback to cash the prompt and avoid rerenders (passed to vapi child component )
   const generateSuggestion = useCallback((newPrompt: string) => {
     setPrompt(newPrompt);
   }, []);

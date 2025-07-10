@@ -12,6 +12,7 @@ export function useVapi(
   profileData: profileValues | null,
   level: string,
   sessionId: string,
+  suggestions: string[],
   onSuggestion: (prompt: string) => void
 ) {
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
@@ -22,11 +23,21 @@ export function useVapi(
 
   const callStartRef = useRef(false);
   const vapiRef = useRef<Vapi | null>(null);
+  const suggestionsRef = useRef<string[]>(suggestions);
+
+  // Update suggestions ref whenever suggestions change
+  useEffect(() => {
+    suggestionsRef.current = suggestions;
+  }, [suggestions]);
 
   // Memoize profile data to prevent unnecessary re-renders
-  const stableProfileData = useMemo(() => profileData, [profileData?.name, profileData?.age, profileData?.gender]);
+  const stableProfileData = useMemo(
+    () => profileData,
+    [profileData?.name, profileData?.age, profileData?.gender]
+  );
 
   useEffect(() => {
+    console.log(" the suggestions at vapi hook are : ", suggestions);
     // make sure that both the user id and profile data are available
     if (!userId || !stableProfileData) {
       return;
@@ -54,7 +65,7 @@ export function useVapi(
 
       // event handlers
       const onCallStart = () => {
-        console.log("starting call")
+        console.log("starting call");
         setCallStatus(CallStatus.ACTIVE);
       };
 
@@ -64,7 +75,6 @@ export function useVapi(
       };
 
       const onVapiMessage = (msg: any) => {
-
         if (msg.type === "transcript" && msg.transcriptType === "final") {
           const message = { role: msg.role, content: msg.transcript };
           setMessages((prevMessages) => [...prevMessages, message]);
@@ -72,11 +82,20 @@ export function useVapi(
           // generate suggestions
           if (message.role === "assistant") {
             try {
+              console.log(
+                " the suggestions before sendding them to the gemini in vapi hook are : ",
+                suggestionsRef.current.join("/")
+              );
               if (stableProfileData) {
                 const newPrompt = geminiPrompt(
                   level,
                   message.content,
-                  stableProfileData
+                  stableProfileData,
+                  suggestionsRef.current
+                );
+                console.log(
+                  "the prompt sent to the gemini api is : ",
+                  newPrompt
                 );
                 onSuggestion(newPrompt);
               }
@@ -90,11 +109,6 @@ export function useVapi(
       const onError = (err: any) => {
         console.error("Vapi SDK error event:", {
           err,
-          name: err?.name,
-          message: err?.message,
-          stack: err?.stack,
-          code: err?.code,
-          info: err?.info,
         });
         setCallStatus(CallStatus.INACTIVE);
       };
