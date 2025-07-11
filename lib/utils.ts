@@ -16,16 +16,22 @@ export const configureAssistant = () => {
       },
       // Enable Fourier Denoising (optional)
     },
+    startSpeakingPlan: {
+      transcriptionEndpointingPlan: {
+        onPunctuationSeconds: 0.5,
+        onNoPunctuationSeconds: 0.5,
+        onNumberSeconds: 0.3,
+      },
+      waitSeconds: 0.3,
+    },
 
-    
-
-    firstMessage: 
-    "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the International English Language speaking test based on your level: {{level}}. I'll ask you questions and listen to your responses. Let's start with a quick introduction—what's your name?",
+    firstMessage:
+      "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the International English Language speaking test based on your level: {{level}}. I'll ask you questions and listen to your responses. Let's start with a quick introduction—what's your name?",
     //" hi there lets start our conversation , what is your name ? ",
 
     // Silence timeout configuration (in seconds)
     silenceTimeoutSeconds: 120, // How long to wait for user speech before timing out
-    maxDurationSeconds: 900, // Maximum call duration (18 minutes)
+    maxDurationSeconds: 900, // Maximum call duration (15 minutes)
 
     transcriber: {
       provider: "11labs",
@@ -57,13 +63,10 @@ CORE RULES (NON-NEGOTIABLE)
 TEST STRUCTURE & SCRIPTING:
 You must conduct the test in three distinct parts. Announce each part clearly.
     Part 1 (Interview - Approx. 4-5 minutes):
-        After their response, ask: "And what should I call you?"
-        Then, proceed with a series of questions about familiar topics (e.g., home, work, studies, hobbies).
+        Then, proceed with a series of questions about familiar topics (4 questions).
     Part 2 (Long Turn - Approx. 3-4 minutes):
         Introduce the section clearly: "Now, I'm going to give you a topic, and I'd like you to talk about it for one to two minutes."
-        State the topic from the cue card clearly.
-        Announce the preparation time explicitly: "Before you speak, you'll have one minute to think about what you're going to say. You can make some notes if you wish."
-        After a one-minute pause, announce the start of the speaking time: "Alright? Remember you have one to two minutes for this, so don't worry if I stop you. I'll tell you when the time is up. Can you start speaking now, please?"
+        Announce the preparation time explicitly
     Part 3 (Discussion - Approx. 4-5 minutes):
         After the user finishes Part 2, transition to the discussion.
         Ask more abstract, detailed, and complex follow-up questions related to the topic presented in Part 2.
@@ -74,10 +77,10 @@ Your primary dynamic variable is the user's target band score: {{level}}. You mu
     If Target Band is 8.0+: Use sophisticated and nuanced language. In Part 3, ask challenging, abstract questions that require speculation, evaluation, and high-level critical thinking.
 VOICE & PERSONA:
     Maintain a formal, neutral, and professional examiner tone throughout the entire test.
-    Speak at a natural, clear pace—not too fast and not too slow.
-    If a user's response is completely unclear or off-topic, you may politely rephrase the question once. Do not over-simplify it. For example, you can say, "Could you elaborate on that point?"
+    If a user's response is completely unclear or off-topic, you may politely rephrase the question once. Do not over-simplify it.
 Begin the test now by introducing yourself and starting with Part 1.
-              `,
+             at the end of the session say the following : // in your system prompt, append at the very end:
+"Thank you for participating in this speaking test. This concludes the examination.`,
         },
       ],
     },
@@ -88,6 +91,7 @@ Begin the test now by introducing yourself and starting with Part 1.
 
     clientMessages: undefined,
     serverMessages: undefined,
-  };
+    // Allow assistant to signal end of call
+endCallPhrases: ["This concludes the examination."],  };
   return vapiAssistant;
 };

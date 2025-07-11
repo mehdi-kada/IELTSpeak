@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { ContactModal } from "@/components/ContactModal";
+import Link from "next/link";
 
 const Footer = () => {
   const [showContactModal, setShowContactModal] = useState(false);
@@ -18,6 +19,18 @@ const Footer = () => {
             >
               Contact
             </button>
+            <Link
+              className="hover:text-white transition-colors cursor-pointe"
+              href={"/privacy"}
+            >
+              Privacy Policies
+            </Link>
+            <Link
+              className="hover:text-white transition-colors cursor-pointe"
+              href={"/terms"}
+            >
+              Terms Of Service
+            </Link>
           </div>
         </div>
       </footer>
