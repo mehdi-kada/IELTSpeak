@@ -43,6 +43,7 @@ function Session() {
 
   // for updating session and processing conversation
   const { isSavingResults, sendConversationToAPI } = useSessionRating();
+  
   // streamed suggestions from gemini , use the function inside the messages webhook
   const {
     suggestions,
@@ -50,33 +51,6 @@ function Session() {
     suggestionStatus,
     generateSuggestion,
   } = useSuggestions();
-
-  // Vapi setup + cleanup
-  const {
-    callStatus,
-    isSpeaking,
-    messages,
-    isMuted,
-    loading: vapiLoading,
-    vapiRef,
-    toggleMicrophone,
-    endCall,
-  } = useVapi(
-    userId,
-    profileData,
-    level,
-    sessionId,
-    suggestions,
-    generateSuggestion
-  );
-
-  const sessionTime = useSessionTimer(callStatus);
-  // ref for scrolling to the top of the messages
-  useEffect(() => {
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = 0;
-    }
-  }, [messages]);
 
   // Handle end call with conversation evaluation
   const handleEndCall = async () => {
@@ -99,6 +73,34 @@ function Session() {
       }
     }
   };
+
+  // Vapi setup + cleanup
+  const {
+    callStatus,
+    isSpeaking,
+    messages,
+    isMuted,
+    loading: vapiLoading,
+    vapiRef,
+    toggleMicrophone,
+    endCall,
+  } = useVapi(
+    userId,
+    profileData,
+    level,
+    sessionId,
+    suggestions,
+    generateSuggestion,
+    handleEndCall
+  );
+
+  const sessionTime = useSessionTimer(callStatus);
+  // ref for scrolling to the top of the messages
+  useEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = 0;
+    }
+  }, [messages]);
 
   return (
     <div className="bg-[#1a1a3a] text-white flex flex-col h-screen overflow-hidden">
