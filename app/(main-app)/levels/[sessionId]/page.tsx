@@ -3,7 +3,7 @@ import LoadingSpinner from "@/components/Loading";
 import AIAgentStatus from "@/components/session/AIAgentStatus";
 import MessageList from "@/components/session/MessageList";
 import SessionNavigation from "@/components/session/SessionNav";
-import SuggestionsList from "@/components/session/SuggestionList";
+import SuggestionsList from "@/components/session/desktop/SuggestionList";
 import { useAuth } from "@/hooks/sessions/useAuth";
 import { useUserProfile } from "@/hooks/sessions/useProfileData";
 import { useSessionRating } from "@/hooks/sessions/useSessionRating";

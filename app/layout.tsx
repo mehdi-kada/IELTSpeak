@@ -1,13 +1,3 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
-
-const inter = Inter({ subsets: ["latin"] });
-
-const siteUrl = "www.ieltspeak.tech";
-
-
 export const metadata: Metadata = {
   title: {
     default: "IELTSpeak | AI IELTS Speaking Practice & Mock Tests",
@@ -30,7 +20,7 @@ export const metadata: Metadata = {
     title: "IELTSpeak | AI IELTS Speaking Practice & Mock Tests",
     description:
       "Practice with a realistic AI examiner and get instant feedback to boost your IELTS band score.",
-    url: siteUrl,
+    url:"https://www.ieltspeak.tech",
     siteName: "IELTSpeak",
     images: [
       {
@@ -51,6 +41,17 @@ export const metadata: Metadata = {
     images: ["/app/opengraph-image.png"], // Twitter uses the same image
   },
 };
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
+import { PostHogProvider } from "./providers";
+
+
+const inter = Inter({ subsets: ["latin"] });
+
+
+
 
 export default function RootLayout({
   children,
@@ -60,8 +61,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
-        <Toaster />
+        <PostHogProvider>
+          {children}
+          <Toaster />
+        </PostHogProvider>
       </body>
     </html>
   );
