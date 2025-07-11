@@ -109,8 +109,8 @@ export const hobbyOptions = [
 
 export const educationLevels = [
   "High School",
-  "Bachelor's Degree",
-  "Master's Degree",
+  "Bachelor's",
+  "Master's ",
   "PhD",
   "Other",
 ];

@@ -6,16 +6,7 @@ interface EndSessionButtonProps {
   onEndCall: () => void;
 }
 
-/**
- * EndSessionButton Component
- *
- * Purpose: Handles session termination
- *
- * Best Practices:
- * - Loading state management
- * - Clear user feedback
- * - Disabled state handling
- */
+
 export default function EndSessionButton({
   isSavingResults,
   onEndCall

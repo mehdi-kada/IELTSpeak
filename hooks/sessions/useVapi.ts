@@ -13,7 +13,8 @@ export function useVapi(
   level: string,
   sessionId: string,
   suggestions: string[],
-  onSuggestion: (prompt: string) => void
+  onSuggestion: (prompt: string) => void,
+  handleCallEnd: () => void
 ) {
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -37,7 +38,6 @@ export function useVapi(
   );
 
   useEffect(() => {
-    console.log(" the suggestions at vapi hook are : ", suggestions);
     // make sure that both the user id and profile data are available
     if (!userId || !stableProfileData) {
       return;
@@ -69,9 +69,11 @@ export function useVapi(
         setCallStatus(CallStatus.ACTIVE);
       };
 
+      // if the assistant triggers the session end webhook it sends the conversation for evaluation
       const onCallEnd = () => {
         console.log("Call ended");
         setCallStatus(CallStatus.FINISHED);
+        handleCallEnd();
       };
 
       const onVapiMessage = (msg: any) => {

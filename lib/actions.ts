@@ -29,11 +29,11 @@ export const insertSession = async ({ level }: { level: string }) => {
     .eq("id", user.id)
     .single();
   if (profileDataError) {
-    console.log();
-    throw new Error(
+    console.error(
       "failed to fetch user's info to start the session",
       profileDataError
     );
+    redirect("/profile?reason=no_data");
   }
   // Check for missing fields
 

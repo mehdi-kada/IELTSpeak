@@ -8,21 +8,7 @@ interface SuggestionsListProps {
   streamedResponse: string;
 }
 
-/**
- * SuggestionsList Component
- *
- * Purpose: Renders the list of AI-generated suggestions
- *
- * Features:
- * - Different states (waiting, generating, ready)
- * - Real-time streaming display
- * - Visual indicators for suggestion status
- *
- * Best Practices:
- * - State-based rendering
- * - Loading states
- * - Clear visual hierarchy
- */
+
 export default function SuggestionsList({
   suggestionStatus,
   suggestions,
