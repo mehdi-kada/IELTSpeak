@@ -91,7 +91,6 @@ function Session() {
     sessionId,
     suggestions,
     generateSuggestion,
-    handleEndCall
   );
 
   const sessionTime = useSessionTimer(callStatus);

@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         console.log("unhandled event type : ", eventType);
     }
 
-    console.log("webhook processing completed successfully");
+
     return NextResponse.json({ recieved: true });
   } catch (error) {
     console.error("error processing web hook : ", error);

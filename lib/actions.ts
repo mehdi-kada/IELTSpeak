@@ -57,7 +57,6 @@ export const insertSession = async ({ level }: { level: string }) => {
       .eq("user_id", user.id)
       .gt("ielts_rating->>overall", 0)
       .order("created_at", { ascending: false });
-    console.log(" the sessions are : ", sessions);
     if (error) {
       console.log();
       throw new Error(
@@ -127,8 +126,6 @@ export const insertProfileData = async (
   userId: string
 ) => {
   try {
-    console.log("the user is for this profile : ", userId);
-    console.log("the data to be inserted is : ", data);
     const profileData = { id: userId, ...data };
 
     const supabase = await createClient();

@@ -14,7 +14,6 @@ export function useVapi(
   sessionId: string,
   suggestions: string[],
   onSuggestion: (prompt: string) => void,
-  handleCallEnd: () => void
 ) {
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -73,7 +72,6 @@ export function useVapi(
       const onCallEnd = () => {
         console.log("Call ended");
         setCallStatus(CallStatus.FINISHED);
-        handleCallEnd();
       };
 
       const onVapiMessage = (msg: any) => {
@@ -84,10 +82,6 @@ export function useVapi(
           // generate suggestions
           if (message.role === "assistant") {
             try {
-              console.log(
-                " the suggestions before sendding them to the gemini in vapi hook are : ",
-                suggestionsRef.current.join("/")
-              );
               if (stableProfileData) {
                 const newPrompt = geminiPrompt(
                   level,
@@ -95,10 +89,7 @@ export function useVapi(
                   stableProfileData,
                   suggestionsRef.current
                 );
-                console.log(
-                  "the prompt sent to the gemini api is : ",
-                  newPrompt
-                );
+
                 onSuggestion(newPrompt);
               }
             } catch (error) {

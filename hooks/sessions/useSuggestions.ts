@@ -26,7 +26,7 @@ export function useSuggestions() {
           body: JSON.stringify({ prompt }),
         });
 
-        console.log("Suggestions API response status:", res.status);
+       
 
         if (!res.ok) {
           const errorText = await res.text();
@@ -44,7 +44,7 @@ export function useSuggestions() {
 
           const chunk = decoder.decode(value, { stream: true });
           fullResponse += chunk;
-          console.log("Received suggestion chunk:", chunk);
+
           setStreamedResponse(fullResponse);
         }
 
@@ -52,7 +52,7 @@ export function useSuggestions() {
         if (fullResponse.trim()) {
           setSuggestions((prev) => [fullResponse.trim(), ...prev]);
         }
-        console.log("suggestions in suggestion hook are : ", suggestions);
+      
         setStreamedResponse("");
         setSuggestionStatus("ready");
       } catch (err) {

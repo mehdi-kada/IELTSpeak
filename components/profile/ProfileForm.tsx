@@ -215,11 +215,11 @@ export function ProfileForm({ userId }: { userId: string }) {
                     <FormLabel>Education Level</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 focus:ring-2 px-4 py-3 text-white">
+                        <SelectTrigger className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 focus:ring-2 px-2 sm:px-5 py-3 text-white">
                           <SelectValue placeholder="Education" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="bg-[#1a1a3a] border border-white/20 text-white">
+                      <SelectContent className="bg-[#1a1a3a] border border-white/20 text-white ">
                         {educationLevels.map((l, index) => (
                           <SelectItem
                             className="hover:bg-white/10"
@@ -245,8 +245,8 @@ export function ProfileForm({ userId }: { userId: string }) {
                     <FormLabel>Gender</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 focus:ring-2 px-4 py-3 text-white">
-                          <SelectValue placeholder="Select Gender" />
+                        <SelectTrigger className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 focus:ring-2 px-2 sm:px-5 py-3 text-white">
+                          <SelectValue placeholder="Gender" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-[#1a1a3a] border border-white/20 text-white">

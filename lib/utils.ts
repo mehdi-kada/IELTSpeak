@@ -79,8 +79,7 @@ VOICE & PERSONA:
     Maintain a formal, neutral, and professional examiner tone throughout the entire test.
     If a user's response is completely unclear or off-topic, you may politely rephrase the question once. Do not over-simplify it.
 Begin the test now by introducing yourself and starting with Part 1.
-             at the end of the session say the following : // in your system prompt, append at the very end:
-"Thank you for participating in this speaking test. This concludes the examination.`,
+`,
         },
       ],
     },
@@ -92,6 +91,6 @@ Begin the test now by introducing yourself and starting with Part 1.
     clientMessages: undefined,
     serverMessages: undefined,
     // Allow assistant to signal end of call
-endCallPhrases: ["This concludes the examination."],  };
+  };
   return vapiAssistant;
 };

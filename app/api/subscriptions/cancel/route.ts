@@ -27,7 +27,7 @@ export const POST = async (request: NextRequest) => {
 
     // get the sub
     const sub = await getUserSubscription(user.id);
-    console.log("sub data is : ", sub);
+
 
     if (!sub) {
       return NextResponse.json(
