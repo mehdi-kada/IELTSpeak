@@ -1,8 +1,10 @@
 "use client";
-import LoadingSpinner from "@/components/Loading";
+
 import AIAgentStatus from "@/components/session/AIAgentStatus";
-import MessageList from "@/components/session/MessageList";
+import MobileMessageList from "@/components/session/Mobile/MobileMessageList";
+import MobileSuggestionList from "@/components/session/Mobile/MobileSuggestionList";
 import SessionNavigation from "@/components/session/SessionNav";
+import MessageList from "@/components/session/desktop/MessageList";
 import SuggestionsList from "@/components/session/desktop/SuggestionList";
 import { useAuth } from "@/hooks/sessions/useAuth";
 import { useUserProfile } from "@/hooks/sessions/useProfileData";
@@ -111,9 +113,9 @@ function Session() {
         vapiRef={vapiRef}
       />
 
-      {/* Main Content Area */}
+      {/* main Content Area */}
       <div className="flex-grow flex flex-col overflow-hidden">
-        {/* Top Section: AI Agent Status */}
+        {/* AI Agent Status */}
         <AIAgentStatus
           callStatus={callStatus}
           isSpeaking={isSpeaking}
@@ -121,7 +123,7 @@ function Session() {
           sessionTime={sessionTime}
         />
 
-        {/* Bottom Section: Suggestions and Transcript */}
+        {/* Suggestions and Transcript */}
         <div className="flex-grow flex flex-col sm:flex-row overflow-hidden">
           {/* Mobile Tabs - only show on screens smaller than sm */}
           <div className="sm:hidden flex border-b border-white/10">
@@ -188,155 +190,17 @@ function Session() {
 
           {/* Mobile Layout */}
           <div className="sm:hidden flex-grow overflow-hidden">
-            {/* Mobile Suggestions Panel */}
-            {suggestionsVisible && (
-              <div className="flex flex-col p-4 bg-black/10 overflow-hidden h-full">
-                <div className="flex justify-between items-center mb-4 flex-shrink-0">
-                  <h2 className="text-xl font-bold">Real-time Suggestions</h2>
-                </div>
-                {!streamedResponse && suggestionStatus === "generating" && (
-                  <LoadingSpinner size="sm" fullScreen={false} message="" />
-                )}
-                <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar flex-grow">
-                  {suggestionStatus === "waiting" ? (
-                    <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
-                      <h4 className="font-bold text-gray-400 mb-2">
-                        Waiting for conversation to start...
-                      </h4>
-                      <p className="text-sm text-gray-500">
-                        Start speaking to get AI-powered suggestions
-                      </p>
-                    </div>
-                  ) : suggestionStatus === "generating" ? (
-                    <>
-                      {/* Show current streaming suggestion if available */}
-                      {streamedResponse && (
-                        <div className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-red-600 transition-colors">
-                          <div className="flex items-start gap-3">
-                            <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
-                            <p className="text-md text-gray-300">
-                              {streamedResponse}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                      {/* Show previous suggestions */}
-                      {suggestions.map((suggestion, index) => (
-                        <div
-                          key={index}
-                          className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors"
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                            <p className="text-md text-gray-300">
-                              {suggestion}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                      {/* Show generating indicator if no streaming response yet */}
-                     
-                    </>
-                  ) : suggestions.length > 0 ? (
-                    /* Show all suggestions when ready or waiting */
-                    suggestions.map((suggestion, index) => (
-                      <div
-                        key={index}
-                        className="bg-[#2f2f7f]/80 p-4 rounded-lg border border-transparent hover:border-red-600 transition-colors"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div
-                            className={`w-2 h-2 ${index === 0 ? "bg-red-500" : "bg-green-500"} rounded-full mt-2 flex-shrink-0`}
-                          ></div>
-                          <p className="text-md text-gray-300">{suggestion}</p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="bg-[#2F2F7F]/80 p-4 rounded-lg border border-transparent text-center">
-                      <h4 className="font-bold text-gray-400">
-                        No suggestions available
-                      </h4>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Mobile Transcript Panel */}
-            {!suggestionsVisible && (
-              <div className="flex flex-col p-4 overflow-hidden h-full">
-                <div
-                  ref={messagesContainerRef}
-                  className="flex-grow overflow-y-auto pr-4 space-y-6 custom-scrollbar"
-                >
-                  {messages.length === 0 ? (
-                    <div className="text-center text-gray-400 mt-8">
-                      <p>
-                        Conversation will appear here once the session starts...
-                      </p>
-                    </div>
-                  ) : (
-                    messages
-                      .slice()
-                      .reverse()
-                      .map((message, index) => (
-                        <div
-                          key={index}
-                          className={`flex items-start gap-4 ${
-                            message.role === "user" ? "justify-end" : ""
-                          }`}
-                        >
-                          {message.role === "assistant" && (
-                            <div className="flex-shrink-0 h-10 w-10 bg-[#1a1a3a] rounded-full flex items-center justify-center border border-[#E62136]">
-                              <svg
-                                className="mx-auto h-6 w-6 text-red-500"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
-                                />
-                              </svg>
-                            </div>
-                          )}
-                          <div
-                            className={`p-4 max-w-xl ${
-                              message.role === "assistant"
-                                ? "bg-[#2F2F7F] rounded-r-xl rounded-bl-xl"
-                                : "bg-[#E62136] rounded-l-xl rounded-br-xl"
-                            }`}
-                          >
-                            <p>{message.content}</p>
-                          </div>
-                          {message.role === "user" && (
-                            <div className="flex-shrink-0 h-10 w-10 bg-gray-700 rounded-full flex items-center justify-center">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-6 w-6 text-gray-400"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                />
-                              </svg>
-                            </div>
-                          )}
-                        </div>
-                      ))
-                  )}
-                </div>
-              </div>
+            {suggestionsVisible ? (
+              <MobileSuggestionList
+                suggestionStatus={suggestionStatus}
+                streamedResponse={streamedResponse}
+                suggestions={suggestions}
+              />
+            ) : (
+              <MobileMessageList
+                messages={messages}
+                messagesContainerRef={messagesContainerRef}
+              />
             )}
           </div>
         </div>

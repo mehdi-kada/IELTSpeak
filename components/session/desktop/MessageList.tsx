@@ -1,27 +1,13 @@
 "use client";
 import React from "react";
-import Message from "./Message";
 import { SavedMessage } from "@/types/sessionTypes";
+import Message from "../Message";
 
 interface MessageListProps {
   messages: SavedMessage[];
   messagesContainerRef: React.RefObject<HTMLDivElement>;
 }
-/**
- * MessageList Component
- *
- * Purpose: Renders the list of messages in the transcript
- *
- * Features:
- * - Scrollable container
- * - Empty state handling
- * - Reverse chronological order (newest first)
- *
- * Best Practices:
- * - List rendering with keys
- * - Empty state handling
- * - Ref forwarding for scroll control
- */
+
 export default function MessageList({
   messages,
   messagesContainerRef,
