@@ -63,7 +63,7 @@ function Dashboard() {
   };
 
   if (loading) {
-    return <LoadingSpinner message="loading history data..." />;
+    return <LoadingSpinner message="Loading history data..." />;
   }
 
   if (error) {
@@ -79,8 +79,8 @@ function Dashboard() {
         <div className="min-h-screen p-4 md:p-6">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-center min-h-[60vh]">
-              <div className="text-center p-8 rounded-xl shadow-sm border border-red-600">
-                <div className="text-red-500 mb-4">
+              <div className="text-center p-8 rounded-xl shadow-sm border border-[#E91E63]">
+                <div className="text-[#E91E63] mb-4">
                   <svg
                     className="h-12 w-12 mx-auto"
                     fill="none"
@@ -101,7 +101,7 @@ function Dashboard() {
                 <p className="text-gray-400 mb-6">{error}</p>
                 <button
                   onClick={checkUserAndFetchData}
-                  className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  className="px-6 py-3 bg-[#E91E63] text-white rounded-lg hover:bg-[#374151] transition-colors font-medium"
                 >
                   Try Again
                 </button>
@@ -140,8 +140,8 @@ function Dashboard() {
             </header>
 
             <div className="flex  items-center justify-center min-h-[50vh]">
-              <div className="text-center bg-[#2F2F7F]/50 p-8 rounded-xl shadow-sm border border-white/10 max-w-md">
-                <div className="text-red-600 mb-6">
+              <div className="text-center bg-[#374151] p-8 rounded-xl shadow-sm border border-white/10 max-w-md">
+                <div className="text-[#E91E63] mb-6">
                   <svg
                     className="h-16 w-16 mx-auto"
                     fill="none"
@@ -165,7 +165,7 @@ function Dashboard() {
                 </p>
                 <Link
                   href={"/levels"}
-                  className="block w-full text-center bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-2 px-2 rounded-lg"
+                  className="block w-full text-center bg-[#E91E63] hover:shadow-md hover:shadow-[#E91E63]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-2 px-2 rounded-lg"
                 >
                   Start New Session
                 </Link>
@@ -214,9 +214,9 @@ function Dashboard() {
             {/* Session Limit Warning - Only show for non-premium users */}
             {!isPremium && (
               <div className="mt-4 lg:mt-0 lg:ml-8 flex-shrink-0 flex justify-center lg:justify-end ">
-                <div className="bg-red-600/10 border border-red-600/30 rounded-lg p-4 max-w-xs ">
+                <div className="bg-[#E91E63]/10 border border-[#E91E63]/30 rounded-lg p-4 max-w-xs ">
                   <div className="flex items-centeer gap-3">
-                    <div className="text-red-500 flex-shrink-0 mt-0.5">
+                    <div className="text-[#E91E63] flex-shrink-0 mt-0.5">
                       <svg
                         className="h-5 w-5"
                         fill="none"
@@ -232,10 +232,10 @@ function Dashboard() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-red-400 mb-1">
+                      <h3 className="text-sm font-semibold text-[#E91E63] mb-1">
                         Free Plan Limit
                       </h3>
-                      <p className="text-xs text-red-200/80 leading-relaxed">
+                      <p className="text-xs text-[#E91E63]/80 leading-relaxed">
                         You have{" "}
                         {Math.max(0, 3 - (dashboardData?.totalSessions || 0))}{" "}
                         of 3 free sessions remaining.
@@ -243,7 +243,7 @@ function Dashboard() {
                       {dashboardData && dashboardData.totalSessions >= 3 && (
                         <Link
                           href="/subscribe"
-                          className="inline-block mt-2 text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition-colors"
+                          className="inline-block mt-2 text-xs bg-[#E91E63] hover:bg-[#E91E63] text-white px-3 py-1 rounded transition-colors"
                         >
                           Upgrade Now
                         </Link>

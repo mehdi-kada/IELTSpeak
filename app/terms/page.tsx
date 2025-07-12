@@ -13,13 +13,13 @@ export default function TermsOfUse() {
     <>
       <div className="flex items-center justify-center mt-12 gap-1">
         <Link href="/">
-          <h1 className="text-4xl text-center font-bold text-red-600">
+          <h1 className="text-4xl text-center font-bold text-[#E91E63]">
             IELTSpeak
           </h1>
         </Link>
       </div>
       <div className=" py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto bg-[#2F2F7F]/50 p-8 sm:p-12 rounded-lg shadow-md">
+        <div className="max-w-3xl mx-auto bg-[#374151]/50 p-8 sm:p-12 rounded-lg shadow-md">
           <div className="prose prose-lg max-w-none">
             <h1>Terms of Use for IELTSpeak</h1>
             <p className="text-sm text-gray-500">Last Updated: July 10, 2025</p>

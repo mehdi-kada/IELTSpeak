@@ -19,10 +19,10 @@ export const configureAssistant = () => {
     startSpeakingPlan: {
       transcriptionEndpointingPlan: {
         onPunctuationSeconds: 0.5,
-        onNoPunctuationSeconds: 0.5,
+        onNoPunctuationSeconds: 0.8,
         onNumberSeconds: 0.3,
       },
-      waitSeconds: 0.3,
+      waitSeconds: 1,
     },
 
     firstMessage:

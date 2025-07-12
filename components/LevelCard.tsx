@@ -31,9 +31,9 @@ function LevelCard({ level, title, description }: cardProps) {
   };
 
   return (
-    <div className="group relative bg-[#2F2F7F]/50 border space-y-12 sm:space-y-0 border-white/10 p-6 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:border-[#E62136]">
+    <div className="group relative bg-[#374151] border space-y-12 sm:space-y-0 border-white/10 p-6 rounded-xl overflow-hidden transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:border-[#E91E63]">
       <div className="relative z-10 pointer-events-none ">
-        <h3 className="text-4xl font-black text-[#E62136]">{level}</h3>
+        <h3 className="text-4xl font-black text-[#E91E63]">{level}</h3>
         <h4 className="font-bold text-2xl mb-2 mt-2 text-white">{title}</h4>
         <p className="text-gray-400 mt-4 h-24 transition-opacity duration-300 sm:group-hover:opacity-0">
           {description}
@@ -47,8 +47,8 @@ function LevelCard({ level, title, description }: cardProps) {
             className={`w-full text-center font-bold py-3 px-4 rounded-lg transition-all duration-200
               ${
                 loading
-                  ? "bg-red-600/20 text-gray-600 cursor-not-allowed"
-                  : "bg-[#E62136] text-white hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px"
+                  ? "bg-[#E91E63]/20 text-gray-600 cursor-not-allowed"
+                  : "bg-[#E91E63] text-white hover:shadow-md hover:shadow-[#E91E63]/30 hover:-translate-y-px"
               }`}
           >
             {loading ? "Starting Session..." : "Start Session"}

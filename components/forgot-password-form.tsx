@@ -36,7 +36,7 @@ export function ForgotPasswordForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       {success ? (
-        <div className="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl shadow-2xl shadow-[#2F2F7F]/20 p-8">
+        <div className="bg-[#374151] border border-white/10 rounded-2xl shadow-2xl shadow-[#374151]/20 p-8">
           <div className="text-center space-y-4">
             <h2 className="text-2xl font-bold text-white">Check Your Email</h2>
             <p className="text-gray-300">Password reset instructions sent</p>
@@ -47,7 +47,7 @@ export function ForgotPasswordForm({
           </div>
         </div>
       ) : (
-        <div className="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl shadow-2xl shadow-[#2F2F7F]/20 p-8">
+        <div className="bg-[#374151] border border-white/10 rounded-2xl shadow-2xl shadow-[#374151]/20 p-8">
           <div className="text-center space-y-2 mb-6">
             <h2 className="text-2xl font-bold text-white">
               Reset Your Password
@@ -75,7 +75,7 @@ export function ForgotPasswordForm({
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-[#1a1a3a]/60 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E62136] focus:border-[#E62136] transition-colors"
+                  className="w-full bg-[#1F2937] border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E91E63] focus:border-[#E91E63] transition-colors"
                 />
               </div>
             </div>
@@ -87,7 +87,7 @@ export function ForgotPasswordForm({
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1a1a3a] focus:ring-[#E62136] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#E91E63] hover:shadow-md hover:shadow-[#E91E63]/30 hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1a1a3a] focus:ring-[#E91E63] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Sending..." : "Send Password Reset Link"}
               </button>
@@ -101,7 +101,7 @@ export function ForgotPasswordForm({
         Remember your password?{" "}
         <Link
           href="/auth/login"
-          className="font-medium text-[#E62136]/80 hover:text-[#E62136] transition-colors"
+          className="font-medium text-[#E91E63]/80 hover:text-[#E91E63] transition-colors"
         >
           Back to Sign in
         </Link>

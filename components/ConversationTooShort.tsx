@@ -5,15 +5,14 @@ import Link from "next/link";
 export default function ConversationTooShort() {
   return (
     <main className="flex-grow flex flex-col items-center mt-8 p-4 text-center">
-
-      <div className="w-24 h-24 bg-[#2F2F7F]/50 rounded-full flex items-center justify-center border-2 border-dashed border-white/20 mb-8">
+      <div className="w-24 h-24 bg-[#374151] rounded-full flex items-center justify-center border-2 border-dashed border-white/20 mb-8">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth="1.5"
           stroke="currentColor"
-          className="w-12 h-12 text-[#E62136]"
+          className="w-12 h-12 text-[#E91E63]"
         >
           <path
             strokeLinejoin="round"
@@ -47,7 +46,7 @@ export default function ConversationTooShort() {
         </Link>
         <Link
           href="/levels"
-          className="bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px text-white font-bold py-3 px-8 rounded-lg transition-all duration-200"
+          className="bg-[#E91E63] hover:shadow-md hover:shadow-[#E91E63]/30 hover:-translate-y-px text-white font-bold py-3 px-8 rounded-lg transition-all duration-200"
         >
           Try Again
         </Link>

@@ -1,49 +1,52 @@
 @import "tailwindcss";
 
-body {
-  background-color: #1a1a3a;
+
+
+
+body{
+  background-color: #1F2937;
   color: white;
 }
 
 .hero-bg {
-  background-color: #2f2f7f;
+  background-color: #374151;
   background-image: radial-gradient(
       circle at 15% 50%,
-      rgba(230, 33, 54, 0.1),
+      rgba(233, 30, 99, 0.1),
       transparent 30%
     ),
-    radial-gradient(circle at 85% 30%, rgba(47, 47, 127, 0.5), transparent 40%);
+    radial-gradient(circle at 85% 30%, rgba(55, 65, 81, 0.5), transparent 40%);
 }
 
 .cta-button {
-  background-color: #e62136;
+  background-color: #E91E63;
   transition: all 0.3s ease;
 }
 
 .cta-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(230, 33, 54, 0.3);
+  box-shadow: 0 10px 20px rgba(233, 30, 99, 0.3);
 }
 
 .secondary-button {
-  border-color: #e62136;
-  color: #e62136;
+  border-color: #E91E63;
+  color: #E91E63;
   transition: all 0.3s ease;
 }
 
 .secondary-button:hover {
-  background-color: rgba(230, 33, 54, 0.1);
+  background-color: rgba(233, 30, 99, 0.1);
 }
 
 .feature-card {
-  background-color: rgba(47, 47, 127, 0.5);
+  background-color: rgba(55, 65, 81, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
 
 .feature-card:hover {
   transform: translateY(-5px);
-  border-color: #e62136;
+  border-color: #E91E63;
 }
 
 .gradient-text {
@@ -75,12 +78,12 @@ body {
 }
 .glitch-before {
   left: 2px;
-  text-shadow: -2px 0 #e62136;
+  text-shadow: -2px 0 #E91E63;
   animation: glitch-anim-1 2s infinite linear alternate-reverse;
 }
 .glitch-after {
   left: -2px;
-  text-shadow: -2px 0 #2f2f7f, 2px 2px #e62136;
+  text-shadow: -2px 0 #374151, 2px 2px #E91E63;
   animation: glitch-anim-2 2s infinite linear alternate-reverse;
 }
 @keyframes glitch-anim-1 {
@@ -158,9 +161,18 @@ body {
   width: 8px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background-color: #1a1a3a;
+  background-color: #1F2937;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #e62136;
+  background-color: #E91E63;
   border-radius: 4px;
+}
+
+@layer utilities {
+  .text-custom-pink {
+    color: #E91E63;
+  }
+  .bg-custom-pink {
+    background-color: #E91E63;
+  }
 }

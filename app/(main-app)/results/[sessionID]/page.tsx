@@ -67,15 +67,13 @@ function Practice() {
     return <LoadingSpinner />;
   }
 
-
   if (error) {
     return router.push("/too-short");
   }
 
-
   if (!evaluationData) {
     return (
-      <div className="bg-[#1a1a3a] text-white min-h-screen flex items-center justify-center">
+      <div className="bg-[#1F2937] text-white min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="text-gray-400 text-6xl mb-4">📊</div>
           <h2 className="text-2xl font-bold mb-2">No Results Available</h2>
@@ -84,7 +82,7 @@ function Practice() {
           </p>
           <Link
             href="/dashboard"
-            className="bg-[#E62136] hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+            className="bg-[#E91E63] hover:bg-[#E91E63]/90 text-white font-bold py-3 px-6 rounded-lg transition-colors"
           >
             Back to Dashboard
           </Link>
@@ -95,7 +93,7 @@ function Practice() {
 
   return (
     <div
-      className="bg-[#1a1a3a] text-white min-h-screen"
+      className="bg-[#1F2937] text-white min-h-screen"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
       {/* Main Content Area */}
@@ -110,13 +108,13 @@ function Practice() {
 
         {/* Scores Section */}
         <div className="flex justify-center mb-10">
-          <div className="bg-[#2F2F7F] border border-white/10 rounded-2xl p-6 w-full max-w-4xl">
+          <div className="bg-[#374151] border border-white/10 rounded-2xl p-6 w-full max-w-4xl">
             <h2 className=" text-3xl sm:text-center font-bold mb-6">
               IELTS Results
             </h2>
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
               <div className="flex items-baseline gap-2">
-                <p className="text-5xl font-black text-[#E62136]">
+                <p className="text-5xl font-black text-[#E91E63]">
                   {evaluationData.evaluation.ielts_ratings.overall}
                 </p>
                 <span className="font-medium text-gray-300">Overall</span>
@@ -124,7 +122,7 @@ function Practice() {
               <div className="w-full sm:w-auto">
                 <Link
                   href="/levels"
-                  className="block w-full sm:w-auto text-center bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px text-white font-bold py-3 px-4 sm:px-6 rounded-lg transition-all whitespace-nowrap"
+                  className="block w-full sm:w-auto text-center bg-[#E91E63] hover:shadow-md hover:shadow-[#E91E63]/30 hover:-translate-y-px text-white font-bold py-3 px-4 sm:px-6 rounded-lg transition-all whitespace-nowrap"
                 >
                   Start a New Session
                 </Link>
@@ -137,7 +135,7 @@ function Practice() {
                 </span>
                 <div className="w-full bg-black/20 rounded-full h-3">
                   <div
-                    className="bg-[#E62136] h-3 rounded-full"
+                    className="bg-[#E91E63] h-3 rounded-full"
                     style={{
                       width: `${getProgressWidth(
                         evaluationData.evaluation.ielts_ratings.fluency
@@ -155,7 +153,7 @@ function Practice() {
                 </span>
                 <div className="w-full bg-black/20 rounded-full h-3">
                   <div
-                    className="bg-[#E62136] h-3 rounded-full"
+                    className="bg-[#E91E63] h-3 rounded-full"
                     style={{
                       width: `${getProgressWidth(
                         evaluationData.evaluation.ielts_ratings.vocabulary
@@ -173,7 +171,7 @@ function Practice() {
                 </span>
                 <div className="w-full bg-black/20 rounded-full h-3">
                   <div
-                    className="bg-[#E62136] h-3 rounded-full"
+                    className="bg-[#E91E63] h-3 rounded-full"
                     style={{
                       width: `${getProgressWidth(
                         evaluationData.evaluation.ielts_ratings.grammar
@@ -191,7 +189,7 @@ function Practice() {
                 </span>
                 <div className="w-full bg-black/20 rounded-full h-3">
                   <div
-                    className="bg-[#E62136] h-3 rounded-full"
+                    className="bg-[#E91E63] h-3 rounded-full"
                     style={{
                       width: `${getProgressWidth(
                         evaluationData.evaluation.ielts_ratings.pronunciation

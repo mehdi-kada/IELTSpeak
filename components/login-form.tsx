@@ -6,19 +6,34 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  type LoginFormValues = {
+    email: string;
+    password: string;
+  };
+  const form = useForm<LoginFormValues>({
+    defaultValues: { email: "", password: "" },
+  });
+
+  const handleLogin = async (values: LoginFormValues) => {
+    const { email, password } = values;
     setLoading(true);
     const supabase = createClient();
     setError(null);
@@ -58,72 +73,80 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <div className="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl shadow-2xl shadow-[#2F2F7F]/20 p-8">
-        <form onSubmit={handleLogin} className="space-y-6">
-          {/* Email Input */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-300"
-            >
-              Email Address
-            </label>
-            <div className="mt-1">
-              <input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-[#1a1a3a]/60 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E62136] focus:border-[#E62136] transition-colors"
-              />
-            </div>
-          </div>
+      <div className="bg-[#374151] border border-white/10 rounded-2xl shadow-2xl shadow-[#374151]/20 p-8">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-6">
+            {/* Email Input */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email Address</FormLabel>
+                  <div className="mt-1">
+                    <FormControl>
+                      <input
+                        type="email"
+                        placeholder="m@example.com"
+                        required
+                        id={field.name}
+                        {...field}
+                        className="w-full bg-[#1F2937] border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E91E63] focus:border-[#E91E63] transition-colors"
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* Password Input */}
-          <div>
-            <div className="flex items-center justify-between">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-300"
+            {/* Password Input */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Password</FormLabel>
+                    <div className="text-sm">
+                      <Link
+                        href="/auth/forgot-password"
+                        className="font-medium text-[#E91E63]/80 hover:text-[#E91E63] transition-colors"
+                      >
+                        Forgot your password?
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="mt-1">
+                    <FormControl>
+                      <input
+                        type="password"
+                        required
+                        id={field.name}
+                        {...field}
+                        className="w-full bg-[#1F2937] border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E91E63] focus:border-[#E91E63] transition-colors"
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {error && <p className="text-sm text-red-500">{error}</p>}
+
+            {/* Submit Button */}
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#E91E63] hover:shadow-md hover:shadow-[#E91E63]/30 hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1F2937]cus:ring-[#E91E63] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Password
-              </label>
-              <div className="text-sm">
-                <Link
-                  href="/auth/forgot-password"
-                  className="font-medium text-[#E62136]/80 hover:text-[#E62136] transition-colors"
-                >
-                  Forgot your password?
-                </Link>
-              </div>
+                {loading ? "Signing in..." : "Sign in"}
+              </button>
             </div>
-            <div className="mt-1">
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-[#1a1a3a]/60 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E62136] focus:border-[#E62136] transition-colors"
-              />
-            </div>
-          </div>
-
-          {error && <p className="text-sm text-red-500">{error}</p>}
-
-          {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1a1a3a] focus:ring-[#E62136] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Signing in..." : "Sign in"}
-            </button>
-          </div>
-        </form>
+          </form>
+        </Form>
 
         {/* Divider */}
         <div className="relative flex py-5 items-center">
@@ -138,7 +161,7 @@ export function LoginForm({
             type="button"
             onClick={handleSocialLogin}
             disabled={loading}
-            className="w-full flex items-center justify-center py-3 px-4 border border-white/20 rounded-lg shadow-sm text-sm font-medium text-white bg-[#2F2F7F] hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1a1a3a] focus:ring-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center py-3 px-4 border border-white/20 rounded-lg shadow-sm text-sm font-medium text-white bg-[#374151] hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1F2937]cus:ring-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg
               className="w-5 h-5 mr-3"
@@ -165,7 +188,7 @@ export function LoginForm({
         Don't have an account?{" "}
         <Link
           href="/auth/sign-up"
-          className="font-medium text-[#E62136]/80 hover:text-[#E62136] transition-colors"
+          className="font-medium text-[#E91E63]/80 hover:text-[#E91E63] transition-colors"
         >
           Sign up
         </Link>

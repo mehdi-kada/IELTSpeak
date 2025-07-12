@@ -12,18 +12,18 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       style={
         {
-          "--normal-bg": "#2F2F7F",
+          "--normal-bg": "bg-[#374151]",
           "--normal-text": "#fff",
-          "--normal-border": "#E62136",
+          "--normal-border": "#E91E63",
           fontSize: "3rem",
           fontWeight: 600,
         } as React.CSSProperties
       }
       toastOptions={{
         style: {
-          background: "#2F2F7F",
+          background: "#374151",
           color: "#fff",
-          border: "2px solid #E62136",
+          border: "2px solid #E91E63",
           fontSize: "1rem", // Font size for toast content
           fontWeight: 600, // Font weight for toast content
           textAlign: "center",

@@ -30,10 +30,10 @@ const HeroSection = () => {
         </div>
         {/* Mockup/Visual Element */}
         <div className="mt-16 relative">
-          <div className="mx-auto w-full max-w-3xl h-64 bg-gray-900/30 rounded-xl flex items-center justify-center border border-white/10 shadow-2xl shadow-indigo-900/50 backdrop-blur-sm">
+          <div className="mx-auto w-full max-w-3xl h-64 bg-gray-900/30 rounded-xl flex items-center justify-center border border-white/10 shadow-2xl shadow-[#E91E63]/50 backdrop-blur-sm">
             <div className="text-center">
               <svg
-                className="mx-auto h-12 w-12 text-red-500"
+                className="mx-auto h-12 w-12 text-[#E91E63]"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -50,7 +50,7 @@ const HeroSection = () => {
                 "Tell me about a time you had to learn a new skill."
               </p>
               <div className="mt-4 flex justify-center items-center space-x-4">
-                <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                <span className="w-3 h-3 bg-[#E91E63] rounded-full animate-pulse"></span>
                 <span className="text-gray-400">AI is listening...</span>
               </div>
             </div>

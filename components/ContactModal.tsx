@@ -83,7 +83,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#2F2F7F]/70 backdrop-blur-md p-6 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-[#374151]/70 backdrop-blur-md p-6 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-bold text-white">Contact Us</h3>
           <button
@@ -140,7 +140,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                     <FormControl>
                       <Input
                         placeholder="Your name"
-                        className=" bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
+                        className=" bg-[#1F2937]/60 border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] px-4 py-3"
                         {...field}
                       />
                     </FormControl>
@@ -159,7 +159,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                       <Input
                         type="email"
                         placeholder="your@email.com"
-                       className=" bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
+                        className=" bg-[#1F2937]/60 border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] px-4 py-3"
                         {...field}
                       />
                     </FormControl>
@@ -177,7 +177,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                     <FormControl>
                       <Textarea
                         placeholder="Your message..."
-                       className=" bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
+                        className=" bg-[#1F2937]/60 border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] px-4 py-3"
                         rows={4}
                         {...field}
                       />
@@ -188,7 +188,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
               />
 
               {submitStatus === "error" && (
-                <div className="bg-red-500/20 border border-red-500/50 text-red-400 text-sm p-3 rounded">
+                <div className="bg-[#E91E63]/20 border border-[#E91E63]/50 text-[#E91E63] text-sm p-3 rounded">
                   Failed to send message. Please try again or contact us
                   directly.
                 </div>
@@ -199,7 +199,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                   type="button"
                   variant="outline"
                   onClick={onClose}
-                  className="flex-1 bg-[#1a1a3a]/60 border-gray-600 text-white hover:bg-white/10"
+                  className="flex-1 bg-[#1F2937]/60 border-gray-600 text-white hover:bg-white/10"
                   disabled={isSubmitting}
                 >
                   Cancel
@@ -207,7 +207,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 bg-[#E62136] hover:bg-red-700 text-white"
+                  className="flex-1 bg-[#E91E63] hover:bg-[#E91E63]/90 text-white"
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>

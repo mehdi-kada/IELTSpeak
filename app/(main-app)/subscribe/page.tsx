@@ -13,7 +13,7 @@ function Subscribe() {
   return (
     <div className="max-w-4xl mx-auto p-6">
             {/* Free Trial Announcement */}
-      <div className="bg-gradient-to-r from-blue-600 to-red-600 text-white text-center py-4 px-6 rounded-lg mb-8">
+      <div className="bg-gradient-to-r from-[] to-[#E91E63] text-white text-center py-4 px-6 rounded-lg mb-8">
         <h2 className="text-xl font-semibold mb-2">🎉 Limited Time Offer!</h2>
         <p className="text-lg">
           Enjoy your <span className="font-bold">7-day FREE trial</span> today - No credit card required!

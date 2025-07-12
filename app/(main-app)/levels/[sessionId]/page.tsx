@@ -43,7 +43,7 @@ function Session() {
 
   // for updating session and processing conversation
   const { isSavingResults, sendConversationToAPI } = useSessionRating();
-  
+
   // streamed suggestions from gemini , use the function inside the messages webhook
   const {
     suggestions,
@@ -90,7 +90,7 @@ function Session() {
     level,
     sessionId,
     suggestions,
-    generateSuggestion,
+    generateSuggestion
   );
 
   const sessionTime = useSessionTimer(callStatus);
@@ -102,7 +102,7 @@ function Session() {
   }, [messages]);
 
   return (
-    <div className="bg-[#1a1a3a] text-white flex flex-col h-screen overflow-hidden">
+    <div className="bg-[#1F2937] text-white flex flex-col h-screen overflow-hidden">
       {/* Session Navigation */}
       <SessionNavigation
         isMuted={isMuted}
@@ -132,7 +132,7 @@ function Session() {
               onClick={() => setSuggestionsVisible(true)}
               className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
                 suggestionsVisible
-                  ? "bg-[#2F2F7F] text-white border-b-2 border-red-600"
+                  ? "bg-[#374151] text-white border-b-2 border-[#E91E63]"
                   : "text-gray-400 hover:text-white"
               }`}
             >
@@ -142,7 +142,7 @@ function Session() {
               onClick={() => setSuggestionsVisible(false)}
               className={`flex-1 py-3 px-4 text-sm  font-medium transition-colors ${
                 !suggestionsVisible
-                  ? "bg-[#2F2F7F] text-white border-b-2 border-[#E62136]"
+                  ? "bg-[#374151] text-white border-b-2 border-[#E91E63]"
                   : "text-gray-400 hover:text-white"
               }`}
             >

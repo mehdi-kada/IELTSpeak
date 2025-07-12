@@ -52,12 +52,12 @@ export function SubscriptionCard({
   return (
     <Card
       className={`relative w-full max-w-md  ${
-        isPopular ? " bg-[#2F2F7F] border-2 border-red-700 " : "bg-[#2F2F7F]/50"
+        isPopular ? " bg-[#434e5f] border-2 border-[#E91E63] " : "bg-[#3a4350]"
       } transform hover:-translate-y-2 transition-transform duration-300`}
     >
       {isPopular && (
         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 ">
-          <span className="bg-red-600 rounded-2xl font-bold px-4 ">
+          <span className="bg-[#E91E63] rounded-2xl font-bold px-4 ">
             BEST VALUE
           </span>
         </div>
@@ -106,7 +106,7 @@ export function SubscriptionCard({
           disabled={loading}
           className={`w-full font-bold py-3 px-6 rounded-lg transition-colors ${loading ? "cursor-not-allowed" : ""} ${
             isPopular
-              ? "bg-red-600/20 hover:shadow-md hover:shadow-red-600/50"
+              ? "bg-[#E91E63]/20 hover:shadow-md hover:shadow-[#E91E63]/50"
               : "bg-white/20 hover:bg-white/20"
           }`}
         >

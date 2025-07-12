@@ -137,8 +137,8 @@ const FeaturesSection = () => {
               style={{ transitionDelay: visible ? `${index * 250}ms` : "0ms" }}
             >
               {/* Inner card handles hover effect instantly */}
-              <div className=" p-6 rounded-xl max-w-3xl mx-auto bg-[#2F2F7F]/50 border border-white/10 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-[#e62136]">
-                <div className="text-red-500 mb-4">{feature.icon}</div>
+              <div className=" p-6 rounded-xl max-w-3xl mx-auto bg-[#374151] border border-white/10 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-[#E91E63]">
+                <div className="text-[#E91E63] mb-4">{feature.icon}</div>
                 <h4 className="font-bold text-xl mb-2">{feature.title}</h4>
                 <p className="text-gray-400">{feature.description}</p>
               </div>
