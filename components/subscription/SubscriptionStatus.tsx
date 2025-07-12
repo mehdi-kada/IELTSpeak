@@ -83,7 +83,7 @@ function SubscriptionStatus() {
 
   if (subStatus === "active") {
     return (
-      <div className="bg-[#2F2F7F] border border-red-600 px-6 py-4 rounded-xl space-y-3">
+      <div className="bg-[#374151] border border-[#2F2F7F] px-6 py-4 rounded-xl space-y-3">
         <p className="text-2xl font-bold">You are subscribed !</p>
 
         <div className="">
@@ -93,7 +93,7 @@ function SubscriptionStatus() {
           <button
             disabled={cancelling}
             onClick={handleCanceleSub}
-            className=" cursor-pointer text-red-600 "
+            className="cursor-pointer text-[#2F2F7F]"
           >
             {cancelling ? "cancelling..." : "Cancel subscription"}
           </button>
@@ -103,7 +103,7 @@ function SubscriptionStatus() {
   }
   if (subStatus === "cancelled") {
     return (
-      <div className="bg-[#2F2F7F] border border-red-600 px-6 py-4 rounded-xl space-y-3">
+      <div className="bg-[#374151] border border-[#2F2F7F] px-6 py-4 rounded-xl space-y-3">
         <p>
           Your subscription will end in <strong>{endDate}</strong>
         </p>

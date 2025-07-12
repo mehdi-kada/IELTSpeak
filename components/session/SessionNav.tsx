@@ -16,7 +16,7 @@ export default function SessionNavigation({
   vapiRef
 }: NavigationProps) {
   return (
-    <nav className="bg-[#2F2F7F] z-5 p-4 shadow-lg flex-shrink-0">
+    <nav className="bg-[#374151] z-5 p-4 shadow-lg flex-shrink-0">
       <div className="container mx-auto flex justify-between items-center">
         {/* Left: Mute Button */}
         <div className="flex items-center">

@@ -1,8 +1,6 @@
 import { SavedMessage } from "@/types/sessionTypes";
 import React from "react";
 
-
-
 interface MobileTranscriptPanelProps {
   messages: SavedMessage[];
   messagesContainerRef: React.RefObject<HTMLDivElement>;
@@ -34,9 +32,9 @@ function MobileMessageList({
                 }`}
               >
                 {message.role === "assistant" && (
-                  <div className="flex-shrink-0 h-10 w-10 bg-[#1a1a3a] rounded-full flex items-center justify-center border border-[#E62136]">
+                  <div className="flex-shrink-0 h-10 w-10 bg-[#374151] rounded-full flex items-center justify-center border border-[#E91E63]">
                     <svg
-                      className="mx-auto h-6 w-6 text-red-500"
+                      className="mx-auto h-6 w-6 text-[#E91E63]"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -54,8 +52,8 @@ function MobileMessageList({
                 <div
                   className={`p-4 max-w-xl ${
                     message.role === "assistant"
-                      ? "bg-[#2F2F7F] rounded-r-xl rounded-bl-xl"
-                      : "bg-[#E62136] rounded-l-xl rounded-br-xl"
+                      ? "bg-[#374151] rounded-r-xl rounded-bl-xl"
+                      : "bg-[#E91E63] rounded-l-xl rounded-br-xl"
                   }`}
                 >
                   <p>{message.content}</p>

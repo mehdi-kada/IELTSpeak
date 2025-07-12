@@ -22,7 +22,7 @@ export default function MuteButton({
     <button
       onClick={onToggle}
       disabled={isDisabled}
-      className={`${isMuted ? "bg-red-600" : "bg-white/10"} ${
+      className={`${isMuted ? "bg-[#E91E63]" : "bg-white/10"} ${
         isDisabled
           ? "opacity-50 cursor-not-allowed"
           : "hover:bg-white/20"

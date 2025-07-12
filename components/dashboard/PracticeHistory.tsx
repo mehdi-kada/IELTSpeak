@@ -1,10 +1,9 @@
 import { PracticeHistoryProps } from "@/types/types";
 import Link from "next/link";
 
-
 export function PracticeHistory({ sessions }: PracticeHistoryProps) {
   return (
-    <div className="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl overflow-auto h-144">
+    <div className="bg-[#374151] border border-white/10 rounded-2xl overflow-auto h-144">
       <div className="p-6 border-b border-white/10">
         <h2 className="text-2xl font-bold text-center">Practice History</h2>
       </div>
@@ -12,10 +11,10 @@ export function PracticeHistory({ sessions }: PracticeHistoryProps) {
         {sessions.map((session) => (
           <div
             key={session.id}
-            className="flex justify-between p-6 space-y-4 md:space-y-0 md:flex md:justify-between md:items-center hover:bg-white/5 transition-colors"
+            className="flex justify-between p-6 space-y-4 md:space-y-0 md:flex md:justify-between md:items-center hover:bg-[#E91E63]/20 transition-colors"
           >
             <div>
-              <p className="font-bold text-lg">Level  {session.level}</p>
+              <p className="font-bold text-lg">Level {session.level}</p>
               <p className="text-sm text-gray-400">{session.date}</p>
             </div>
             <div className="flex items-center gap-4">

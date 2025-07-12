@@ -15,10 +15,10 @@ const Step: React.FC<StepProps> = ({
 }) => {
   return (
     <div className="relative">
-      <div className="absolute -top-4 -right-4 text-6xl font-black text-blue-800 opacity-50">
+      <div className="absolute -top-4 -right-4 text-6xl font-black text-[#424c5c] opacity-50">
         {stepNumber}
       </div>
-      <div className="text-red-500 mb-4 inline-block">{icon}</div>
+      <div className="text-[#E91E63] mb-4 inline-block">{icon}</div>
       <h4 className="font-bold text-xl mb-2">{title}</h4>
       <p className="text-gray-400">{description}</p>
     </div>
@@ -101,7 +101,7 @@ const HowItWorksSection = () => {
   ];
 
   return (
-    <section className="py-20 px-5 bg-[#101030] bg-opacity-30 ">
+    <section className="py-20 px-5 bg-[#1e2733] bg-opacity-30 ">
       <div className="container mx-auto">
         <div className="text-center mb-12">
           <h3 className="text-3xl md:text-4xl font-bold mb-3">

@@ -7,21 +7,6 @@ interface MessageProps {
   message: SavedMessage;
 }
 
-/**
- * Message Component
- *
- * Purpose: Renders a single message in the transcript
- *
- * Features:
- * - Different styling for user vs assistant messages
- * - Icons for message types
- * - Responsive layout
- *
- * Best Practices:
- * - Single responsibility (renders one message)
- * - Conditional rendering based on message role
- * - Reusable component
- */
 export default function Message({ message }: MessageProps) {
   return (
     <div
@@ -31,9 +16,9 @@ export default function Message({ message }: MessageProps) {
     >
       {/* Assistant Avatar */}
       {message.role === "assistant" && (
-        <div className="flex-shrink-0 h-10 w-10 bg-[#1a1a3a] rounded-full flex items-center justify-center border border-[#E62136]">
+        <div className="flex-shrink-0 h-10 w-10 bg-[#1F2937] rounded-full flex items-center justify-center border ">
           <svg
-            className="mx-auto h-6 w-6 text-red-500"
+            className="mx-auto h-6 w-6 text-[#E91E63]"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -53,8 +38,8 @@ export default function Message({ message }: MessageProps) {
       <div
         className={`p-4 max-w-xl ${
           message.role === "assistant"
-            ? "bg-[#2F2F7F] rounded-r-xl rounded-bl-xl"
-            : "bg-[#E62136] rounded-l-xl rounded-br-xl"
+            ? "bg-[#374151] rounded-r-xl rounded-bl-xl"
+            : "bg-[#E91E63] rounded-l-xl rounded-br-xl"
         }`}
       >
         <p>{message.content}</p>
@@ -62,7 +47,7 @@ export default function Message({ message }: MessageProps) {
 
       {/* User Avatar */}
       {message.role === "user" && (
-        <div className="flex-shrink-0 h-10 w-10 bg-gray-700 rounded-full flex items-center justify-center">
+        <div className="flex-shrink-0 h-10 w-10 bg-[#374151] rounded-full flex items-center justify-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6 text-gray-400"

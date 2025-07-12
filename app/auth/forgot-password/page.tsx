@@ -12,7 +12,7 @@ export default function Page() {
       <div className="w-full max-w-sm">
         <div className="flex items-center justify-center mb-2 gap-1">
           <Link href="/">
-            <h1 className="text-4xl text-center font-bold text-red-600">IELTSpeak</h1>
+            <h1 className="text-4xl text-center font-bold text-[#E91E63]">IELTSpeak</h1>
           </Link>
         </div>
         <ForgotPasswordForm />

@@ -14,7 +14,7 @@ export const CurrentUserAvatar = () => {
     ?.toUpperCase();
 
   return (
-    <Avatar className="h-10 w-10 border-2 border-red-600">
+    <Avatar className="h-10 w-10 border-2 border-[#E91E63]">
       {profileImage && <AvatarImage src={profileImage} alt={initials} />}
       <AvatarFallback>{initials}</AvatarFallback>
     </Avatar>

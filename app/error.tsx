@@ -53,7 +53,7 @@ export default function GlobalError({
         </a>
         <button
           onClick={() => reset()}
-          className="bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px text-white font-bold py-3 px-8 rounded-lg transition-all duration-200"
+          className="bg-[#E91E63] hover:shadow-md hover:shadow-[#E91E63]/30 hover:-translate-y-px text-white font-bold py-3 px-8 rounded-lg transition-all duration-200"
         >
           Try Again
         </button>

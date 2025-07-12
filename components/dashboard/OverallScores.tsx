@@ -16,7 +16,7 @@ export function OverallScores({
   averagePronunciation,
 }: OverallScoresProps) {
   return (
-    <div className="bg-[#2F2F7F]/50 border border-white/10 rounded-2xl p-6">
+    <div className="bg-[#374151] border border-white/10 rounded-2xl p-6">
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <span className="font-medium text-gray-300">Fluency</span>
@@ -43,17 +43,17 @@ export function OverallScores({
           </span>
         </div>
         <div className="flex justify-between ">
-          <h2 className="text-xl font-bold mb-4 text-red-600  ">
+          <h2 className="text-xl font-bold mb-4 text-[#E91E63]  ">
             Overall Band
           </h2>
-          <span className="text-3xl font-bold text-red-600 text-center">
+          <span className="text-3xl font-bold text-[#E91E63] text-center">
             {Math.round(ieltsAverage * 2) / 2}
           </span>
         </div>
         <div className="">
           <Link
             href={"/levels"}
-            className="block w-full text-center bg-[#E62136] hover:shadow-md hover:shadow-[#E62136]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-2 px-2 rounded-lg"
+            className="block w-full text-center bg-[#E91E63] hover:shadow-md hover:shadow-[#E91E63]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-2 px-2 rounded-lg"
           >
             Start New Session
           </Link>

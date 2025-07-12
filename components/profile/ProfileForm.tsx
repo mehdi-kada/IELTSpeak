@@ -149,7 +149,7 @@ export function ProfileForm({ userId }: { userId: string }) {
         </p>
       </div>
 
-      <div className="bg-[#2F2F7F]/50 p-5 rounded-lg">
+      <div className="bg-[#374151] p-5 rounded-lg">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Name */}
@@ -161,7 +161,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
+                      className="bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] px-4 py-3"
                       placeholder="Enter your full name"
                       aria-label="Full Name"
                       {...field}
@@ -182,7 +182,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                   <FormLabel>Age</FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
+                      className="bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] px-4 py-3"
                       type="number"
                       placeholder="Enter your age"
                       aria-label="Age"
@@ -215,14 +215,14 @@ export function ProfileForm({ userId }: { userId: string }) {
                     <FormLabel>Education Level</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 focus:ring-2 px-2 sm:px-5 py-3 text-white">
+                        <SelectTrigger className="bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] focus:ring-2 px-2 sm:px-5 py-3 text-white">
                           <SelectValue placeholder="Education" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="bg-[#1a1a3a] border border-white/20 text-white ">
+                      <SelectContent className="bg-[#1F2937] border border-white/20 text-white ">
                         {educationLevels.map((l, index) => (
                           <SelectItem
-                            className="hover:bg-white/10"
+                            className="hover:bg-[#E91E63]/20"
                             key={index}
                             value={l}
                           >
@@ -245,14 +245,14 @@ export function ProfileForm({ userId }: { userId: string }) {
                     <FormLabel>Gender</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 focus:ring-2 px-2 sm:px-5 py-3 text-white">
+                        <SelectTrigger className="bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] focus:ring-2 px-2 sm:px-5 py-3 text-white">
                           <SelectValue placeholder="Gender" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="bg-[#1a1a3a] border border-white/20 text-white">
+                      <SelectContent className="bg-[#1F2937] border border-white/20 text-white">
                         {genders.map((g, index) => (
                           <SelectItem
-                            className="hover:bg-white/10"
+                            className="hover:bg-[#E91E63]/20"
                             key={index}
                             value={g}
                           >
@@ -276,7 +276,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                   <FormLabel>Country</FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
+                      className="bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] px-4 py-3"
                       placeholder="Enter your country"
                       aria-label="Country"
                       {...field}
@@ -297,7 +297,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                   <FormLabel>Hometown</FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
+                      className="bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] px-4 py-3"
                       placeholder="Enter your hometown"
                       aria-label="Hometown"
                       {...field}
@@ -318,7 +318,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                   <FormLabel>Occupation</FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
+                      className="bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] px-4 py-3"
                       placeholder="e.g., Student, Software Engineer, Teacher"
                       aria-label="Occupation"
                       {...field}
@@ -339,7 +339,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                   <FormLabel>Favorite Subject</FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
+                      className="bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] px-4 py-3"
                       placeholder="e.g., Math, English, History"
                       aria-label="Favorite Subject"
                       {...field}
@@ -371,7 +371,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                       >
                         <FormControl>
                           <Checkbox
-                            className="bg-[#1a1a3a]/60 border border-white/20 focus:bg-red-600 focus:ring-2 focus:ring-red-600"
+                            className="bg-[#1F2937] border border-white/20 focus:bg-[#E91E63] focus:ring-2 focus:ring-[#E91E63]"
                             checked={
                               Array.isArray(field.value) &&
                               field.value.includes(hobby)
@@ -411,7 +411,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                   <FormControl>
                     <Textarea
                       placeholder="e.g., France, Japan, local cities"
-                      className="resize-none bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
+                      className="resize-none bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] px-4 py-3"
                       aria-label="Travel Experience"
                       {...field}
                       value={field.value || ""}
@@ -434,7 +434,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                   <FormLabel>Favorite Food</FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
+                      className="bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] px-4 py-3"
                       placeholder="e.g., Pizza, Sushi, Pasta"
                       aria-label="Favorite Food"
                       {...field}
@@ -456,7 +456,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                   <FormControl>
                     <Textarea
                       placeholder="e.g., Study abroad, learn a new language"
-                      className="resize-none bg-[#1a1a3a]/60 border border-white/20 focus:border-red-600 focus:ring-red-600 px-4 py-3"
+                      className="resize-none bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] px-4 py-3"
                       aria-label="Life Goal"
                       {...field}
                       value={field.value || ""}
@@ -472,7 +472,7 @@ export function ProfileForm({ userId }: { userId: string }) {
 
             <Button
               type="submit"
-              className="w-full bg-red-600 cursor-pointer hover:shadow-md hover:shadow-red-600"
+              className="w-full bg-[#E91E63] cursor-pointer hover:shadow-md hover:shadow-[#E91E63]/30 hover:-translate-y-px transition-all duration-200"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Saving Profile..." : "Save Profile"}
