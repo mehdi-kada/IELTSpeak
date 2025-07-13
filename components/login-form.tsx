@@ -15,6 +15,9 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "./ui/input";
+import { loginFormData, loginSchema } from "@/types/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export function LoginForm({
   className,
@@ -24,15 +27,12 @@ export function LoginForm({
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  type LoginFormValues = {
-    email: string;
-    password: string;
-  };
-  const form = useForm<LoginFormValues>({
+  const form = useForm<loginFormData>({
+    resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  const handleLogin = async (values: LoginFormValues) => {
+  const handleLogin = async (values: loginFormData) => {
     const { email, password } = values;
     setLoading(true);
     const supabase = createClient();
@@ -76,7 +76,6 @@ export function LoginForm({
       <div className="bg-[#374151] border border-white/10 rounded-2xl shadow-2xl shadow-[#374151]/20 p-8">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-6">
-            {/* Email Input */}
             <FormField
               control={form.control}
               name="email"
@@ -85,13 +84,10 @@ export function LoginForm({
                   <FormLabel>Email Address</FormLabel>
                   <div className="mt-1">
                     <FormControl>
-                      <input
+                      <Input
                         type="email"
-                        placeholder="m@example.com"
-                        required
-                        id={field.name}
                         {...field}
-                        className="w-full bg-[#1F2937] border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E91E63] focus:border-[#E91E63] transition-colors"
+                        className="w-full bg-[#1F2937] border border-white/20 rounded-lg px-4 py-5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E91E63] focus:border-[#E91E63] transition-colors"
                       />
                     </FormControl>
                   </div>
@@ -99,8 +95,6 @@ export function LoginForm({
                 </FormItem>
               )}
             />
-
-            {/* Password Input */}
             <FormField
               control={form.control}
               name="password"
@@ -119,12 +113,11 @@ export function LoginForm({
                   </div>
                   <div className="mt-1">
                     <FormControl>
-                      <input
+                      <Input
                         type="password"
                         required
-                        id={field.name}
                         {...field}
-                        className="w-full bg-[#1F2937] border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E91E63] focus:border-[#E91E63] transition-colors"
+                        className="w-full bg-[#1F2937] border border-white/20 rounded-lg px-4 py-5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E91E63] focus:border-[#E91E63] transition-colors"
                       />
                     </FormControl>
                   </div>
@@ -133,9 +126,8 @@ export function LoginForm({
               )}
             />
 
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            {error && <p className="text-sm text-[#E91E63]">{error}</p>}
 
-            {/* Submit Button */}
             <div>
               <button
                 type="submit"
