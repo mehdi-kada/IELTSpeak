@@ -22,3 +22,28 @@ export const userProfileSchema = z.object({
 });
 
 export type profileValues = z.infer<typeof userProfileSchema>;
+
+export const signUpSchema = z
+  .object({
+    email: z.string().email("Please enter a valid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    repeatPassword: z.string().min(6, "Please confirm your password"),
+  })
+  .refine((data) => data.password === data.repeatPassword, {
+    path: ["repeatPassword"],
+    message: "Passwords do not match",
+  });
+
+export type SignUpFormData = z.infer<typeof signUpSchema>;
+
+export const updatePasswordSchema = z
+  .object({
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    repeatPassword: z.string().min(6, "Please confirm your password"),
+  })
+  .refine((data) => data.password == data.repeatPassword, {
+    path: ["repeatPassword"],
+    message: "Passwords do not match",
+  });
+
+export type updatePasswordFormData = z.infer<typeof updatePasswordSchema>;
