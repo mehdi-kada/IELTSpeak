@@ -375,6 +375,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                             checked={
                               Array.isArray(field.value) &&
                               field.value.includes(hobby)
+                              
                             }
                             onCheckedChange={(checked) => {
                               const currentHobbies = Array.isArray(field.value)

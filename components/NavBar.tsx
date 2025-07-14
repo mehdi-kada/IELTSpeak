@@ -38,7 +38,7 @@ function NavBar() {
                 className={cn(
                   "text-gray-200 text-sm sm:text-lg  hover:text-[#E91E63] font-medium transition-colors duration-300",
                   {
-                    "text-[]": path === item.href,
+                    "text-[#E91E63]": path === item.href,
                   }
                 )}
               >

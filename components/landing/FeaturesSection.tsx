@@ -131,7 +131,7 @@ const FeaturesSection = () => {
             // Outer div handles pop-in animation only
             <div
               key={index}
-              className={`transition-all duration-300 ease-out
+              className={`transition-all duration-300 ease-out 
                 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
               `}
               style={{ transitionDelay: visible ? `${index * 250}ms` : "0ms" }}

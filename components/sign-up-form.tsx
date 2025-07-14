@@ -2,7 +2,6 @@
 
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -127,7 +126,6 @@ export function SignUpForm({
               )}
             />
 
-
             <FormField
               control={form.control}
               name="repeatPassword"
@@ -164,6 +162,7 @@ export function SignUpForm({
           </form>
         </Form>
 
+        {error && <p className="text-sm text-[#E91E63]">{error}</p>}
 
         <div className="relative flex py-5 items-center">
           <div className="flex-grow border-t border-white/20"></div>
@@ -197,9 +196,8 @@ export function SignUpForm({
         </div>
       </div>
 
-
       <p className="mt-0 text-center text-sm text-gray-400">
-        Already have an account?{" "}
+        Already have an account?
         <Link
           href="/auth/login"
           className="font-medium text-[#E91E63]/80 hover:text-[#E91E63] transition-colors"

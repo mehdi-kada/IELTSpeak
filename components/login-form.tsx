@@ -47,6 +47,8 @@ export function LoginForm({
       router.push("/dashboard");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -140,14 +142,12 @@ export function LoginForm({
           </form>
         </Form>
 
-        {/* Divider */}
         <div className="relative flex py-5 items-center">
           <div className="flex-grow border-t border-white/20"></div>
           <span className="flex-shrink mx-4 text-gray-400">OR</span>
           <div className="flex-grow border-t border-white/20"></div>
         </div>
 
-        {/* Google Sign-in Button */}
         <div>
           <button
             type="button"
@@ -175,9 +175,8 @@ export function LoginForm({
         </div>
       </div>
 
-      {/* Sign Up Link */}
       <p className="mt-0 text-center text-sm text-gray-400">
-        Don't have an account?{" "}
+        Don't have an account?
         <Link
           href="/auth/sign-up"
           className="font-medium text-[#E91E63]/80 hover:text-[#E91E63] transition-colors"
