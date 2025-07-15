@@ -5,90 +5,82 @@ import { checkUserPremiumStatus } from "./lemonsqueezy/subscription-helpers";
 import { sessionUpdateProps } from "@/types/types";
 import { profileValues } from "@/types/schemas";
 import { requiredFields } from "@/constants/constants";
+import { logger } from "@/lib/logger";
+import { AppError, handleDatabaseError, handleAuthError } from "@/lib/error-handling";
+
+// Constants for better maintainability
+const FREE_SESSION_LIMIT = 3;
+const REDIRECT_ROUTES = {
+  LOGIN: "/auth/login",
+  PROFILE_NO_DATA: "/profile?reason=no_data",
+  SUBSCRIBE_LIMIT: "/subscribe?reason=limit-hit",
+} as const;
 
 export const insertSession = async ({ level }: { level: string }) => {
-  // get the user id insert it , return the session id for future update and redirect
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    if (authError) {
+      logger.error("Failed to get authenticated user", authError);
+      throw handleAuthError(authError);
+    }
 
-  const sessionData = {
-    level: level as string,
-    user_id: user?.id,
-  };
+    if (!user) {
+      logger.warn("Unauthenticated user attempted to create session");
+      redirect(REDIRECT_ROUTES.LOGIN);
+    }
 
-  if (!user) redirect("/auth/login");
+    logger.info("Creating new session", { userId: user.id, level });
 
-  const { data: profileData, error: profileDataError } = await supabase
-    .from("profiles")
-    .select(
-      "name, age, gender, hometown, country, occupation, education_level, favorite_subject, hobbies, travel_experience, favorite_food, life_goal"
-    )
-    .eq("id", user.id)
-    .single();
-  if (profileDataError) {
-    console.error(
-      "failed to fetch user's info to start the session",
-      profileDataError
-    );
-    redirect("/profile?reason=no_data");
-  }
-  // Check for missing fields
+    // Fetch user profile data with better error handling
+    const profileData = await fetchUserProfileForSession(user.id);
+    
+    // Check if user is premium
+    const isPremium = await checkUserPremiumStatus(user.id);
+    logger.debug("User premium status checked", { userId: user.id, isPremium });
 
-  const isProfileComplete = requiredFields.every(
-    (field) =>
-      profileData &&
-      profileData[field as keyof typeof profileData] !== null &&
-      profileData[field as keyof typeof profileData] !== ""
-  );
-  if (!isProfileComplete) {
-    console.log("need to fill out the form for best customization ");
-    redirect("/profile?reason=no_data");
-  }
-  const isPremium = await checkUserPremiumStatus(user?.id);
+    // Enforce session limit for non-premium users
+    if (!isPremium) {
+      await enforceSessionLimit(user.id);
+    }
 
-  if (!isPremium) {
-    console.log("user is not prmium");
-    const { data: sessions, error } = await supabase
+    // Create new session
+    const sessionData = {
+      level: level as string,
+      user_id: user.id,
+    };
+
+    const { data: newSession, error: insertError } = await supabase
       .from("sessions")
-      .select("*")
-      .eq("user_id", user.id)
-      .gt("ielts_rating->>overall", 0)
-      .order("created_at", { ascending: false });
-    if (error) {
-      console.log();
-      throw new Error(
-        " error when fetching data from db for premium status check in actions ",
-        error
-      );
+      .insert(sessionData)
+      .select("id")
+      .single();
+
+    if (insertError) {
+      throw handleDatabaseError(insertError, "session creation");
     }
-    if (sessions?.length >= 3) {
-      console.log("limit reached , redirecting : ");
-      return {
-        redirect: "/subscribe?reason=limit-hit",
-        reason: "limit_reached",
-      };
+
+    logger.info("Session created successfully", { 
+      sessionId: newSession.id, 
+      userId: user.id, 
+      level 
+    });
+
+    return {
+      sessionId: newSession.id,
+      redirectUrl: `/levels/${newSession.id}?level=${level}`,
+    };
+  } catch (error) {
+    if (error instanceof AppError) {
+      throw error;
     }
+    logger.error("Unexpected error in insertSession", error);
+    throw new AppError("Failed to create session", 500);
   }
-
-  const { data: newSession, error } = await supabase
-    .from("sessions")
-    .insert(sessionData)
-    .select("id")
-    .single();
-
-  if (error) {
-    console.error("error createing session : ", error);
-    throw new Error("error");
-  }
-
-  // Return the session data instead of redirecting
-  return {
-    sessionId: newSession.id,
-    redirectUrl: `/levels/${newSession.id}?level=${level}`,
-  };
 };
 
 export const updateSession = async ({
@@ -96,29 +88,48 @@ export const updateSession = async ({
   ielts,
   feedback,
 }: sessionUpdateProps) => {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
+    const { data: user, error: authError } = await supabase.auth.getUser();
+    
+    if (authError) {
+      logger.error("Failed to get authenticated user for session update", authError);
+      throw handleAuthError(authError);
+    }
+    
+    if (!user) {
+      logger.warn("Unauthenticated user attempted to update session");
+      redirect(REDIRECT_ROUTES.LOGIN);
+    }
 
-  const { data: user } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/login");
+    logger.info("Updating session with ratings", { sessionId, userId: user.user.id });
 
-  const sessionUpdatetData = {
-    ielts_rating: ielts,
-    feedback: feedback,
-  };
+    const sessionUpdateData = {
+      ielts_rating: ielts,
+      feedback: feedback,
+    };
 
-  const { data: updatedData, error } = await supabase
-    .from("sessions")
-    .update(sessionUpdatetData)
-    .eq("id", sessionId)
-    .select()
-    .single();
+    const { data: updatedData, error } = await supabase
+      .from("sessions")
+      .update(sessionUpdateData)
+      .eq("id", sessionId)
+      .eq("user_id", user.user.id) // Ensure user owns the session
+      .select()
+      .single();
 
-  if (error) {
-    console.error("error createing session : ", error);
-    throw new Error("error");
+    if (error) {
+      throw handleDatabaseError(error, "session update");
+    }
+
+    logger.info("Session updated successfully", { sessionId, userId: user.user.id });
+    return updatedData;
+  } catch (error) {
+    if (error instanceof AppError) {
+      throw error;
+    }
+    logger.error("Unexpected error in updateSession", error);
+    throw new AppError("Failed to update session", 500);
   }
-
-  return updatedData;
 };
 
 export const insertProfileData = async (
@@ -126,21 +137,24 @@ export const insertProfileData = async (
   userId: string
 ) => {
   try {
+    logger.info("Inserting profile data", { userId });
+    
     const profileData = { id: userId, ...data };
-
     const supabase = await createClient();
 
     const { error } = await supabase.from("profiles").upsert(profileData);
 
     if (error) {
-      console.log(
-        "error when inserting profile data to the db : ",
-        error.message
-      );
-      throw new Error("error : ", error);
+      throw handleDatabaseError(error, "profile data insertion");
     }
+
+    logger.info("Profile data inserted successfully", { userId });
   } catch (error) {
-    console.log("error inserting data action");
+    if (error instanceof AppError) {
+      throw error;
+    }
+    logger.error("Unexpected error in insertProfileData", error, { userId });
+    throw new AppError("Failed to save profile data", 500);
   }
 };
 
@@ -148,6 +162,8 @@ export const fetchUserProfileData = async (
   userId: string
 ): Promise<profileValues | null> => {
   try {
+    logger.debug("Fetching user profile data", { userId });
+    
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("profiles")
@@ -158,20 +174,87 @@ export const fetchUserProfileData = async (
     if (error) {
       // If no rows found, return null instead of throwing
       if (error.code === "PGRST116") {
+        logger.debug("Profile not found for user", { userId });
         return null;
       }
-      console.error("Database error fetching profile:", error.message);
-      return null;
+      throw handleDatabaseError(error, "profile data fetch");
     }
 
     // Ensure we have valid data before returning
     if (!data) {
+      logger.debug("No profile data found for user", { userId });
       return null;
     }
 
+    logger.debug("Profile data fetched successfully", { userId });
     return data as unknown as profileValues;
   } catch (error) {
-    console.error("Error fetching profile data from database:", error);
+    if (error instanceof AppError) {
+      throw error;
+    }
+    logger.error("Unexpected error in fetchUserProfileData", error, { userId });
     return null;
   }
 };
+
+/**
+ * Helper function to fetch and validate user profile for session creation
+ */
+async function fetchUserProfileForSession(userId: string) {
+  const supabase = await createClient();
+  const { data: profileData, error: profileDataError } = await supabase
+    .from("profiles")
+    .select(requiredFields.join(","))
+    .eq("id", userId)
+    .single();
+
+  if (profileDataError) {
+    logger.error("Failed to fetch user profile for session", profileDataError, { userId });
+    redirect(REDIRECT_ROUTES.PROFILE_NO_DATA);
+  }
+
+  // Check for missing required fields
+  const isProfileComplete = requiredFields.every(
+    (field) =>
+      profileData &&
+      profileData[field as keyof typeof profileData] !== null &&
+      profileData[field as keyof typeof profileData] !== ""
+  );
+
+  if (!isProfileComplete) {
+    logger.info("Incomplete profile detected", { userId, missingFields: requiredFields.filter(field => !profileData?.[field as keyof typeof profileData]) });
+    redirect(REDIRECT_ROUTES.PROFILE_NO_DATA);
+  }
+
+  return profileData;
+}
+
+/**
+ * Helper function to enforce session limit for non-premium users
+ */
+async function enforceSessionLimit(userId: string) {
+  const supabase = await createClient();
+  
+  const { data: sessions, error } = await supabase
+    .from("sessions")
+    .select("id, created_at")
+    .eq("user_id", userId)
+    .gt("ielts_rating->>overall", 0)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw handleDatabaseError(error, "session limit check");
+  }
+
+  if (sessions && sessions.length >= FREE_SESSION_LIMIT) {
+    logger.info("Session limit reached for non-premium user", { 
+      userId, 
+      sessionCount: sessions.length, 
+      limit: FREE_SESSION_LIMIT 
+    });
+    return {
+      redirect: REDIRECT_ROUTES.SUBSCRIBE_LIMIT,
+      reason: "limit_reached",
+    };
+  }
+}

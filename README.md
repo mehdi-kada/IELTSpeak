@@ -1,5 +1,21 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## IELTSpeak - AI IELTS Speaking Practice Platform
+
+IELTSpeak provides AI-powered IELTS speaking practice with real-time feedback and personalized coaching.
+
+### 🆕 Recent Improvements
+
+This codebase has been enhanced with modern best practices including:
+
+- **Comprehensive Error Handling**: Centralized logging and error management
+- **Type Safety**: Enhanced TypeScript implementation with proper validation
+- **Security**: Input validation, XSS prevention, and secure authentication
+- **Performance**: Optimized database queries and React components
+- **Developer Experience**: Better tooling, utilities, and documentation
+
+For detailed information about improvements, see [README-IMPROVEMENTS.md](./README-IMPROVEMENTS.md).
+
 ## Getting Started
 
 First, run the development server:
@@ -19,6 +35,16 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Environment Setup
+
+Copy `.env.example` to `.env.local` and configure your API keys:
+
+```bash
+cp .env.example .env.local
+```
+
+See [README-IMPROVEMENTS.md](./README-IMPROVEMENTS.md) for detailed setup instructions.
 
 ## Learn More
 

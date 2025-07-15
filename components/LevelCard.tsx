@@ -18,15 +18,13 @@ function LevelCard({ level, title, description }: cardProps) {
     setLoading(true);
     try {
       const result = await insertSession({ level });
-      if (result?.redirect) {
-        router.push(result.redirect);
-        return;
-      }
-      if (result.redirectUrl) {
+      if (result?.redirectUrl) {
         router.push(result.redirectUrl);
       }
     } catch (error) {
       console.error("Error starting session:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
