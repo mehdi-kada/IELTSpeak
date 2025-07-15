@@ -94,7 +94,6 @@ export const cancelSubFromDB = async (
 ): Promise<Boolean> => {
   try {
     // update the database
-    console.log("canceling subscription from DB with id : ", subscriptionId);
     const { data, error } = await supabase
       .from("subscriptions")
       .update({

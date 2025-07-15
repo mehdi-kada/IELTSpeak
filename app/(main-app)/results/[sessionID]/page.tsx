@@ -25,7 +25,7 @@ function Practice() {
         if (storedData) {
           setEvaluationData(JSON.parse(storedData));
           setLoading(false);
-          console.log("fetched Data from localStorage ");
+
           return;
         }
         fetchFromDatabase();
@@ -42,7 +42,7 @@ function Practice() {
         if (res.ok) {
           const data = await res.json();
           setEvaluationData(data);
-          console.log("fetched data from data base");
+
         } else {
           setError("No evaluation data found in database for that session");
         }

@@ -19,7 +19,7 @@ function SubscriptionStatus() {
   const renews_at = subData?.renews_at
     ? new Date(subData?.renews_at).toLocaleString()
     : null;
-  console.log("sub status is : ", subStatus);
+
 
   useEffect(() => {
     if (limitReached && !toastRefshown.current) {

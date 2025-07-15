@@ -44,13 +44,11 @@ export const insertSession = async ({ level }: { level: string }) => {
       profileData[field as keyof typeof profileData] !== ""
   );
   if (!isProfileComplete) {
-    console.log("need to fill out the form for best customization ");
     redirect("/profile?reason=no_data");
   }
   const isPremium = await checkUserPremiumStatus(user?.id);
 
   if (!isPremium) {
-    console.log("user is not prmium");
     const { data: sessions, error } = await supabase
       .from("sessions")
       .select("*")

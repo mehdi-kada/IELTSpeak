@@ -54,12 +54,11 @@ function Session() {
 
   // Handle end call with conversation evaluation
   const handleEndCall = async () => {
-    console.log(" the lengith of the messages is : ", messages.length);
+   
     try {
       endCall();
       if (messages.length > 5) {
         await sendConversationToAPI(sessionId, messages);
-        console.log("Evaluation completed successfully");
         route.push(`/results/${sessionId}`);
       } else {
         window.location.href = "/too-short";

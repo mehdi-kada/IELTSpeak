@@ -79,7 +79,7 @@ export function useVapi(
 
       // if the assistant triggers the session end webhook it sends the conversation for evaluation
       const onCallEnd = () => {
-        console.log("Call ended");
+
         setCallStatus(CallStatus.FINISHED);
         // trigger external callback on session end
         if (onCallEndCallbackRef.current) {
