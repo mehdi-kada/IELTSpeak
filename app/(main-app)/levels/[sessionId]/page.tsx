@@ -54,6 +54,7 @@ function Session() {
 
   // Handle end call with conversation evaluation
   const handleEndCall = async () => {
+    console.log(" the lengith of the messages is : ", messages.length);
     try {
       endCall();
       if (messages.length > 5) {
@@ -90,7 +91,8 @@ function Session() {
     level,
     sessionId,
     suggestions,
-    generateSuggestion
+    generateSuggestion,
+    handleEndCall
   );
 
   const sessionTime = useSessionTimer(callStatus);

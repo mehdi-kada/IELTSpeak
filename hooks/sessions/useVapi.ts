@@ -14,6 +14,7 @@ export function useVapi(
   sessionId: string,
   suggestions: string[],
   onSuggestion: (prompt: string) => void,
+  onCallEndCallback?: () => void
 ) {
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -24,11 +25,19 @@ export function useVapi(
   const callStartRef = useRef(false);
   const vapiRef = useRef<Vapi | null>(null);
   const suggestionsRef = useRef<string[]>(suggestions);
+  // store external end callback in ref to avoid re-triggering init effect
+  const onCallEndCallbackRef = useRef<(() => void) | undefined>(
+    onCallEndCallback
+  );
 
   // Update suggestions ref whenever suggestions change
   useEffect(() => {
     suggestionsRef.current = suggestions;
   }, [suggestions]);
+  // update onCallEndCallback ref when it changes
+  useEffect(() => {
+    onCallEndCallbackRef.current = onCallEndCallback;
+  }, [onCallEndCallback]);
 
   // Memoize profile data to prevent unnecessary re-renders
   const stableProfileData = useMemo(
@@ -72,6 +81,10 @@ export function useVapi(
       const onCallEnd = () => {
         console.log("Call ended");
         setCallStatus(CallStatus.FINISHED);
+        // trigger external callback on session end
+        if (onCallEndCallbackRef.current) {
+          onCallEndCallbackRef.current();
+        }
       };
 
       const onVapiMessage = (msg: any) => {
