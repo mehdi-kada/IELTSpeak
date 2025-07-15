@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { memo } from 'react';
 
 interface EndSessionButtonProps {
   isSavingResults: boolean;
@@ -11,13 +11,14 @@ interface EndSessionButtonProps {
 /**
  * End Session Button Component
  * Provides user feedback during session termination process
+ * Memoized to prevent unnecessary re-renders
  */
-export default function EndSessionButton({
+const EndSessionButton = memo<EndSessionButtonProps>(({
   isSavingResults,
   onEndCall,
   disabled = false,
   className = "",
-}: EndSessionButtonProps) {
+}) => {
   const isDisabled = isSavingResults || disabled;
 
   return (
@@ -44,4 +45,8 @@ export default function EndSessionButton({
       )}
     </button>
   );
-}
+});
+
+EndSessionButton.displayName = 'EndSessionButton';
+
+export default EndSessionButton;

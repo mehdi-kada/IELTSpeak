@@ -24,38 +24,37 @@ export async function fetchFromTable<T>(
 ): Promise<T | T[] | null> {
   try {
     const supabase = await createClient();
+    
+    // Build the query step by step
     let query = supabase.from(tableName);
 
-    // Apply select
-    if (options.select) {
-      query = query.select(options.select);
-    } else {
-      query = query.select('*');
-    }
+    // Apply select first
+    const selectQuery = options.select ? query.select(options.select) : query.select('*');
 
     // Apply filters
+    let filteredQuery = selectQuery;
     if (options.filters) {
       Object.entries(options.filters).forEach(([key, value]) => {
-        query = query.eq(key, value);
+        filteredQuery = filteredQuery.eq(key, value);
       });
     }
 
     // Apply ordering
     if (options.orderBy) {
-      query = query.order(options.orderBy.column, { 
+      filteredQuery = filteredQuery.order(options.orderBy.column, { 
         ascending: options.orderBy.ascending ?? true 
       });
     }
 
     // Apply limit
     if (options.limit) {
-      query = query.limit(options.limit);
+      filteredQuery = filteredQuery.limit(options.limit);
     }
 
     // Execute query
     const { data, error } = options.single 
-      ? await query.single()
-      : await query;
+      ? await filteredQuery.single()
+      : await filteredQuery;
 
     if (error) {
       throw handleDatabaseError(error, `fetch from ${tableName}`);
