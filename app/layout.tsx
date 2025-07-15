@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
+import { PostHogProvider } from "./providers";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
+
+const inter = Inter({ subsets: ["latin"] });
+
 export const metadata: Metadata = {
   title: {
     default: "IELTSpeak | AI IELTS Speaking Practice & Mock Tests",
@@ -24,7 +33,7 @@ export const metadata: Metadata = {
     siteName: "IELTSpeak",
     images: [
       {
-        url: "/app/opengraph-image.png", // Place your social sharing image in the `public` folder
+        url: "/app/opengraph-image.png",
         width: 1200,
         height: 630,
         alt: "IELTSpeak AI Examiner Interface",
@@ -38,20 +47,9 @@ export const metadata: Metadata = {
     title: "IELTSpeak | AI IELTS Speaking Practice & Mock Tests",
     description:
       "Practice with a realistic AI examiner and get instant feedback to boost your IELTS band score.",
-    images: ["/app/opengraph-image.png"], // Twitter uses the same image
+    images: ["/app/opengraph-image.png"],
   },
 };
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
-import { PostHogProvider } from "./providers";
-
-
-const inter = Inter({ subsets: ["latin"] });
-
-
-
 
 export default function RootLayout({
   children,
@@ -61,10 +59,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <PostHogProvider>
-          {children}
-          <Toaster />
-        </PostHogProvider>
+        <ErrorBoundary>
+          <PostHogProvider>
+            {children}
+            <Toaster />
+          </PostHogProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );
