@@ -33,9 +33,7 @@ export const createSubscriptionCheckout = async (
         },
       },
       productOptions: {
-        redirectUrl: `${
-          process.env.NEXT_PUBLIC_APP_URL 
-        }/dashboard?success=true`,
+        redirectUrl: "/dashboard?success=true",
         receiptButtonText: "Go to Dashboard", // Button text on receipt
         receiptThankYouNote: "Thank you for subscribing to ToEILET Premium!",
       },
@@ -79,7 +77,9 @@ export const getLemonSubscription = async (
 };
 
 // function to cancel the subscription
-export const cancelLemonSubscription = async (subId: string): Promise<boolean> => {
+export const cancelLemonSubscription = async (
+  subId: string
+): Promise<boolean> => {
   try {
     const result = await cancelSubscription(subId);
     if (!result) {

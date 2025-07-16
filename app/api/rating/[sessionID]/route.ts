@@ -15,7 +15,7 @@ export async function POST(
 ) {
   try {
     const resolvedParams = await params;
-    const sessionId = resolvedParams.sessionID; // sessionID matches folder name [sessionID]
+    const sessionId = resolvedParams.sessionID; 
     const { messages, level } = await req.json();
 
     //validate the request
@@ -33,7 +33,7 @@ export async function POST(
       );
     }
 
-    // helper function to format conversation for gemini
+
     const formatCoversation = (
       messages: Array<{ role: string; content: string }>
     ) => {
@@ -94,13 +94,14 @@ Return ONLY a valid JSON object in this exact structure. Do not include any mark
     Provide realistic, fair, and actionable assessments.
     Return ONLY the JSON object without any introductory text, markdown, or explanations.
 Analyze the conversation now and return only the JSON response.
-  `; // send the prompt to gemini and get response
+  `; 
+
     const result = await model.generateContent(resultPrompt);
     const response = await result.response;
     const evaluation = response.text();
 
 
-    // Clean the response by removing markdown code blocks
+
     let cleanedEvaluation = evaluation.trim();
     if (cleanedEvaluation.includes("```json")) {
       cleanedEvaluation = cleanedEvaluation

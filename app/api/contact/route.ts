@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const { email, message, name } = validatedData;
 
     const { data, error } = await resend.emails.send({
-      from: "IELTSpeak Contact <team@ieltspeak.tech>", // Use your verified domain later
+      from: "IELTSpeak Contact <team@ieltspeak.tech>", 
       to: ["mehdikada64@gmail.com"],
       subject: `IELTSpeak Contact: ${name}`,
       html: `
