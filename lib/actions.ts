@@ -21,31 +21,6 @@ export const insertSession = async ({ level }: { level: string }) => {
 
   if (!user) redirect("/auth/login");
 
-  const { data: profileData, error: profileDataError } = await supabase
-    .from("profiles")
-    .select(
-      "name, age, gender, hometown, country, occupation, education_level, favorite_subject, hobbies, travel_experience, favorite_food, life_goal"
-    )
-    .eq("id", user.id)
-    .single();
-  if (profileDataError) {
-    console.error(
-      "failed to fetch user's info to start the session",
-      profileDataError
-    );
-    redirect("/profile?reason=no_data");
-  }
-  // Check for missing fields
-
-  const isProfileComplete = requiredFields.every(
-    (field) =>
-      profileData &&
-      profileData[field as keyof typeof profileData] !== null &&
-      profileData[field as keyof typeof profileData] !== ""
-  );
-  if (!isProfileComplete) {
-    redirect("/profile?reason=no_data");
-  }
   const isPremium = await checkUserPremiumStatus(user?.id);
 
   if (!isPremium) {
