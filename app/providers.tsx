@@ -10,21 +10,26 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
   const search = useSearchParams();
 
   useEffect(() => {
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-      person_profiles: "identified_only",
-      // auto-capture pageviews on navigation
-      capture_pageview: true,
-      // enable debug logs in development to confirm init
-      debug: process.env.NODE_ENV === "development",
-    });
+    const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+    const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST;
+
+    if (posthogKey && posthogHost) {
+      posthog.init(posthogKey, {
+        api_host: posthogHost,
+        person_profiles: "identified_only",
+        capture_pageview: false,
+        debug: process.env.NODE_ENV === "development",
+        autocapture: true,
+      });
+    }
   }, []);
 
-  // capture on each route change (including the initial load)
   useEffect(() => {
-    posthog.capture("$pageview", {
-      path: pathname + (search?.toString() ? `?${search}` : ""),
-    });
+    if (typeof window !== "undefined" && posthog.__loaded) {
+      posthog.capture("$pageview", {
+        path: pathname + (search?.toString() ? `?${search}` : ""),
+      });
+    }
   }, [pathname, search]);
 
   return <PHProvider client={posthog}>{children}</PHProvider>;

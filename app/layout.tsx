@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "IELTSpeak | AI IELTS Speaking Practice & Mock Tests",
     description:
       "Practice with a realistic AI examiner and get instant feedback to boost your IELTS band score.",
-    url:"https://www.ieltspeak.tech",
+    url: "https://www.ieltspeak.tech",
     siteName: "IELTSpeak",
     images: [
       {
@@ -46,12 +46,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { PostHogProvider } from "./providers";
-
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
-
-
-
 
 export default function RootLayout({
   children,
@@ -61,10 +58,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <PostHogProvider>
-          {children}
-          <Toaster />
-        </PostHogProvider>
+        <Suspense fallback={null}>
+          <PostHogProvider>
+            {children}
+            <Toaster />
+          </PostHogProvider>
+        </Suspense>
       </body>
     </html>
   );
