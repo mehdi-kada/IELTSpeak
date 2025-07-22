@@ -48,12 +48,7 @@ function SubscriptionStatus() {
     try {
       setCancelling(true);
       
-      // Use the appropriate cancellation endpoint
-      const endpoint = subData?.polar_subscription_id 
-        ? "/api/subscriptions/cancel-polar"
-        : "/api/subscriptions/cancel";
-      
-      const response = await fetch(endpoint, {
+      const response = await fetch("/api/subscriptions/cancel", {
         method: "POST",
       });
       const data = await response.json();

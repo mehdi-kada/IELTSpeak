@@ -1,12 +1,12 @@
-// create payments checkout
-import { createSubscriptionCheckout } from "@/lib/lemonsqueezy/lemonsqueezy";
-import { getUserSubscription } from "@/lib/lemonsqueezy/subscription-helpers";
+// Create Polar checkout session
+import { createPolarCheckout } from "@/lib/polar/polar";
+import { getUserSubscription } from "@/lib/polar/subscription-helpers";
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    // get the current user
+    // Get the current user
     const supabase = await createClient();
     const {
       data: { user },
@@ -14,34 +14,34 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      console.log("couldnt get user for checkout");
+      console.log("couldn't get user for checkout");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // get the variant id from the request body
+    // Get the product id from the request body
     const data = await request.json();
-    const variantId = data.variantId;
+    const productId = data.productId;
 
-    if (!variantId) {
-      console.log("no variant id provided ");
+    if (!productId) {
+      console.log("no product id provided ");
       return NextResponse.json(
-        { error: "product variant id not provided " },
+        { error: "product id not provided " },
         { status: 400 }
       );
     }
 
-    // check if the user has already an active subscription
+    // Check if the user has already an active subscription
     const userSubscribed = await getUserSubscription(user.id);
-    if (userSubscribed) {
+    if (userSubscribed && userSubscribed.status === "active") {
       return NextResponse.json(
         { error: "user already subscribed " },
         { status: 400 }
       );
     }
 
-    // if the user doesnt have any subs , create a new chekcout session
-    const checkoutUrl = await createSubscriptionCheckout(
-      variantId,
+    // Create a new Polar checkout session
+    const checkoutUrl = await createPolarCheckout(
+      productId,
       user.id,
       user.email!
     );
@@ -53,10 +53,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // return the chekout url to the frontend
+    // Return the checkout url to the frontend
     return NextResponse.json({
       checkoutUrl,
-      Message: "checkout url created successfully",
+      message: "checkout url created successfully",
     });
   } catch (error) {
     console.error("Error creating checkout:", error);

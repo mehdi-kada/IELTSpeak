@@ -1,14 +1,14 @@
-import { cancelLemonSubscription } from "@/lib/lemonsqueezy/lemonsqueezy";
+import { cancelPolarSubscription } from "@/lib/polar/polar";
 import {
   cancelSubFromDB,
   getUserSubscription,
-} from "@/lib/lemonsqueezy/subscription-helpers";
+} from "@/lib/polar/subscription-helpers";
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (request: NextRequest) => {
   try {
-    // get the user -> get the sub -> delete it
+    // Get the user -> get the sub -> cancel it
     const supabase = await createClient();
     const {
       data: { user },
@@ -19,15 +19,14 @@ export const POST = async (request: NextRequest) => {
       return NextResponse.json(
         {
           ok: false,
-          error: "couldnt get the user ",
+          error: "couldn't get the user",
         },
         { status: 400 }
       );
     }
 
-    // get the sub
+    // Get the subscription
     const sub = await getUserSubscription(user.id);
-
 
     if (!sub) {
       return NextResponse.json(
@@ -36,21 +35,28 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    const cancelLemon = await cancelLemonSubscription(
-      sub.lemonsqueezy_subscription_id
-    );
-    if (!cancelLemon) {
+    if (!sub.polar_subscription_id) {
       return NextResponse.json(
-        { ok: false, error: "Failed to cancel subscription from lemonsqueezy" },
+        { ok: false, error: "Invalid subscription data" },
+        { status: 400 }
+      );
+    }
+
+    // Cancel the Polar subscription
+    const cancelPolar = await cancelPolarSubscription(sub.polar_subscription_id);
+    if (!cancelPolar) {
+      return NextResponse.json(
+        { ok: false, error: "Failed to cancel subscription from Polar" },
         { status: 500 }
       );
     }
 
-    const cancelleDB = await cancelSubFromDB(sub.lemonsqueezy_subscription_id);
+    // Update database
+    const cancelledDB = await cancelSubFromDB(sub.polar_subscription_id);
 
-    if (!cancelleDB) {
+    if (!cancelledDB) {
       return NextResponse.json(
-        { ok: false, error: "Failed to cancel subscription from  DB" },
+        { ok: false, error: "Failed to cancel subscription from DB" },
         { status: 500 }
       );
     }
@@ -60,6 +66,7 @@ export const POST = async (request: NextRequest) => {
       message: "subscription cancelled successfully",
     });
   } catch (error) {
+    console.error("Error cancelling subscription:", error);
     return NextResponse.json(
       { ok: false, error: "Internal server error" },
       { status: 500 }

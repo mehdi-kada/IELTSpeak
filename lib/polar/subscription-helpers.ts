@@ -113,7 +113,7 @@ export const cancelSubFromDB = async (
         cancel_at_period_end: true,
         updated_at: new Date().toISOString(),
       })
-      .or(`polar_subscription_id.eq.${subscriptionId},lemonsqueezy_subscription_id.eq.${subscriptionId}`)
+      .eq("polar_subscription_id", subscriptionId)
       .select("user_id")
       .single();
 

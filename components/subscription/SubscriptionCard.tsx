@@ -17,8 +17,7 @@ export function SubscriptionCard({
   description,
   price,
   features,
-  variantId, // LemonSqueezy (legacy)
-  productId, // Polar (new)
+  productId,
   isPopular,
 }: SubscriptionCardProps) {
   const [loading, setLoading] = useState(false);
@@ -28,23 +27,12 @@ export function SubscriptionCard({
   const handleSubscribe = async () => {
     setLoading(true);
     try {
-      // Use Polar by default, fallback to LemonSqueezy for legacy support
-      const usePolar = productId && process.env.NEXT_PUBLIC_USE_POLAR !== "false";
-      
-      const endpoint = usePolar 
-        ? "/api/subscriptions/create-polar-checkout"
-        : "/api/subscriptions/create-checkout";
-      
-      const payload = usePolar 
-        ? { productId }
-        : { variantId };
-
-      const response = await fetch(endpoint, {
+      const response = await fetch("/api/subscriptions/create-checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ productId }),
       });
       
       const data = await response.json();

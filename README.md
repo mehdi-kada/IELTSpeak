@@ -28,7 +28,7 @@ Built with a modern, server-first architecture:
 - **Database & Auth**: [Supabase](https://supabase.com/)
 - **AI Conversation**: [Vapi](https://vapi.ai/)
 - **AI Analysis & Suggestions**: [Google Gemini API](https://ai.google.dev/gemini-api)
-- **Payments**: [Lemon Squeezy](https://www.lemonsqueezy.com/)
+- **Payments**: [Polar](https://polar.sh/)
 - **Email**: [Resend](https://resend.com/)
 - **Analytics**: [PostHog](https://posthog.com/)
 - **Error Tracking**: [Sentry](https://sentry.io/)
@@ -110,9 +110,11 @@ VAPI_API_KEY=your_vapi_api_key
 # Resend
 RESEND_API_KEY=your_resend_api_key
 
-# Lemon Squeezy
-LEMONSQUEEZY_API_KEY=your_lemonsqueezy_api_key
-LEMONSQUEEZY_WEBHOOK_SECRET=your_lemonsqueezy_webhook_secret
+# Polar
+POLAR_ACCESS_TOKEN=your_polar_access_token
+POLAR_WEBHOOK_SECRET=your_polar_webhook_secret
+NEXT_PUBLIC_POLAR_MONTHLY_PRODUCT_ID=your_monthly_product_id
+NEXT_PUBLIC_POLAR_YEARLY_PRODUCT_ID=your_yearly_product_id
 
 # PostHog
 POSTHOG_API_KEY=your_posthog_api_key
