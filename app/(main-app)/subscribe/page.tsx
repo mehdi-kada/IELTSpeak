@@ -41,7 +41,7 @@ function Subscribe() {
             "Access to All Levels (6.5-9)",
             "Save & Review Session History",
           ]}
-          variantId="871461"
+          productId= {process.env.NEXT_PUBLIC_POLAR_MONTHLY_PRODUCT_ID!}
           isPopular={false}
         />
         {/* for yearly sub */}
@@ -55,7 +55,7 @@ function Subscribe() {
             "Access to All Levels (6.5-9)",
             "Save & Review Session History",
           ]}
-          variantId="875882"
+          productId= {process.env.NEXT_PUBLIC_POLAR_YEARLY_PRODUCT_ID!}
           isPopular={true}
         />
       </div>

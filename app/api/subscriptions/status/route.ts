@@ -15,10 +15,22 @@ export const GET = async (request: NextRequest) => {
     }
 
     const subData = await getUserSubscription(user?.id);
+    
+    // Transform the data to match what the frontend expects
+    const transformedSubData = subData ? {
+      id: subData.id,
+      status: subData.status,
+      plan_name: subData.plan_name,
+      current_period_end: subData.current_period_end,
+      cancel_at_period_end: subData.cancel_at_period_end,
+      renews_at: subData.renews_at,
+      polar_subscription_id: subData.polar_subscription_id,
+    } : null;
+
     return NextResponse.json({
-      subData,
-      hasActiveSub: !!subData,
-      status: subData?.status,
+      subData: transformedSubData,
+      hasActiveSub: !!subData && subData.status === 'active',
+      status: subData?.status || 'inactive',
     });
   } catch (error) {
     console.error("Error getting subscription status:", error);

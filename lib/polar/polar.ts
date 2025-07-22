@@ -3,6 +3,7 @@ import { Polar } from "@polar-sh/sdk";
 // Initialize Polar API client
 export const polar = new Polar({
   accessToken: process.env.POLAR_ACCESS_TOKEN!,
+  serverURL: "https://sandbox-api.polar.sh"
 });
 
 /**
@@ -26,6 +27,8 @@ export const createPolarCheckout = async (
         user_id: userId,
       },
       successUrl: successUrl || `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
+      allowDiscountCodes: true,
+      requireBillingAddress: false,
     });
 
     return checkoutSession.url;

@@ -32,7 +32,7 @@ export default function GlobalError({
         </span>
       </h1>
 
-      {/* Page Title and Description */}
+
       <div className="mt-8">
         <h2 className="text-4xl font-bold text-white">
           Oops! Something Went Wrong
@@ -43,7 +43,7 @@ export default function GlobalError({
         </p>
       </div>
 
-      {/* Action Buttons */}
+
       <div className="mt-8 flex gap-4 flex-wrap justify-center">
         <a
           href="/dashboard"

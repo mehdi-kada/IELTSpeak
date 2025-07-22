@@ -102,9 +102,9 @@ export function SubscriptionCard({
       </CardContent>
       <CardFooter className="flex-col gap-2">
         <button
-          onClick={handleSubscribe}
+          onClick={loading ? undefined : handleSubscribe}
           disabled={loading}
-          className={`w-full font-bold py-3 px-6 rounded-lg transition-colors ${loading ? "cursor-not-allowed" : ""} ${
+          className={`w-full font-bold py-3 px-6 rounded-lg transition-colors ${loading ? "cursor-not-allowed opacity-60" : ""} ${
             isPopular
               ? "bg-[#E91E63]/20 hover:shadow-md hover:shadow-[#E91E63]/50"
               : "bg-white/20 hover:bg-white/20"
