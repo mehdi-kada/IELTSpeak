@@ -74,7 +74,7 @@ function LevelCard({ level, title, description }: cardProps) {
                   : "bg-[#E91E63] text-white hover:shadow-md hover:shadow-[#E91E63]/30 hover:-translate-y-px"
               }`}
           >
-            {loading || profileLoading ? "Starting Session..." : "Start Session"}
+            {loading ? "Starting Session..." : "Start Session"}
           </button>
         </div>
       </div>
