@@ -15,7 +15,7 @@
 - **Personalized Suggestions**: Get real-time, profile-based suggestions during sessions for natural and authentic responses.
 - **Session History & Progress Tracking**: View past practice sessions and track improvement via a secure user dashboard.
 - **Secure Authentication & Data Privacy**: Full user authentication and data storage with Supabase, leveraging Row Level Security for privacy.
-- **Subscription-Based Access**: Monetized via Lemon Squeezy for seamless payments and subscriptions.
+- **Subscription-Based Access**: Monetized via Polar for seamless payments and subscriptions. Note: In previous commits, the import was done using `lemonsqueezy`.
 - **App Monitoring**: Integrated with PostHog for analytics and Sentry for real-time error tracking to ensure a reliable user experience.
 
 ## 🛠️ Tech Stack
@@ -28,7 +28,7 @@ Built with a modern, server-first architecture:
 - **Database & Auth**: [Supabase](https://supabase.com/)
 - **AI Conversation**: [Vapi](https://vapi.ai/)
 - **AI Analysis & Suggestions**: [Google Gemini API](https://ai.google.dev/gemini-api)
-- **Payments**: [Lemon Squeezy](https://www.lemonsqueezy.com/)
+- **Payments**: [Polar](https://polar.sh/)
 - **Email**: [Resend](https://resend.com/)
 - **Analytics**: [PostHog](https://posthog.com/)
 - **Error Tracking**: [Sentry](https://sentry.io/)
@@ -43,9 +43,9 @@ Below are key interfaces of the IELTSpeak application:
 |-------------------------|------------------|
 | ![Levels Selection UI](public/images/Bands.png) | ![Results Page UI](public/images/FeedBack.png) |
 
-| **User Profile** |
-|------------------|
-| ![Profile Page UI](public/images/Profile.png) |
+| **User Profile** | **Mobile Session UI** |
+|------------------|----------------------|
+| ![Profile Page UI](public/images/Profile.png) | ![Mobile Session UI](public/images/MobileSession.png) |
 
 ## 🚀 Getting Started
 
@@ -60,7 +60,7 @@ Follow these steps to set up **IELTSpeak** locally.
   - Google Gemini
   - Vapi
   - Resend
-  - Lemon Squeezy
+  - Polar
   - PostHog
   - Sentry
 
@@ -110,9 +110,9 @@ VAPI_API_KEY=your_vapi_api_key
 # Resend
 RESEND_API_KEY=your_resend_api_key
 
-# Lemon Squeezy
-LEMONSQUEEZY_API_KEY=your_lemonsqueezy_api_key
-LEMONSQUEEZY_WEBHOOK_SECRET=your_lemonsqueezy_webhook_secret
+# Polar
+POLAR_API_KEY=your_polar_api_key
+POLAR_WEBHOOK_SECRET=your_polar_webhook_secret
 
 # PostHog
 POSTHOG_API_KEY=your_posthog_api_key
