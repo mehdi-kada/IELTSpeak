@@ -6,13 +6,7 @@ export const polar = new Polar({
   serverURL: "https://sandbox-api.polar.sh"
 });
 
-/**
- * Create a checkout session for a subscription
- * @param productId The Polar product ID
- * @param userId The user ID from Supabase
- * @param userEmail The user's email
- * @param successUrl Optional success URL override
- */
+
 export const createPolarCheckout = async (
   productId: string,
   userId: string,
@@ -38,10 +32,7 @@ export const createPolarCheckout = async (
   }
 };
 
-/**
- * Get subscription details from Polar
- * @param subscriptionId The Polar subscription ID
- */
+
 export const getPolarSubscription = async (subscriptionId: string) => {
   try {
     const subscription = await polar.subscriptions.get({
@@ -54,10 +45,7 @@ export const getPolarSubscription = async (subscriptionId: string) => {
   }
 };
 
-/**
- * Cancel a Polar subscription
- * @param subscriptionId The Polar subscription ID
- */
+
 export const cancelPolarSubscription = async (subscriptionId: string) => {
   try {
     // For now, we'll handle cancellation through the webhook or manual process
@@ -70,10 +58,7 @@ export const cancelPolarSubscription = async (subscriptionId: string) => {
   }
 };
 
-/**
- * Get customer details from Polar
- * @param customerId The Polar customer ID
- */
+
 export const getPolarCustomer = async (customerId: string) => {
   try {
     const customer = await polar.customers.get({

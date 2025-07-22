@@ -1,7 +1,6 @@
 // Database operations for Polar subscriptions
 
 import { createClient } from "@supabase/supabase-js";
-import crypto from "crypto";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -167,19 +166,3 @@ export async function checkUserPremiumStatus(userId: string): Promise<boolean> {
     return false;
   }
 }
-
-// Function to verify the authenticity of the Polar webhook signature
-export const verifyPolarWebhookSignature = (
-  body: string,
-  signature: string
-): boolean => {
-  const secret = process.env.POLAR_WEBHOOK_SECRET!;
-  const hmac = crypto.createHmac("sha256", secret);
-  hmac.update(body);
-  const expectedSignature = hmac.digest("hex");
-
-  return crypto.timingSafeEqual(
-    Buffer.from(signature, "hex"),
-    Buffer.from(expectedSignature, "hex")
-  );
-};

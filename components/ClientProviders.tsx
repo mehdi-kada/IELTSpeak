@@ -1,18 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { PostHogProvider } from "../app/providers";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+
+// Dynamically import the PostHog provider to prevent SSR issues
+const DynamicPostHogProvider = dynamic(
+  () => import("../app/providers").then((mod) => ({ default: mod.PostHogProvider })),
+  { ssr: false }
+);
 
 export function ClientProviders({ children }: { children: React.ReactNode }) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return <>{children}</>;
-  }
-
-  return <PostHogProvider>{children}</PostHogProvider>;
+  return (
+    <Suspense fallback={null}>
+      <DynamicPostHogProvider>
+        {children}
+      </DynamicPostHogProvider>
+    </Suspense>
+  );
 }

@@ -1,55 +1,46 @@
 // Polar webhook handler
 import { NextRequest, NextResponse } from "next/server";
+import { validateEvent, WebhookVerificationError } from '@polar-sh/sdk/webhooks';
 import {
   upsertSubscription,
   updateUserStatus,
-  verifyPolarWebhookSignature,
   cancelSubFromDB,
 } from "@/lib/polar/subscription-helpers";
 import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
   try {
-    // get the webhook payload as text for signature verification
-    const body = await request.text();
-    const signature = request.headers.get("X-Polar-Webhook-Signature");
+    // Get the webhook payload as raw buffer for Polar SDK validation
+    const bodyBuffer = await request.arrayBuffer();
+    const body = Buffer.from(bodyBuffer);
+    const headers = Object.fromEntries(request.headers.entries());
     
-    if (!signature) {
-      console.error("No signature provided");
-      return NextResponse.json(
-        { error: "No signature provided" },
-        { status: 400 }
-      );
-    }
-
-    // verify the webhook signature
-    if (!verifyPolarWebhookSignature(body, signature)) {
-      console.error("Invalid signature");
-      return NextResponse.json(
-        { error: "Invalid signature" },
-        { status: 401 }
-      );
-    }
-
-    // parse the webhook payload
+    // Validate the webhook using Polar's official SDK
     let event;
     try {
-      event = JSON.parse(body);
-    } catch (parseError) {
-      console.error("Invalid JSON payload:", parseError);
-      return NextResponse.json(
-        { error: "Invalid JSON payload" },
-        { status: 400 }
+      event = validateEvent(
+        body,
+        headers,
+        process.env.POLAR_WEBHOOK_SECRET ?? ''
       );
+    } catch (error) {
+      if (error instanceof WebhookVerificationError) {
+        console.error("Webhook verification failed:", error.message);
+        return NextResponse.json(
+          { error: "Webhook verification failed" },
+          { status: 403 }
+        );
+      }
+      throw error;
     }
 
     // Get event type and data
     const eventType = event.type;
     const eventData = event.data;
 
-    console.log(`Received Polar webhook: ${eventType}`);
 
-    // Handle different subscription events
+
+    // Handle subscription events
     switch (eventType) {
       case "checkout.created":
         await handleCheckoutCreated(eventData);
@@ -63,12 +54,8 @@ export async function POST(request: NextRequest) {
         await handleSubscriptionUpdate(eventData);
         break;
 
-      case "subscription.cancelled":
+      case "subscription.canceled":
         await handleSubscriptionCancellation(eventData);
-        break;
-
-      case "subscription.expired":
-        await handleSubscriptionExpired(eventData);
         break;
 
       default:
@@ -165,7 +152,7 @@ const handleSubscriptionCancellation = async (subscriptionData: any) => {
     console.log("Handling subscription cancellation:", subscriptionData.id);
     const supabase = await createClient();
 
-    // update subscription status with no removal yet
+    // Update subscription status to cancelled but DON'T remove premium access yet
     const { error } = await supabase
       .from("subscriptions")
       .update({
@@ -185,56 +172,6 @@ const handleSubscriptionCancellation = async (subscriptionData: any) => {
     return true;
   } catch (error) {
     console.error("Error handling subscription cancellation:", error);
-    return false;
-  }
-};
-
-const handleSubscriptionExpired = async (subscriptionData: any) => {
-  try {
-    console.log("Handling subscription expiration:", subscriptionData.id);
-    const supabase = await createClient();
-    
-    //  user_id from subscription
-    const { data: subscription, error: fetchError } = await supabase
-      .from("subscriptions")
-      .select("user_id")
-      .eq("polar_subscription_id", subscriptionData.id)
-      .single();
-
-    if (fetchError || !subscription) {
-      console.error("Error fetching subscription for expiration:", fetchError);
-      return false;
-    }
-
-    // update subscription status to expired
-    const { error: updateError } = await supabase
-      .from("subscriptions")
-      .update({
-        status: "expired",
-        updated_at: new Date().toISOString(),
-      })
-      .eq("polar_subscription_id", subscriptionData.id);
-
-    if (updateError) {
-      console.error("Error updating expired subscription:", updateError);
-      return false;
-    }
-
-    // Remove premium access
-    const premiumUpdateSuccess = await updateUserStatus(
-      subscription.user_id,
-      false
-    );
-
-    if (!premiumUpdateSuccess) {
-      console.error("Failed to remove premium status on expiration");
-      return false;
-    }
-
-    console.log("Subscription expired, premium access removed");
-    return true;
-  } catch (error) {
-    console.error("Error handling subscription expiration:", error);
     return false;
   }
 };
