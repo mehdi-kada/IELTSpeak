@@ -1,4 +1,4 @@
-import { getUserSubscription } from '@/lib/lemonsqueezy/subscription-helpers';
+import { getUserSubscription } from '@/lib/polar/subscription-helpers';
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -11,7 +11,7 @@ export const GET = async (request: NextRequest) => {
     } = await supabase.auth.getUser();
 
     if (error || !user) {
-      return NextResponse.json({ error: "couldnt get user " }, { status: 400 });
+      return NextResponse.json({ error: "couldn't get user " }, { status: 400 });
     }
 
     const subData = await getUserSubscription(user?.id);

@@ -17,30 +17,42 @@ export function SubscriptionCard({
   description,
   price,
   features,
-  variantId,
+  variantId, // LemonSqueezy (legacy)
+  productId, // Polar (new)
   isPopular,
 }: SubscriptionCardProps) {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  // Keep empty dependency array
-
   const handleSubscribe = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/subscriptions/create-checkout", {
+      // Use Polar by default, fallback to LemonSqueezy for legacy support
+      const usePolar = productId && process.env.NEXT_PUBLIC_USE_POLAR !== "false";
+      
+      const endpoint = usePolar 
+        ? "/api/subscriptions/create-polar-checkout"
+        : "/api/subscriptions/create-checkout";
+      
+      const payload = usePolar 
+        ? { productId }
+        : { variantId };
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ variantId }),
+        body: JSON.stringify(payload),
       });
+      
       const data = await response.json();
       if (!response.ok) {
         console.error("error while fetching checkout url");
         throw new Error(data.error);
       }
+      
       router.push(data.checkoutUrl);
     } catch (error) {
       console.error("Error creating checkout:", error);

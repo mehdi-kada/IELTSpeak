@@ -74,8 +74,10 @@ export interface DashboardData {
 
 export interface SubscriptionData {
   user_id: string;
-  lemonsqueezy_subscription_id: string;
-  lemonsqueezy_customer_id: string;
+  lemonsqueezy_subscription_id?: string; // Optional for migration
+  lemonsqueezy_customer_id?: string; // Optional for migration
+  polar_subscription_id?: string; // New Polar field
+  polar_customer_id?: string; // New Polar field
   status: "active" | "cancelled" | "expired" | "on_trial" | "paused" | "unpaid";
   plan_name: string;
   current_period_start: string;
@@ -89,7 +91,8 @@ export interface SubscriptionCardProps {
   description: string;
   price: string;
   features: string[];
-  variantId: string;
+  variantId?: string; // Keep for LemonSqueezy migration
+  productId?: string; // New for Polar
   isPopular: boolean;
 }
 
@@ -100,6 +103,8 @@ export interface SubscriptionStatusProps {
   current_period_end: string;
   cancel_at_period_end: boolean;
   renews_at: string;
+  polar_subscription_id?: string;
+  lemonsqueezy_subscription_id?: string;
 }
 
 export interface sessionUpdateProps {

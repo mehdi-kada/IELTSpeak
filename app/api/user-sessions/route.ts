@@ -1,4 +1,4 @@
-import { checkUserPremiumStatus } from "@/lib/lemonsqueezy/subscription-helpers";
+import { checkUserPremiumStatus } from "@/lib/polar/subscription-helpers";
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
