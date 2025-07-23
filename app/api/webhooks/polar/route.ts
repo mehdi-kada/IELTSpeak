@@ -115,7 +115,7 @@ const handleOrderPaid = async (orderData: any) => {
       polar_subscription_id: subscriptionData.id,
       polar_customer_id: subscriptionData.customerId,
       status: subscriptionData.status,
-      plan_name: subscriptionData.product?.name || "Polar Subscription",
+      plan_name: subscriptionData.product?.name || orderData.product?.name || "Polar Subscription",
       current_period_start: subscriptionData.currentPeriodStart,
       current_period_end: subscriptionData.currentPeriodEnd,
       cancel_at_period_end: subscriptionData.cancelAtPeriodEnd || false,

@@ -50,6 +50,7 @@ export const cancelPolarSubscription = async (subscriptionId: string) => {
   try {
     // For now, we'll handle cancellation through the webhook or manual process
     // The exact API structure depends on Polar's implementation
+    
     console.log(`Marking subscription ${subscriptionId} for cancellation`);
     return { id: subscriptionId, cancelled: true };
   } catch (error) {

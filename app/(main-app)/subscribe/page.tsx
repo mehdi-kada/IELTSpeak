@@ -6,19 +6,13 @@ export const metadata: Metadata = {
 
 import { SubscriptionCard } from "@/components/subscription/SubscriptionCard";
 import SubscriptionStatus from "@/components/subscription/SubscriptionStatus";
+import UserPortal from "@/components/subscription/UserPortal";
 import { Metadata } from "next";
 import React, { Suspense } from "react";
 
 function Subscribe() {
   return (
     <div className="max-w-4xl mx-auto p-6">
-            {/* Free Trial Announcement */}
-      <div className="bg-gradient-to-r from-[] to-[#E91E63] text-white text-center py-4 px-6 rounded-lg mb-8">
-        <h2 className="text-xl font-semibold mb-2">🎉 Limited Time Offer!</h2>
-        <p className="text-lg">
-          Enjoy your <span className="font-bold">7-day FREE trial</span> today - No credit card required!
-        </p>
-      </div>
       <div className="text-center mb-12 space-y-4 ">
         <h1 className="text-4xl font-bold">Choose Your Plan</h1>
         <p className="text-gray-400">

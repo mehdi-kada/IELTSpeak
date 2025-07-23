@@ -96,7 +96,7 @@ function SubscriptionStatus() {
 
   if (subStatus === "active") {
     return (
-      <div className="bg-[#374151] border border-[#2F2F7F] px-6 py-4 rounded-xl space-y-3">
+      <div className="bg-[#374151] border border-[#E91E63] shadow-xl shadow-[#E91E63] px-6 py-4 rounded-xl space-y-3">
         <p className="text-2xl font-bold">You are subscribed! 🎉</p>
         <div className="space-y-2">
           <p className="text-gray-300">

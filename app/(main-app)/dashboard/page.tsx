@@ -242,7 +242,7 @@ function Dashboard() {
                       </p>
                       {dashboardData && dashboardData.totalSessions >= 3 && (
                         <Link
-                          href="/subscribe"
+                          href="/subscribe?reason=limit-hit"
                           className="inline-block mt-2 text-xs bg-[#E91E63] hover:bg-[#E91E63] text-white px-3 py-1 rounded transition-colors"
                         >
                           Upgrade Now
