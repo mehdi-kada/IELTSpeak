@@ -113,13 +113,13 @@ const handleOrderPaid = async (orderData: any) => {
     const subscriptionUpdate = {
       user_id: userId,
       polar_subscription_id: subscriptionData.id,
-      polar_customer_id: subscriptionData.customer_id,
+      polar_customer_id: subscriptionData.customerId,
       status: subscriptionData.status,
-      plan_name: productData?.name || "Polar Subscription",
-      current_period_start: subscriptionData.current_period_start,
-      current_period_end: subscriptionData.current_period_end,
-      cancel_at_period_end: subscriptionData.cancel_at_period_end || false,
-      renews_at: subscriptionData.current_period_end,
+      plan_name: subscriptionData.product?.name || "Polar Subscription",
+      current_period_start: subscriptionData.currentPeriodStart,
+      current_period_end: subscriptionData.currentPeriodEnd,
+      cancel_at_period_end: subscriptionData.cancelAtPeriodEnd || false,
+      renews_at: subscriptionData.currentPeriodEnd
     };
 
     console.log("Creating subscription from order:", subscriptionUpdate);
@@ -149,14 +149,15 @@ const handleSubscriptionCreated = async (subscriptionData: any) => {
     const subscriptionUpdate = {
       user_id: userId,
       polar_subscription_id: subscriptionData.id,
-      polar_customer_id: subscriptionData.customer_id,
+      polar_customer_id: subscriptionData.customerId,
       status: subscriptionData.status,
       plan_name: subscriptionData.product?.name || "Polar Subscription",
-      current_period_start: subscriptionData.current_period_start,
-      current_period_end: subscriptionData.current_period_end,
-      cancel_at_period_end: subscriptionData.cancel_at_period_end || false,
-      renews_at: subscriptionData.current_period_end,
+      current_period_start: subscriptionData.currentPeriodStart,
+      current_period_end: subscriptionData.currentPeriodEnd,
+      cancel_at_period_end: subscriptionData.cancelAtPeriodEnd || false,
+      renews_at: subscriptionData.currentPeriodEnd
     };
+
 
     const success = await upsertSubscription(subscriptionUpdate);
     if (!success) {
@@ -185,10 +186,10 @@ const handleSubscriptionUpdate = async (subscriptionData: any) => {
       polar_customer_id: subscriptionData.customer_id,
       status: subscriptionData.status,
       plan_name: subscriptionData.product?.name || "Polar Subscription",
-      current_period_start: subscriptionData.current_period_start,
-      current_period_end: subscriptionData.current_period_end,
-      cancel_at_period_end: subscriptionData.cancel_at_period_end || false,
-      renews_at: subscriptionData.current_period_end,
+      current_period_start: subscriptionData.currentPeriodStart,
+      current_period_end: subscriptionData.currentPeriodEnd,
+      cancel_at_period_end: subscriptionData.cancelAtPeriodEnd|| false,
+      renews_at: subscriptionData.cancelAtPeriodEnd,
     };
 
     const success = await upsertSubscription(subscriptionUpdate);
