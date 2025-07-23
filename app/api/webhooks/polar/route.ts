@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
         headers,
         process.env.POLAR_WEBHOOK_SECRET ?? ''
       );
+      console.log("event is : ", event)
     } catch (error) {
       if (error instanceof WebhookVerificationError) {
         console.error("Webhook verification failed:", error.message);
@@ -38,12 +39,18 @@ export async function POST(request: NextRequest) {
     const eventType = event.type;
     const eventData = event.data;
 
+    console.log(" event data is : ", eventData)
+
 
 
     // Handle subscription events
     switch (eventType) {
       case "checkout.created":
         await handleCheckoutCreated(eventData);
+        break;
+
+      case "order.paid":
+        await handleOrderPaid(eventData);
         break;
 
       case "subscription.created":
@@ -81,9 +88,57 @@ const handleCheckoutCreated = async (checkoutData: any) => {
   }
 };
 
+const handleOrderPaid = async (orderData: any) => {
+  try {
+    console.log("Handling order paid:", orderData.id);
+    console.log("Order data is:", orderData);
+    
+    // Extract user_id from the order metadata
+    const userId = orderData.metadata?.user_id;
+    if (!userId) {
+      console.error("No user_id in order metadata");
+      return;
+    }
+
+    // Check if this order has a subscription (for recurring payments)
+    if (!orderData.subscription) {
+      console.log("Order doesn't contain subscription data, skipping");
+      return;
+    }
+
+    const subscriptionData = orderData.subscription;
+    const productData = orderData.product;
+
+    // Create subscription record from order data
+    const subscriptionUpdate = {
+      user_id: userId,
+      polar_subscription_id: subscriptionData.id,
+      polar_customer_id: subscriptionData.customer_id,
+      status: subscriptionData.status,
+      plan_name: productData?.name || "Polar Subscription",
+      current_period_start: subscriptionData.current_period_start,
+      current_period_end: subscriptionData.current_period_end,
+      cancel_at_period_end: subscriptionData.cancel_at_period_end || false,
+      renews_at: subscriptionData.current_period_end,
+    };
+
+    console.log("Creating subscription from order:", subscriptionUpdate);
+
+    const success = await upsertSubscription(subscriptionUpdate);
+    if (!success) {
+      console.error("Error upserting subscription data from order");
+    } else {
+      console.log("Successfully created subscription from paid order");
+    }
+  } catch (error) {
+    console.error("Error handling order paid:", error);
+  }
+};
+
 const handleSubscriptionCreated = async (subscriptionData: any) => {
   try {
     console.log("Handling subscription creation:", subscriptionData.id);
+    console.log("subscription data is : ", subscriptionData)
     
     const userId = subscriptionData.metadata?.user_id;
     if (!userId) {
