@@ -4,9 +4,9 @@ export const metadata: Metadata = {
     "Upgrade to IELTSpeak Premium for unlimited practice sessions, advanced AI feedback, and full access to all features. Choose the plan that fits your learning goals and boost your IELTS speaking score.",
 };
 
+import { CustomerPortalButton } from "@/components/subscription/CustomerPortalButton";
 import { SubscriptionCard } from "@/components/subscription/SubscriptionCard";
 import SubscriptionStatus from "@/components/subscription/SubscriptionStatus";
-import UserPortal from "@/components/subscription/UserPortal";
 import { Metadata } from "next";
 import React, { Suspense } from "react";
 
@@ -21,6 +21,9 @@ function Subscribe() {
         <Suspense fallback={null}>
           <SubscriptionStatus />
         </Suspense>
+        <div>
+          <CustomerPortalButton />
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row justify-center items-center gap-10">

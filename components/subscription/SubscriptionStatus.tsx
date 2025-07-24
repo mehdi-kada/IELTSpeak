@@ -4,15 +4,18 @@ import React, { useEffect, useRef, useState } from "react";
 import LoadingSpinner from "../Loading";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { useStatus } from "@/hooks/subscriptions/useStatus";
 
 function SubscriptionStatus() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+
   const params = useSearchParams();
   const limitReached = params.get("reason");
   const toastRefshown = useRef(false);
-  const [subStatus, setSubStatus] = useState("");
-  const [subData, setSubData] = useState<SubscriptionStatusProps | null>(null);
+  const  {
+    loading, error, subData, subStatus
+  } = useStatus()
+
   const [cancelling, setCancelling] = useState(false);
   const endDate = subData?.current_period_end
     ? new Date(subData?.current_period_end).toLocaleString()
@@ -29,32 +32,7 @@ function SubscriptionStatus() {
     }
   }, []);
 
-  const fetchSubStatus = async () => {
-    try {
-      setError(null);
-      const response = await fetch("/api/subscriptions/status");
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      
-      if (data.error) {
-        throw new Error(data.error);
-      }
-      
-      console.log("Subscription status data:", data); // Debug log
-      
-      setSubStatus(data.status || "inactive");
-      setSubData(data.subData);
-    } catch (error) {
-      console.error("Error when fetching the user's status:", error);
-      setError(error instanceof Error ? error.message : "Failed to fetch subscription status");
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const handleCanceleSub = async () => {
     try {

@@ -71,3 +71,16 @@ export const getPolarCustomer = async (customerId: string) => {
     return null;
   }
 };
+
+
+export async function createCustomerSession(customerId: string) {
+  try {
+    const result = await polar.customerSessions.create({
+      customerId: customerId,
+    })
+    return result.customerPortalUrl
+  } catch (error) {
+    console.error('Error creating customer session:', error)
+    throw new Error('Failed to create customer portal session')
+  }
+}

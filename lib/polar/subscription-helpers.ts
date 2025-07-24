@@ -1,6 +1,7 @@
 // Database operations for Polar subscriptions
 
 import { createClient } from "@supabase/supabase-js";
+import { polar } from "./polar";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -20,7 +21,7 @@ export interface PolarSubscriptionData {
 }
 
 // Get the user subscription details
-export const getUserSubscription = async (userId: string) => {
+export const getUserSubscription = async (userId: string | null) => {
   try {
     const { data, error } = await supabase
       .from("subscriptions")
@@ -166,3 +167,6 @@ export async function checkUserPremiumStatus(userId: string): Promise<boolean> {
     return false;
   }
 }
+
+
+

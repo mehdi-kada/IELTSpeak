@@ -1,10 +1,12 @@
 "use client";
 import { createClient } from "@/lib/supabase/client";
+import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export function useAuth() {
   const [userId, setUserId] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -25,6 +27,7 @@ export function useAuth() {
 
         if (user) {
           setUserId(user.id);
+          setUser(user)
         } else {
           router.push("/auth/login");
         }
@@ -39,6 +42,7 @@ export function useAuth() {
   }, []);
 
   return {
+    user,
     userId,
     loading,
     error,
