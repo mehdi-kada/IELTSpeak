@@ -121,3 +121,18 @@ export interface PracticeSession {
 export interface PracticeHistoryProps {
   sessions: PracticeSession[];
 }
+
+export interface SubscriptionSchema {
+  id: string; // UUID
+  user_id: string | null;
+  status: "active" | "cancelled" | "expired" | "on_trial" | "paused" | "unpaid";
+  plan_name: string;
+  current_period_start: string | null; // ISO timestamp
+  current_period_end: string | null;   // ISO timestamp
+  cancel_at_period_end: boolean | null;
+  created_at: string | null;           // ISO timestamp
+  updated_at: string | null;           // ISO timestamp
+  renews_at: string | null;            // ISO timestamp
+  polar_subscription_id: string | null;
+  polar_customer_id: string | null;
+}

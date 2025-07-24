@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuth } from '@/hooks/sessions/useAuth'
+import { useStatus } from '@/hooks/subscriptions/useStatus'
 import { useState } from 'react'
 
 
@@ -8,7 +9,7 @@ export function CustomerPortalButton() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
+  const {subStatus} = useStatus()
   const handlePortalAccess = async () => {
     if (!user) return
     
@@ -47,15 +48,10 @@ export function CustomerPortalButton() {
     }
   }
 
-  if (!user) {
-    return (
-      <button 
-        onClick={() => window.location.href = '/login'}
-        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
-      >
-        Sign In to Access Portal
-      </button>
-    )
+
+
+  if ( !['active', 'cancelled', 'expired'].includes(subStatus)) {
+    return null
   }
 
   return (
@@ -63,9 +59,9 @@ export function CustomerPortalButton() {
       <button
         onClick={handlePortalAccess}
         disabled={loading}
-        className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        className="px-6 py-3 bg-[#E91E63] text-white rounded-lg hover:bg-[#E91E63]/80 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? 'Opening Portal...' : 'Access Customer Portal'}
+        {loading ? 'Opening Portal...' : 'Manage your subscription'}
       </button>
       
       {error && (

@@ -2,6 +2,7 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { polar } from "./polar";
+import { SubscriptionSchema } from "@/types/types";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -21,7 +22,7 @@ export interface PolarSubscriptionData {
 }
 
 // Get the user subscription details
-export const getUserSubscription = async (userId: string | null) => {
+export const getUserSubscription = async (userId: string | null) : Promise<SubscriptionSchema | null>=> {
   try {
     const { data, error } = await supabase
       .from("subscriptions")

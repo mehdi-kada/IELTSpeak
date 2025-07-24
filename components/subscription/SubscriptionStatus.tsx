@@ -7,16 +7,12 @@ import { toast } from "sonner";
 import { useStatus } from "@/hooks/subscriptions/useStatus";
 
 function SubscriptionStatus() {
-
-
   const params = useSearchParams();
   const limitReached = params.get("reason");
   const toastRefshown = useRef(false);
-  const  {
-    loading, error, subData, subStatus
-  } = useStatus()
+  const { loading, error, subData, subStatus, refetch } = useStatus();
 
-  const [cancelling, setCancelling] = useState(false);
+
   const endDate = subData?.current_period_end
     ? new Date(subData?.current_period_end).toLocaleString()
     : null;
@@ -24,43 +20,13 @@ function SubscriptionStatus() {
     ? new Date(subData?.renews_at).toLocaleString()
     : null;
 
-
   useEffect(() => {
     if (limitReached && !toastRefshown.current) {
       toast("Please upgrade to get unlimited sessions");
       toastRefshown.current = true;
     }
-  }, []);
+  }, [limitReached]);
 
-
-
-  const handleCanceleSub = async () => {
-    try {
-      setCancelling(true);
-      
-      const response = await fetch("/api/subscriptions/cancel", {
-        method: "POST",
-      });
-      const data = await response.json();
-      if (data.ok) {
-        alert(
-          "Subscription cancelled successfully. You will retain access until the end of your billing period."
-        );
-        fetchSubStatus();
-      } else {
-        throw new Error(data.error || "Failed to cancel subscription");
-      }
-    } catch (error) {
-      console.error("Error cancelling subscription:", error);
-      alert("Failed to cancel subscription. Please try again.");
-    } finally {
-      setCancelling(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSubStatus();
-  }, []);
 
   if (loading) {
     return (
@@ -78,37 +44,35 @@ function SubscriptionStatus() {
         <p className="text-2xl font-bold">You are subscribed! 🎉</p>
         <div className="space-y-2">
           <p className="text-gray-300">
-            Plan: <strong className="text-white">{subData?.plan_name || "Premium Plan"}</strong>
+            Plan:{" "}
+            <strong className="text-white">
+              {subData?.plan_name || "Premium Plan"}
+            </strong>
           </p>
           <p className="text-gray-300">
-            {subData?.cancel_at_period_end 
-              ? `Your subscription will end on ${endDate}` 
-              : `Your subscription will renew on ${renews_at}`
-            }
+            {subData?.cancel_at_period_end
+              ? `Your subscription will end on ${endDate}`
+              : `Your subscription will renew on ${renews_at}`}
           </p>
-          {!subData?.cancel_at_period_end && (
-            <button
-              disabled={cancelling}
-              onClick={handleCanceleSub}
-              className="cursor-pointer text-[#E91E63] hover:text-[#E91E63]/80 transition-colors text-sm underline"
-            >
-              {cancelling ? "Cancelling..." : "Cancel subscription"}
-            </button>
-          )}
+
         </div>
       </div>
     );
   }
-  
+
   if (subStatus === "cancelled") {
     return (
       <div className="bg-[#374151] border border-orange-500 px-6 py-4 rounded-xl space-y-3">
-        <p className="text-xl font-bold text-orange-400">Subscription Cancelled</p>
+        <p className="text-xl font-bold text-orange-400">
+          Subscription Cancelled
+        </p>
         <p className="text-gray-300">
-          Your subscription will end on <strong className="text-white">{endDate}</strong>
+          Your subscription will end on{" "}
+          <strong className="text-white">{endDate}</strong>
         </p>
         <p className="text-sm text-gray-400">
-          You still have access to premium features until your billing period ends.
+          You still have access to premium features until your billing period
+          ends.
         </p>
       </div>
     );

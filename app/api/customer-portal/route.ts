@@ -21,6 +21,14 @@ export async function GET(request: NextRequest) {
 
     // Get the user's Polar customer ID
     const userSubData = await getUserSubscription(user.id);
+
+    if (!userSubData) {
+      return NextResponse.json(
+        { error: 'No subscription data found for user' },
+        { status: 404 }
+      )
+    }
+    
     const customerId = userSubData.polar_customer_id;
     console.log("customer id is : ", customerId)
     if (!customerId) {
