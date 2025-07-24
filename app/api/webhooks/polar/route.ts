@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
         headers,
         process.env.POLAR_WEBHOOK_SECRET ?? ''
       );
-      console.log("event is : ", event)
+
     } catch (error) {
       if (error instanceof WebhookVerificationError) {
         console.error("Webhook verification failed:", error.message);
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const eventType = event.type;
     const eventData = event.data;
 
-    console.log(" event data is : ", eventData)
+
 
 
 
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
 
 const handleCheckoutCreated = async (checkoutData: any) => {
   try {
-    console.log("Handling checkout created:", checkoutData.id);
+
 
   } catch (error) {
     console.error("Error handling checkout created:", error);
@@ -90,8 +90,7 @@ const handleCheckoutCreated = async (checkoutData: any) => {
 
 const handleOrderPaid = async (orderData: any) => {
   try {
-    console.log("Handling order paid:", orderData.id);
-    console.log("Order data is:", orderData);
+
     
     // Extract user_id from the order metadata
     const userId = orderData.metadata?.user_id;
@@ -122,7 +121,7 @@ const handleOrderPaid = async (orderData: any) => {
       renews_at: subscriptionData.currentPeriodEnd
     };
 
-    console.log("Creating subscription from order:", subscriptionUpdate);
+
 
     const success = await upsertSubscription(subscriptionUpdate);
     if (!success) {
@@ -137,9 +136,7 @@ const handleOrderPaid = async (orderData: any) => {
 
 const handleSubscriptionCreated = async (subscriptionData: any) => {
   try {
-    console.log("Handling subscription creation:", subscriptionData.id);
-    console.log("subscription data is : ", subscriptionData)
-    
+
     const userId = subscriptionData.metadata?.user_id;
     if (!userId) {
       console.error("No user_id in subscription metadata");
@@ -172,7 +169,7 @@ const handleSubscriptionCreated = async (subscriptionData: any) => {
 
 const handleSubscriptionUpdate = async (subscriptionData: any) => {
   try {
-    console.log("Handling subscription update:", subscriptionData.id);
+
     
     const userId = subscriptionData.metadata?.user_id;
     if (!userId) {

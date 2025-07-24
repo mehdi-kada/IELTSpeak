@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     }
     
     const customerId = userSubData.polar_customer_id;
-    console.log("customer id is : ", customerId)
+
     if (!customerId) {
       return NextResponse.json(
         { error: 'No customer portal access available' }, 
