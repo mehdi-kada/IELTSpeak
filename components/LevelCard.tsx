@@ -28,7 +28,7 @@ function LevelCard({ level, title, description }: cardProps) {
         profileData[field as keyof typeof profileData] != null &&
         profileData[field as keyof typeof profileData] !== ""
     );
-  }, []);
+  }, [profileData]);
 
   const handleSubmit = async () => {
     // ensure profile is loaded and complete
