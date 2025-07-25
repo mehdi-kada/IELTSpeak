@@ -93,6 +93,12 @@ export interface SubscriptionCardProps {
   isPopular: boolean;
 }
 
+export interface cardProps {
+  level: string;
+  title: string;
+  description: string;
+}
+
 export interface SubscriptionStatusProps {
   id: string;
   status: string;

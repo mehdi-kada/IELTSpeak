@@ -29,12 +29,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { profileValues, userProfileSchema } from "@/types/schemas";
 import { educationLevels, genders, hobbyOptions } from "@/constants/constants";
 import { fetchUserProfileData, insertProfileData } from "@/lib/actions";
+import { useUserProfile } from "@/hooks/sessions/useProfileData";
 
 export function ProfileForm({ userId }: { userId: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const searchParams = useSearchParams();
   const emptyProfile = searchParams.get("reason");
   const toastShown = useRef(false);
+
+  const { profileData, error } = useUserProfile(userId);
 
   const form = useForm<profileValues>({
     resolver: zodResolver(userProfileSchema),
@@ -56,7 +59,7 @@ export function ProfileForm({ userId }: { userId: string }) {
 
   // Load profile data from local storage or database
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || !profileData) return;
 
     const loadProfileData = async () => {
       try {
@@ -76,36 +79,16 @@ export function ProfileForm({ userId }: { userId: string }) {
           life_goal: "",
         };
 
-        const savedProfile = localStorage.getItem(`${userId}_userProfile`);
-        if (savedProfile) {
-          const profileDataLS = JSON.parse(savedProfile);
-          // Merge with defaults to ensure all fields have values
-          const mergedData = {
-            ...defaultValues,
-            ...profileDataLS,
-            hobbies: Array.isArray(profileDataLS.hobbies)
-              ? profileDataLS.hobbies
+        // Merge with defaults to ensure all fields have values
+        const mergedData = {
+          ...defaultValues,
+          ...(profileData ?? {}),
+          hobbies:
+            profileData && Array.isArray(profileData.hobbies)
+              ? profileData.hobbies
               : [],
-          };
-          form.reset(mergedData);
-        } else {
-          const profileDataDB = await fetchUserProfileData(userId);
-          if (profileDataDB) {
-            // Merge with defaults to ensure all fields have values
-            const mergedData = {
-              ...defaultValues,
-              ...profileDataDB,
-              hobbies: Array.isArray(profileDataDB.hobbies)
-                ? profileDataDB.hobbies
-                : [],
-            };
-            form.reset(mergedData);
-            localStorage.setItem(
-              `${userId}_userProfile`,
-              JSON.stringify(mergedData)
-            );
-          }
-        }
+        };
+        form.reset(mergedData);
       } catch (error) {
         console.error("Error loading profile data:", error);
         toast.error("Failed to load profile data. Please try again.");
@@ -113,7 +96,7 @@ export function ProfileForm({ userId }: { userId: string }) {
     };
 
     loadProfileData();
-  }, [userId, form]);
+  }, [userId, form, profileData]);
 
   // Show toast notification only once for empty profile
   useEffect(() => {
@@ -375,7 +358,6 @@ export function ProfileForm({ userId }: { userId: string }) {
                             checked={
                               Array.isArray(field.value) &&
                               field.value.includes(hobby)
-                              
                             }
                             onCheckedChange={(checked) => {
                               const currentHobbies = Array.isArray(field.value)

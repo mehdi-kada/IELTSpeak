@@ -5,12 +5,10 @@ import { requiredFields } from "@/constants/constants";
 import { insertSession } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { cardProps } from "@/types/types";
 
-interface cardProps {
-  level: string;
-  title: string;
-  description: string;
-}
+
+
 
 function LevelCard({ level, title, description }: cardProps) {
   const router = useRouter();
@@ -21,6 +19,7 @@ function LevelCard({ level, title, description }: cardProps) {
     throw new Error("couldnt get the user id ")
   }
   const { profileData, loading: profileLoading } = useUserProfile(userId);
+  
   // determine if profile has all required fields
   const isProfileComplete = React.useMemo(() => {
     if (!profileData) return false;
