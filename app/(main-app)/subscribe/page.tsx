@@ -7,11 +7,20 @@ export const metadata: Metadata = {
 import { CustomerPortalButton } from "@/components/subscription/CustomerPortalButton";
 import { SubscriptionCard } from "@/components/subscription/SubscriptionCard";
 import SubscriptionStatus from "@/components/subscription/SubscriptionStatus";
+import { createClient } from "@/lib/supabase/server";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 import React, { Suspense } from "react";
 
-function Subscribe() {
+async function Subscribe() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
+  if (!user) {
+    redirect("/auth/login");
+  }
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="text-center mb-12 space-y-4 ">
@@ -39,7 +48,7 @@ function Subscribe() {
             "Access to All Levels (6.5-9)",
             "Save & Review Session History",
           ]}
-          productId= {process.env.NEXT_PUBLIC_POLAR_MONTHLY_PRODUCT_ID!}
+          productId={process.env.NEXT_PUBLIC_POLAR_MONTHLY_PRODUCT_ID!}
           isPopular={false}
         />
         {/* for yearly sub */}
@@ -53,7 +62,7 @@ function Subscribe() {
             "Access to All Levels (6.5-9)",
             "Save & Review Session History",
           ]}
-          productId= {process.env.NEXT_PUBLIC_POLAR_YEARLY_PRODUCT_ID!}
+          productId={process.env.NEXT_PUBLIC_POLAR_YEARLY_PRODUCT_ID!}
           isPopular={true}
         />
       </div>

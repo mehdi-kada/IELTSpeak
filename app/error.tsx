@@ -14,7 +14,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="bg-[#1a1a3a] text-white min-h-screen flex flex-col items-center justify-center p-4 text-center font-[Inter]">
+    <div className="bg-[#1F2937] text-white min-h-screen flex flex-col items-center justify-center p-4 text-center font-[Inter]">
       {/* Glitch Effect Error Code */}
       <h1 className="text-9xl font-black glitch relative select-none mb-4">
         Error
