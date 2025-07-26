@@ -142,7 +142,7 @@ export function UpdatePasswordForm({
                   className="w-full bg-[#E91E63] hover:shadow-md hover:shadow-[#E91E63]/70"
                   disabled={form.formState.isSubmitting}
                 >
-                  {form.formState.isSubmitting ? "Saving..." : "Save new passwordddd"}
+                  {form.formState.isSubmitting ? "Saving..." : "Save new password"}
                 </Button>
               </div>
             </form>

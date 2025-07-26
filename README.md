@@ -4,7 +4,7 @@
 
 ![Session UI Screenshot](public/images/Session.png)
 
-*The live session interface where users engage with the AI examiner.*
+_The live session interface where users engage with the AI examiner._
 
 ## ✨ Features
 
@@ -15,14 +15,14 @@
 - **Personalized Suggestions**: Get real-time, profile-based suggestions during sessions for natural and authentic responses.
 - **Session History & Progress Tracking**: View past practice sessions and track improvement via a secure user dashboard.
 - **Secure Authentication & Data Privacy**: Full user authentication and data storage with Supabase, leveraging Row Level Security for privacy.
-- **Subscription-Based Access**: Monetized via Lemon Squeezy for seamless payments and subscriptions.
-- **App Monitoring**: Integrated with PostHog for analytics and Sentry for real-time error tracking to ensure a reliable user experience.
+- **Subscription-Based Access**: Monetized via Polar for seamless payments and subscriptions. Note: In previous commits, the import was done using `lemonsqueezy`.
+- **App Monitoring**: Integrated with PostHog for analytics to ensure a reliable user experience.
 
 ## 🛠️ Tech Stack
 
 Built with a modern, server-first architecture:
 
-- **Framework**: [Next.js](https://nextjs.org/) 
+- **Framework**: [Next.js](https://nextjs.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **UI Components**: [Shadcn/UI](https://ui.shadcn.com/)
 - **Database & Auth**: [Supabase](https://supabase.com/)
@@ -31,7 +31,6 @@ Built with a modern, server-first architecture:
 - **Payments**: [Polar](https://polar.sh/)
 - **Email**: [Resend](https://resend.com/)
 - **Analytics**: [PostHog](https://posthog.com/)
-- **Error Tracking**: [Sentry](https://sentry.io/)
 - **Deployment**: [Vercel](https://vercel.com/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 
@@ -39,13 +38,13 @@ Built with a modern, server-first architecture:
 
 Below are key interfaces of the IELTSpeak application:
 
-| **Levels / Exam Lobby** | **Results Page** |
-|-------------------------|------------------|
+| **Levels / Exam Lobby**                         | **Results Page**                               |
+| ----------------------------------------------- | ---------------------------------------------- |
 | ![Levels Selection UI](public/images/Bands.png) | ![Results Page UI](public/images/FeedBack.png) |
 
-| **User Profile** |
-|------------------|
-| ![Profile Page UI](public/images/Profile.png) |
+| **User Profile**                              | **Mobile Session UI**                                 |
+| --------------------------------------------- | ----------------------------------------------------- |
+| ![Profile Page UI](public/images/Profile.png) | ![Mobile Session UI](public/images/MobileSession.png) |
 
 ## 🚀 Getting Started
 
@@ -60,32 +59,36 @@ Follow these steps to set up **IELTSpeak** locally.
   - Google Gemini
   - Vapi
   - Resend
-  - Lemon Squeezy
+  - Polar
   - PostHog
-  - Sentry
 
 ### Installation
 
 1. **Clone the repository**:
+
    ```sh
    git clone https://github.com/mehdi-kada/ieltspeak.git
    cd ieltspeak
    ```
 
 2. **Install dependencies**:
+
    ```sh
    npm install
    ```
 
 3. **Set up environment variables**:
+
    - Create a `.env.local` file in the project root.
    - Copy the contents of `.env.example` or add the required variables (see below).
 
 4. **Configure Supabase**:
+
    - Run the SQL script in `database/schema.sql` via the Supabase SQL Editor to set up tables and policies.
    - Configure authentication and necessary database triggers.
 
 5. **Start the development server**:
+
    ```sh
    npm run dev
    ```
@@ -111,17 +114,13 @@ VAPI_API_KEY=your_vapi_api_key
 RESEND_API_KEY=your_resend_api_key
 
 # Polar
-POLAR_ACCESS_TOKEN=your_polar_access_token
+POLAR_API_KEY=your_polar_api_key
 POLAR_WEBHOOK_SECRET=your_polar_webhook_secret
-NEXT_PUBLIC_POLAR_MONTHLY_PRODUCT_ID=your_monthly_product_id
-NEXT_PUBLIC_POLAR_YEARLY_PRODUCT_ID=your_yearly_product_id
 
 # PostHog
 POSTHOG_API_KEY=your_posthog_api_key
 NEXT_PUBLIC_POSTHOG_HOST=your_posthog_host
 
-# Sentry
-SENTRY_DSN=your_sentry_dsn
 ```
 
 ## 📄 License
