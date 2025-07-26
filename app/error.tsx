@@ -14,7 +14,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="bg-[#1a1a3a] text-white min-h-screen flex flex-col items-center justify-center p-4 text-center font-[Inter]">
+    <div className="bg-[#1F2937] text-white min-h-screen flex flex-col items-center justify-center p-4 text-center font-[Inter]">
       {/* Glitch Effect Error Code */}
       <h1 className="text-9xl font-black glitch relative select-none mb-4">
         Error
@@ -32,7 +32,7 @@ export default function GlobalError({
         </span>
       </h1>
 
-      {/* Page Title and Description */}
+
       <div className="mt-8">
         <h2 className="text-4xl font-bold text-white">
           Oops! Something Went Wrong
@@ -43,7 +43,7 @@ export default function GlobalError({
         </p>
       </div>
 
-      {/* Action Buttons */}
+
       <div className="mt-8 flex gap-4 flex-wrap justify-center">
         <a
           href="/dashboard"

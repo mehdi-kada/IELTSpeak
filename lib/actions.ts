@@ -1,7 +1,7 @@
 "use server";
 import { redirect } from "next/navigation";
 import { createClient } from "./supabase/server";
-import { checkUserPremiumStatus } from "./lemonsqueezy/subscription-helpers";
+import { checkUserPremiumStatus } from "./polar/subscription-helpers";
 import { sessionUpdateProps } from "@/types/types";
 import { profileValues } from "@/types/schemas";
 import { requiredFields } from "@/constants/constants";

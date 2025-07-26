@@ -7,9 +7,7 @@ export const userProfileSchema = z.object({
     .int("Age must be a whole number")
     .min(10, "Age must be at least 10")
     .max(100, "Age must be less than 100"),
-  gender: z.enum(["Male", "Female", "Other"], {
-    errorMap: () => ({ message: "Please select a gender" }),
-  }),
+  gender: z.string().min(1, "Gender is required"),
   hometown: z.string().min(1, "Hometown is required"),
   country: z.string().min(2, "Country must be at least 2 characters"),
   occupation: z.string().min(2, "Occupation must be at least 2 characters"),

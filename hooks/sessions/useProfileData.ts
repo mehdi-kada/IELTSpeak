@@ -22,37 +22,32 @@ export function useUserProfile(userId: string | null) {
       try {
         // check localStorage first
         const savedProfile = localStorage.getItem(`${userId}_userProfile`);
+        console.log("fetched profile data from LS:", savedProfile);
 
         if (savedProfile) {
-          const profileData = JSON.parse(savedProfile);
-          setProfileData(profileData);
-          setLoading(false);
-          return;
+          const cachedData = JSON.parse(savedProfile);
+          setProfileData(cachedData);
+          return; // Remove the manual setLoading(false) here
         }
 
         // fetch from database if not cached
-        const profileData = await fetchUserProfileData(userId);
+        const dbData = await fetchUserProfileData(userId);
+        console.log("fetched profile data from DB:", dbData);
 
-        if (!profileData) {
-          console.log("No profile data found, redirecting to profile page");
-          window.location.href = "/profile?reason=empty";
-          return;
+        if (dbData) {
+          // cache the data only if we got valid data
+          localStorage.setItem(`${userId}_userProfile`, JSON.stringify(dbData));
         }
 
-        // cache the data
-        localStorage.setItem(
-          `${userId}_userProfile`,
-          JSON.stringify(profileData)
-        );
-
-        setProfileData(profileData);
+        setProfileData(dbData); // This handles both null and valid data
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : "Failed to load profile";
         console.error("Error handling profile data:", err);
         setError(errorMessage);
+        setProfileData(null); // Ensure profileData is null on error
       } finally {
-        setLoading(false);
+        setLoading(false); // This handles loading state for both paths
       }
     };
 

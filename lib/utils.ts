@@ -27,7 +27,7 @@ export const configureAssistant = () => {
 
     firstMessage:
       "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the International English Language speaking test based on your level: {{level}}. I'll ask you questions and listen to your responses. Let's start with a quick introduction—what's your name?",
-    firstMessageInterruptionsEnabled: true,
+    firstMessageInterruptionsEnabled: false,
     //" hi there lets start our conversation , what is your name ? ",
 
     // Silence timeout configuration (in seconds)

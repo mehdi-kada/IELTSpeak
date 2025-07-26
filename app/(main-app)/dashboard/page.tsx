@@ -98,7 +98,7 @@ function Dashboard() {
                 <h3 className="text-xl font-semibold mb-2">
                   Something went wrong
                 </h3>
-                <p className="text-gray-400 mb-6">{error}</p>
+                <p className="text-gray-400 mb-6">if this error persist please contact us </p>
                 <button
                   onClick={checkUserAndFetchData}
                   className="px-6 py-3 bg-[#E91E63] text-white rounded-lg hover:bg-[#374151] transition-colors font-medium"
@@ -242,7 +242,7 @@ function Dashboard() {
                       </p>
                       {dashboardData && dashboardData.totalSessions >= 3 && (
                         <Link
-                          href="/subscribe"
+                          href="/subscribe?reason=limit-hit"
                           className="inline-block mt-2 text-xs bg-[#E91E63] hover:bg-[#E91E63] text-white px-3 py-1 rounded transition-colors"
                         >
                           Upgrade Now

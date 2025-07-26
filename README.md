@@ -4,7 +4,7 @@
 
 ![Session UI Screenshot](public/images/Session.png)
 
-*The live session interface where users engage with the AI examiner.*
+_The live session interface where users engage with the AI examiner._
 
 ## ✨ Features
 
@@ -16,13 +16,13 @@
 - **Session History & Progress Tracking**: View past practice sessions and track improvement via a secure user dashboard.
 - **Secure Authentication & Data Privacy**: Full user authentication and data storage with Supabase, leveraging Row Level Security for privacy.
 - **Subscription-Based Access**: Monetized via Polar for seamless payments and subscriptions. Note: In previous commits, the import was done using `lemonsqueezy`.
-- **App Monitoring**: Integrated with PostHog for analytics and Sentry for real-time error tracking to ensure a reliable user experience.
+- **App Monitoring**: Integrated with PostHog for analytics to ensure a reliable user experience.
 
 ## 🛠️ Tech Stack
 
 Built with a modern, server-first architecture:
 
-- **Framework**: [Next.js](https://nextjs.org/) 
+- **Framework**: [Next.js](https://nextjs.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **UI Components**: [Shadcn/UI](https://ui.shadcn.com/)
 - **Database & Auth**: [Supabase](https://supabase.com/)
@@ -31,7 +31,6 @@ Built with a modern, server-first architecture:
 - **Payments**: [Polar](https://polar.sh/)
 - **Email**: [Resend](https://resend.com/)
 - **Analytics**: [PostHog](https://posthog.com/)
-- **Error Tracking**: [Sentry](https://sentry.io/)
 - **Deployment**: [Vercel](https://vercel.com/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 
@@ -39,12 +38,12 @@ Built with a modern, server-first architecture:
 
 Below are key interfaces of the IELTSpeak application:
 
-| **Levels / Exam Lobby** | **Results Page** |
-|-------------------------|------------------|
+| **Levels / Exam Lobby**                         | **Results Page**                               |
+| ----------------------------------------------- | ---------------------------------------------- |
 | ![Levels Selection UI](public/images/Bands.png) | ![Results Page UI](public/images/FeedBack.png) |
 
-| **User Profile** | **Mobile Session UI** |
-|------------------|----------------------|
+| **User Profile**                              | **Mobile Session UI**                                 |
+| --------------------------------------------- | ----------------------------------------------------- |
 | ![Profile Page UI](public/images/Profile.png) | ![Mobile Session UI](public/images/MobileSession.png) |
 
 ## 🚀 Getting Started
@@ -62,30 +61,34 @@ Follow these steps to set up **IELTSpeak** locally.
   - Resend
   - Polar
   - PostHog
-  - Sentry
 
 ### Installation
 
 1. **Clone the repository**:
+
    ```sh
    git clone https://github.com/mehdi-kada/ieltspeak.git
    cd ieltspeak
    ```
 
 2. **Install dependencies**:
+
    ```sh
    npm install
    ```
 
 3. **Set up environment variables**:
+
    - Create a `.env.local` file in the project root.
    - Copy the contents of `.env.example` or add the required variables (see below).
 
 4. **Configure Supabase**:
+
    - Run the SQL script in `database/schema.sql` via the Supabase SQL Editor to set up tables and policies.
    - Configure authentication and necessary database triggers.
 
 5. **Start the development server**:
+
    ```sh
    npm run dev
    ```
@@ -118,8 +121,6 @@ POLAR_WEBHOOK_SECRET=your_polar_webhook_secret
 POSTHOG_API_KEY=your_posthog_api_key
 NEXT_PUBLIC_POSTHOG_HOST=your_posthog_host
 
-# Sentry
-SENTRY_DSN=your_sentry_dsn
 ```
 
 ## 📄 License

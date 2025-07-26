@@ -45,8 +45,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import { PostHogProvider } from "./providers";
-import { Suspense } from "react";
+import { ClientProviders } from "@/components/ClientProviders";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -58,12 +57,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Suspense fallback={null}>
-          <PostHogProvider>
-            {children}
-            <Toaster />
-          </PostHogProvider>
-        </Suspense>
+        <ClientProviders>
+          {children}
+          <Toaster />
+        </ClientProviders>
       </body>
     </html>
   );

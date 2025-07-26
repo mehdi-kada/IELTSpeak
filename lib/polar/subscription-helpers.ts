@@ -1,16 +1,28 @@
-// for database operations
+// Database operations for Polar subscriptions
 
-import { SubscriptionData } from "@/types/types";
 import { createClient } from "@supabase/supabase-js";
-import crypto from "crypto";
+import { polar } from "./polar";
+import { SubscriptionSchema } from "@/types/types";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY! // use to surpass row level security
 );
 
-// get the user subscription details
-export const getUserSubscription = async (userId: string) => {
+export interface PolarSubscriptionData {
+  user_id: string;
+  polar_subscription_id: string;
+  polar_customer_id: string;
+  status: "active" | "cancelled" | "expired" | "on_trial" | "paused" | "unpaid";
+  plan_name: string;
+  current_period_start: string;
+  current_period_end: string;
+  cancel_at_period_end: boolean;
+  renews_at: string;
+}
+
+// Get the user subscription details
+export const getUserSubscription = async (userId: string | null) : Promise<SubscriptionSchema | null>=> {
   try {
     const { data, error } = await supabase
       .from("subscriptions")
@@ -27,35 +39,35 @@ export const getUserSubscription = async (userId: string) => {
     return data;
   } catch (error) {
     console.error("Error in getUserSubscription:", error);
+    return null;
   }
 };
 
 export const upsertSubscription = async (
-  subscriptionData: SubscriptionData
+  subscriptionData: PolarSubscriptionData
 ): Promise<Boolean | null> => {
   try {
-    // isnert the webhook payload to database
+    // Insert the webhook payload to database
     const { error: subscriptionError } = await supabase
       .from("subscriptions")
       .upsert(subscriptionData, {
-        onConflict: "lemonsqueezy_subscription_id",
+        onConflict: "polar_subscription_id",
       });
 
     if (subscriptionError) {
-      console.error("error when upserting subscription data ");
+      console.error("error when upserting subscription data ", subscriptionError);
       return false;
     }
 
-    // update the user's profile premuim status
-    // customer subscription status from lemon to verify that sub is ineed active
-    const premuimStatus =
+    // Update the user's profile premium status
+    const premiumStatus =
       subscriptionData.status === "active" ||
       subscriptionData.status === "cancelled";
-    const premuimUpdateSusccess = await updateUserStatus(
+    const premiumUpdateSuccess = await updateUserStatus(
       subscriptionData.user_id,
-      premuimStatus
+      premiumStatus
     );
-    if (!premuimUpdateSusccess) {
+    if (!premiumUpdateSuccess) {
       console.error("failed to update user's status");
       return false;
     }
@@ -66,34 +78,35 @@ export const upsertSubscription = async (
   }
 };
 
-// update the user premuim status in profiles table
+// Update the user premium status in profiles table
 export const updateUserStatus = async (
   userId: string,
-  isPremuim: boolean
+  isPremium: boolean
 ): Promise<boolean> => {
   try {
     const { error } = await supabase
       .from("profiles")
       .update({
-        is_premium: isPremuim,
+        is_premium: isPremium,
       })
       .eq("id", userId);
     if (error) {
       console.log("error when updating the user's premium status : ", error);
+      return false;
     }
     return true;
   } catch (error) {
-    console.error("error when updataing user status");
+    console.error("error when updating user status", error);
     return false;
   }
 };
 
-// cancel subscription from db
+// Cancel subscription from db
 export const cancelSubFromDB = async (
   subscriptionId: string
 ): Promise<Boolean> => {
   try {
-    // update the database
+    // Update the database
     const { data, error } = await supabase
       .from("subscriptions")
       .update({
@@ -101,7 +114,7 @@ export const cancelSubFromDB = async (
         cancel_at_period_end: true,
         updated_at: new Date().toISOString(),
       })
-      .eq("lemonsqueezy_subscription_id", subscriptionId)
+      .eq("polar_subscription_id", subscriptionId)
       .select("user_id")
       .single();
 
@@ -116,7 +129,7 @@ export const cancelSubFromDB = async (
   }
 };
 
-// check user's premium status
+// Check user's premium status
 export async function checkUserPremiumStatus(userId: string): Promise<boolean> {
   try {
     const { data, error } = await supabase
@@ -156,18 +169,5 @@ export async function checkUserPremiumStatus(userId: string): Promise<boolean> {
   }
 }
 
-// function to verify the authenticity of the secret
-export const verifyWebhookSignature = (
-  body: string,
-  signature: string
-): boolean => {
-  const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET!;
-  const hmac = crypto.createHmac("sha256", secret);
-  hmac.update(body);
-  const expectedSingature = hmac.digest("hex");
 
-  return crypto.timingSafeEqual(
-    Buffer.from(signature, "hex"),
-    Buffer.from(expectedSingature, "hex")
-  );
-};
+

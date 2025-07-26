@@ -74,8 +74,8 @@ export interface DashboardData {
 
 export interface SubscriptionData {
   user_id: string;
-  lemonsqueezy_subscription_id: string;
-  lemonsqueezy_customer_id: string;
+  polar_subscription_id: string;
+  polar_customer_id: string;
   status: "active" | "cancelled" | "expired" | "on_trial" | "paused" | "unpaid";
   plan_name: string;
   current_period_start: string;
@@ -89,8 +89,14 @@ export interface SubscriptionCardProps {
   description: string;
   price: string;
   features: string[];
-  variantId: string;
+  productId: string;
   isPopular: boolean;
+}
+
+export interface cardProps {
+  level: string;
+  title: string;
+  description: string;
 }
 
 export interface SubscriptionStatusProps {
@@ -100,6 +106,7 @@ export interface SubscriptionStatusProps {
   current_period_end: string;
   cancel_at_period_end: boolean;
   renews_at: string;
+  polar_subscription_id: string;
 }
 
 export interface sessionUpdateProps {
@@ -119,4 +126,19 @@ export interface PracticeSession {
 
 export interface PracticeHistoryProps {
   sessions: PracticeSession[];
+}
+
+export interface SubscriptionSchema {
+  id: string; // UUID
+  user_id: string | null;
+  status: "active" | "cancelled" | "expired" | "on_trial" | "paused" | "unpaid";
+  plan_name: string;
+  current_period_start: string | null; // ISO timestamp
+  current_period_end: string | null;   // ISO timestamp
+  cancel_at_period_end: boolean | null;
+  created_at: string | null;           // ISO timestamp
+  updated_at: string | null;           // ISO timestamp
+  renews_at: string | null;            // ISO timestamp
+  polar_subscription_id: string | null;
+  polar_customer_id: string | null;
 }

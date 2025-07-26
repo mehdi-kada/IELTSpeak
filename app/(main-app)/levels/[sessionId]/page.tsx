@@ -60,7 +60,10 @@ function Session() {
       if (messages.length > 5) {
         await sendConversationToAPI(sessionId, messages);
         route.push(`/results/${sessionId}`);
-      } else {
+      } else if (messages.length === 0){
+        return null 
+      }
+      else {
         window.location.href = "/too-short";
         return;
       }
