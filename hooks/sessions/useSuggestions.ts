@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 export function useSuggestions() {
+  
   const [prompt, setPrompt] = useState("");
   const [streamedResponse, setStreamedResponse] = useState("");
   const [suggestionStatus, setSuggestionStatus] = useState<
@@ -70,10 +71,10 @@ export function useSuggestions() {
     }
   }, [suggestions]);
 
-  // use callback to cash the prompt and avoid rerenders (passed to vapi child component )
-  const generateSuggestion = useCallback((newPrompt: string) => {
+
+  const generateSuggestion = (newPrompt: string) => {
     setPrompt(newPrompt);
-  }, []);
+  }
 
   const clearSuggestions = () => {
     setSuggestions([]);

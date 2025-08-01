@@ -50,7 +50,7 @@ export function useVapi(
     if (!userId || !stableProfileData) {
       return;
     }
-
+    console.log("the profile data in vapi hook is : ", stableProfileData)
     let cancelled = false;
     let vapi: Vapi | null = null;
 
@@ -102,6 +102,7 @@ export function useVapi(
                   stableProfileData,
                   suggestionsRef.current
                 );
+                console.log("the prompt in suggestions generations is : ", newPrompt)
 
                 onSuggestion(newPrompt);
               }
