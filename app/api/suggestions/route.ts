@@ -1,4 +1,4 @@
-// used to recieve the vapi transcribts
+// used to recieve the vapi transcripts
 // uses gemini and send back suggestions
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   const { prompt } = await req.json();
 
   // get the model
-  const model = genAi.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
+  const model = genAi.getGenerativeModel({ model: "gemini-1.5-flash" });
   try {
     //initialze a streaming generatinve session with the responsele
     const result = await model.generateContentStream(prompt);

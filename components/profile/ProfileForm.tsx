@@ -30,6 +30,8 @@ import { profileValues, userProfileSchema } from "@/types/schemas";
 import { educationLevels, genders, hobbyOptions } from "@/constants/constants";
 import { fetchUserProfileData, insertProfileData } from "@/lib/actions";
 import { useUserProfile } from "@/hooks/sessions/useProfileData";
+import { routeModule } from "next/dist/build/templates/pages";
+import { useRouter } from "next/navigation";
 
 export function ProfileForm({ userId }: { userId: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,6 +39,7 @@ export function ProfileForm({ userId }: { userId: string }) {
   const emptyProfile = searchParams.get("reason");
   const toastShown = useRef(false);
 
+  const router = useRouter();
   const { profileData, error } = useUserProfile(userId);
 
   const form = useForm<profileValues>({
@@ -44,10 +47,10 @@ export function ProfileForm({ userId }: { userId: string }) {
     defaultValues: {
       name: "",
       age: 0,
-      gender: "Other",
+      gender: "",
       hometown: "",
       country: "",
-      education_level: "Other",
+      education_level: "",
       occupation: "",
       favorite_subject: "",
       hobbies: [],
@@ -67,7 +70,7 @@ export function ProfileForm({ userId }: { userId: string }) {
         const defaultValues = {
           name: "",
           age: 0,
-          gender: "Other",
+          gender: "",
           hometown: "",
           country: "",
           education_level: "",
@@ -88,7 +91,11 @@ export function ProfileForm({ userId }: { userId: string }) {
               ? profileData.hobbies
               : [],
         };
-        form.reset(mergedData);
+
+        // Use setTimeout to ensure the form is properly initialized before resetting
+        setTimeout(() => {
+          form.reset(mergedData);
+        }, 0);
       } catch (error) {
         console.error("Error loading profile data:", error);
         toast.error("Failed to load profile data. Please try again.");
@@ -111,10 +118,14 @@ export function ProfileForm({ userId }: { userId: string }) {
   // Handle form submission
   const onSubmit = async (data: profileValues) => {
     setIsSubmitting(true);
+    console.log(" the data to use for update is : ", data);
     try {
       localStorage.setItem(`${userId}_userProfile`, JSON.stringify(data));
       await insertProfileData(data, userId);
       toast.success("Profile updated successfully");
+      if (emptyProfile) {
+        router.push("/levels");
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to update profile. Please try again.");
@@ -196,7 +207,10 @@ export function ProfileForm({ userId }: { userId: string }) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Education Level</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value || ""}
+                    >
                       <FormControl>
                         <SelectTrigger className="bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] focus:ring-2 px-2 sm:px-5 py-3 text-white">
                           <SelectValue placeholder="Education" />
@@ -226,7 +240,10 @@ export function ProfileForm({ userId }: { userId: string }) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Gender</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value || ""}
+                    >
                       <FormControl>
                         <SelectTrigger className="bg-[#1F2937] border border-white/20 focus:border-[#E91E63] focus:ring-[#E91E63] focus:ring-2 px-2 sm:px-5 py-3 text-white">
                           <SelectValue placeholder="Gender" />

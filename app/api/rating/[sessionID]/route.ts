@@ -7,7 +7,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 
 const genAi = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
-const model = genAi.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
+const model = genAi.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export async function POST(
   req: NextRequest,
@@ -15,7 +15,7 @@ export async function POST(
 ) {
   try {
     const resolvedParams = await params;
-    const sessionId = resolvedParams.sessionID; 
+    const sessionId = resolvedParams.sessionID;
     const { messages, level } = await req.json();
 
     //validate the request
@@ -32,7 +32,6 @@ export async function POST(
         { status: 500 }
       );
     }
-
 
     const formatCoversation = (
       messages: Array<{ role: string; content: string }>
@@ -94,13 +93,11 @@ Return ONLY a valid JSON object in this exact structure. Do not include any mark
     Provide realistic, fair, and actionable assessments.
     Return ONLY the JSON object without any introductory text, markdown, or explanations.
 Analyze the conversation now and return only the JSON response.
-  `; 
+  `;
 
     const result = await model.generateContent(resultPrompt);
     const response = await result.response;
     const evaluation = response.text();
-
-
 
     let cleanedEvaluation = evaluation.trim();
     if (cleanedEvaluation.includes("```json")) {
@@ -112,8 +109,6 @@ Analyze the conversation now and return only the JSON response.
         .replace(/```\s*/, "")
         .replace(/\s*```$/, "");
     }
-
-
 
     let parsedEvaluation;
     try {

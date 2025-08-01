@@ -13,6 +13,7 @@ export default function SuggestionsList({
   suggestions,
   streamedResponse,
 }: SuggestionsListProps) {
+  console.log("suggestions : ", suggestions);
   if (suggestionStatus === "waiting") {
     return (
       <div className="bg-[#374151] p-4 rounded-lg border border-transparent text-center">
