@@ -29,7 +29,7 @@ export const insertSession = async ({ level }: { level: string }) => {
       .gt("ielts_rating->>overall", 0)
       .order("created_at", { ascending: false });
     if (error) {
-      console.log();
+
       throw new Error(
         " error when fetching data from db for premium status check in actions ",
         error

@@ -21,7 +21,6 @@ export function useUserProfile(userId: string | null) {
       try {
 
         const savedProfile = localStorage.getItem(`${userId}_userProfile`);
-        console.log("fetched profile data from LS:", savedProfile);
 
         if (savedProfile) {
           const cachedData = JSON.parse(savedProfile);
@@ -30,7 +29,6 @@ export function useUserProfile(userId: string | null) {
         }
 
         const dbData = await fetchUserProfileData(userId);
-        console.log("fetched profile data from DB:", dbData);
 
         if (dbData) {
           

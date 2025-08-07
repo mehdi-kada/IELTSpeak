@@ -114,7 +114,6 @@ export function ProfileForm({ userId }: { userId: string }) {
   // handle form submission
   const onSubmit = async (data: profileValues) => {
     setIsSubmitting(true);
-    console.log(" the data to use for update is : ", data);
     try {
       localStorage.setItem(`${userId}_userProfile`, JSON.stringify(data));
       await insertProfileData(data, userId);
