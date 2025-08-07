@@ -1,25 +1,22 @@
 "use client";
-import { useAuth } from "@/hooks/sessions/useAuth";
-import { useUserProfile } from "@/hooks/sessions/useProfileData";
+import { useAuth } from "@/hooks/session/useAuth";
+import { useUserProfile } from "@/hooks/session/useProfileData";
 import { requiredFields } from "@/constants/constants";
 import { insertSession } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { cardProps } from "@/types/types";
 
-
-
-
 function LevelCard({ level, title, description }: cardProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const { userId, error } = useAuth();
-  if(error){
-    throw new Error("couldnt get the user id ")
+  if (error) {
+    throw new Error("couldnt get the user id ");
   }
   const { profileData, loading: profileLoading } = useUserProfile(userId);
-  
+
   // determine if profile has all required fields
   const isProfileComplete = React.useMemo(() => {
     if (!profileData) return false;

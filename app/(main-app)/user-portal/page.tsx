@@ -1,19 +1,17 @@
-'use client'
+"use client";
 
-import { CustomerPortalButton } from "@/components/subscription/CustomerPortalButton"
-import { useAuth } from "@/hooks/sessions/useAuth"
-
-
+import { CustomerPortalButton } from "@/components/subscription/CustomerPortalButton";
+import { useAuth } from "@/hooks/session/useAuth";
 
 export default function CustomerPortalPage() {
-  const { user, loading } = useAuth()
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-xl">Loading...</div>
       </div>
-    )
+    );
   }
 
   return (
@@ -75,5 +73,5 @@ export default function CustomerPortalPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

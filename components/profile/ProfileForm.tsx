@@ -29,7 +29,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { profileValues, userProfileSchema } from "@/types/schemas";
 import { educationLevels, genders, hobbyOptions } from "@/constants/constants";
 import { fetchUserProfileData, insertProfileData } from "@/lib/actions";
-import { useUserProfile } from "@/hooks/sessions/useProfileData";
+import { useUserProfile } from "@/hooks/session/useProfileData";
 import { routeModule } from "next/dist/build/templates/pages";
 import { useRouter } from "next/navigation";
 

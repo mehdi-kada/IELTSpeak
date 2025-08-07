@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 export function useSuggestions() {
+  /**
+   * receives a prompt and generates suggestions based on it.
+   */
   
   const [prompt, setPrompt] = useState("");
   const [streamedResponse, setStreamedResponse] = useState("");
@@ -26,8 +29,6 @@ export function useSuggestions() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt }),
         });
-
-       
 
         if (!res.ok) {
           const errorText = await res.text();

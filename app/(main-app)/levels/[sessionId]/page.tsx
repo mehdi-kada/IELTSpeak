@@ -6,12 +6,12 @@ import MobileSuggestionList from "@/components/session/Mobile/MobileSuggestionLi
 import SessionNavigation from "@/components/session/SessionNav";
 import MessageList from "@/components/session/desktop/MessageList";
 import SuggestionsList from "@/components/session/desktop/SuggestionList";
-import { useAuth } from "@/hooks/sessions/useAuth";
-import { useUserProfile } from "@/hooks/sessions/useProfileData";
-import { useSessionRating } from "@/hooks/sessions/useSessionRating";
-import { useSessionTimer } from "@/hooks/sessions/useSessionTimer";
-import { useSuggestions } from "@/hooks/sessions/useSuggestions";
-import { useVapi } from "@/hooks/sessions/useVapi";
+import { useAuth } from "@/hooks/session/useAuth";
+import { useUserProfile } from "@/hooks/session/useProfileData";
+import { useSessionRating } from "@/hooks/session/useSessionRating";
+import { useSessionTimer } from "@/hooks/session/useSessionTimer";
+import { useSuggestions } from "@/hooks/session/useSuggestions";
+import { useVapi } from "@/hooks/session/useVapi";
 import { useParams, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react";
@@ -39,9 +39,9 @@ function Session() {
     error,
   } = useUserProfile(userId);
 
-
   const { isSavingResults, sendConversationToAPI } = useSessionRating();
 
+  // get the suggestions & suggestion trigger to ge the prompt from vapi
   const {
     suggestions,
     streamedResponse,
@@ -49,23 +49,26 @@ function Session() {
     generateSuggestion,
   } = useSuggestions();
 
-
   const handleEndCall = async () => {
-   
+    /**
+     * handles ending the call and redirects the user based on conversation length.
+     * if the conversation has more than 5 messages, it sends them for evaluation.
+     * if it has 0 messages, it does nothing.
+     * if it has between 1 and 5 messages, it redirects to a "too-short" page.
+     */
     try {
       endCall();
       if (messages.length > 5) {
         await sendConversationToAPI(sessionId, messages);
         route.push(`/results/${sessionId}`);
-      } else if (messages.length === 0){
-        return null 
-      }
-      else {
+      } else if (messages.length === 0) {
+        return null;
+      } else {
         window.location.href = "/too-short";
         return;
       }
     } catch (error) {
-      console.error("Failed to get evaluation:", error);
+      console.error("failed to get evaluation:", error);
       if (messages.length > 5) {
         route.push(`/results/${sessionId}`);
       } else {
@@ -75,6 +78,7 @@ function Session() {
   };
 
   // Vapi setup + cleanup
+  // pass the suggestion function to generate suggestions based on vapi assistant's messages
   const {
     callStatus,
     isSpeaking,
@@ -122,7 +126,6 @@ function Session() {
         />
 
         <div className="flex-grow flex flex-col sm:flex-row overflow-hidden">
-
           <div className="sm:hidden flex border-b border-white/10">
             <button
               onClick={() => setSuggestionsVisible(true)}
@@ -145,7 +148,6 @@ function Session() {
               Transcript
             </button>
           </div>
-
 
           <div className="hidden sm:flex flex-grow overflow-hidden">
             <div className="w-1/3 flex flex-col overflow-hidden">

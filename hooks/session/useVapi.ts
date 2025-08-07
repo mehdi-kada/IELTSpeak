@@ -16,6 +16,10 @@ export function useVapi(
   onSuggestion: (prompt: string) => void,
   onCallEndCallback?: () => void
 ) {
+  /**
+   * the vapi session that initiates a call with the agent , create the prompt for the suggestions with the messages 
+   * returns the transcripts for the conversation in real time  
+   */
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
@@ -30,7 +34,7 @@ export function useVapi(
     onCallEndCallback
   );
 
-
+  
   useEffect(() => {
     suggestionsRef.current = suggestions;
   }, [suggestions]);
@@ -39,6 +43,7 @@ export function useVapi(
     onCallEndCallbackRef.current = onCallEndCallback;
   }, [onCallEndCallback]);
 
+  // memoise profile data to not refetch each time
   const stableProfileData = useMemo(
     () => profileData,
     [profileData?.name, profileData?.age, profileData?.gender]
@@ -51,7 +56,7 @@ export function useVapi(
     let cancelled = false;
     let vapi: Vapi | null = null;
 
-    // to prevent multiple instances of vapi gloabally
+    // to prevent multiple instances of vapi globally
     if (globalVapiInstance || vapiRef.current) {
       return;
     }
@@ -98,7 +103,8 @@ export function useVapi(
                   stableProfileData,
                   suggestionsRef.current
                 );
-
+                
+                // pass the prompt to the useSuggestions hook to generate suggestions
                 onSuggestion(newPrompt);
               }
             } catch (error) {

@@ -2,6 +2,9 @@ import { SavedMessage } from "@/types/sessionTypes";
 import { useState } from "react";
 
 export function useSessionRating() {
+  /**
+   * sends the conversation to the api to be evaluated and rated.
+   */
   const [isSavingResults, setIsSavingResults] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,6 +36,7 @@ export function useSessionRating() {
 
       const result = await res.json();
 
+      // store the result in local storage instead of database for fast retrieval
       localStorage.setItem(`evaluation_${sessionId}`, JSON.stringify(result));
 
       return result;

@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export function useAuth() {
+  /**
+   * gets user information.
+   * redirects to login if not authenticated.
+   */
   const [userId, setUserId] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true);

@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 
 
 export function useSessionTimer(callStatus: CallStatus) {
+  /**
+   * a simple timer for the conversation session.
+   */
   const [sessionTime, setSessionTime] = useState(0);
 
   useEffect(() => {
