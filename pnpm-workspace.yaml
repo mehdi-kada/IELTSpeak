@@ -1,5 +1,0 @@
-onlyBuiltDependencies:
-  - '@sentry/cli'
-  - '@tailwindcss/oxide'
-  - core-js
-  - sharp

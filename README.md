@@ -53,7 +53,7 @@ Follow these steps to set up **IELTSpeak** locally.
 ### Prerequisites
 
 - Node.js (v18 or later)
-- npm, yarn, or pnpm
+- pnpm
 - Accounts and API keys for:
   - Supabase
   - Google Gemini
@@ -74,7 +74,7 @@ Follow these steps to set up **IELTSpeak** locally.
 2. **Install dependencies**:
 
    ```sh
-   npm install
+   pnpm install
    ```
 
 3. **Set up environment variables**:
@@ -90,7 +90,7 @@ Follow these steps to set up **IELTSpeak** locally.
 5. **Start the development server**:
 
    ```sh
-   npm run dev
+   pnpm dev
    ```
 
    Open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
