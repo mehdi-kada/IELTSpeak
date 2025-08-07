@@ -1,9 +1,7 @@
 "use client";
-// Import React and necessary hooks
 import React, { useRef, useEffect, useState } from "react";
 
 const FeaturesSection = () => {
-  // Define the features array, each with an icon, title, and description
   const features = [
     {
       icon: (
@@ -128,7 +126,6 @@ const FeaturesSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {features.map((feature, index) => (
-            // Outer div handles pop-in animation only
             <div
               key={index}
               className={`transition-all duration-300 ease-out 
@@ -136,7 +133,6 @@ const FeaturesSection = () => {
               `}
               style={{ transitionDelay: visible ? `${index * 250}ms` : "0ms" }}
             >
-              {/* Inner card handles hover effect instantly */}
               <div className=" p-6 rounded-xl max-w-3xl mx-auto bg-[#374151] border border-white/10 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-[#E91E63]">
                 <div className="text-[#E91E63] mb-4">{feature.icon}</div>
                 <h4 className="font-bold text-xl mb-2">{feature.title}</h4>

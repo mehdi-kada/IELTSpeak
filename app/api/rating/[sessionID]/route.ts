@@ -1,6 +1,3 @@
-// process final transctibts from the user and send the results to database
-// used to recieve the vapi transcribts
-// uses gemini and send back suggestions
 
 import { createClient } from "@/lib/supabase/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -139,7 +136,7 @@ Analyze the conversation now and return only the JSON response.
 
     if (dbError) {
       throw new Error("error in session updating with ratings ", dbError);
-    } // insert data to database
+    }
     return NextResponse.json({
       evaluation: parsedEvaluation,
       level: level,

@@ -1,5 +1,5 @@
-// app/not-found.tsx
-import Link from "next/link"; // Changed from lucide-react to next/link
+
+import Link from "next/link"; 
 import React from "react";
 
 function NotFound() {

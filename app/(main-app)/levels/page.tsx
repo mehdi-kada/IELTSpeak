@@ -20,7 +20,6 @@ import { Metadata } from "next";
 import React from "react";
 
 function Levels() {
-  // Define order classes for each band level
   const getOrderClasses = (level: string) => {
     const orderMap = {
       "6.5": "order-1 lg:order-1",

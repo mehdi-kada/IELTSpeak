@@ -24,8 +24,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
           background: "#374151",
           color: "#fff",
           border: "2px solid #E91E63",
-          fontSize: "1rem", // Font size for toast content
-          fontWeight: 600, // Font weight for toast content
+          fontSize: "1rem",
+          fontWeight: 600,
           textAlign: "center",
         },
       }}

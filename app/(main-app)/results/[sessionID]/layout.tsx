@@ -9,11 +9,11 @@ export const metadata: Metadata = {
     title: "My IELTS Speaking Test Results | IELTSpeak",
     description:
       "Review detailed feedback and band scores from a practice session on IELTSpeak.",
-    url: "https://www.ieltspeak.tech", // Point to the main site URL as these pages shouldn't be indexed
+    url: "https://www.ieltspeak.tech", 
     siteName: "IELTSpeak",
     images: [
       {
-        url: "/app/opengraph-image.png", // A unique image showing the results UI
+        url: "/app/opengraph-image.png", 
         width: 1200,
         height: 630,
         alt: "A summary of IELTS speaking test results on IELTSpeak",
@@ -31,7 +31,6 @@ export const metadata: Metadata = {
     images: ["/app/opengraph-image.png"],
   },
 
-  // we dont want google to index every single result page
   robots: {
     index: false,
     follow: false,

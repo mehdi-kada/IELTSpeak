@@ -30,23 +30,21 @@ export function useVapi(
     onCallEndCallback
   );
 
-  // Update suggestions ref whenever suggestions change
+
   useEffect(() => {
     suggestionsRef.current = suggestions;
   }, [suggestions]);
-  // update onCallEndCallback ref when it changes
+
   useEffect(() => {
     onCallEndCallbackRef.current = onCallEndCallback;
   }, [onCallEndCallback]);
 
-  // Memoize profile data to prevent unnecessary re-renders
   const stableProfileData = useMemo(
     () => profileData,
     [profileData?.name, profileData?.age, profileData?.gender]
   );
 
   useEffect(() => {
-    // make sure that both the user id and profile data are available
     if (!userId || !stableProfileData) {
       return;
     }
@@ -136,7 +134,6 @@ export function useVapi(
       vapi.on("speech-start", onSpeechStart);
       vapi.on("speech-end", onSpeechEnd);
 
-      // start the call
       const startCall = async () => {
         if (callStartRef.current) return;
         callStartRef.current = true;
@@ -160,12 +157,10 @@ export function useVapi(
     initializeVapi();
     setLoading(false);
 
-    // cleanup function for the hooks
     return () => {
       cancelled = true;
 
       const v = vapiRef.current;
-      // insure that it is stopped when navigating away from the page
       if (v) {
         try {
           v.stop();
@@ -181,8 +176,6 @@ export function useVapi(
     };
   }, [level, sessionId, userId, stableProfileData]);
 
-  // toggle the micophone on and off
-  // if the session hasnt started prevent error
   const toggleMicrophone = () => {
     if (!vapiRef.current) {
       console.warn("vapi instance not available");

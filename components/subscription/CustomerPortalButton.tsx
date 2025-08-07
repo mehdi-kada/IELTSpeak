@@ -17,10 +17,9 @@ export function CustomerPortalButton() {
     setError(null)
     
     try {
-      // Make request to your API route
       const response = await fetch('/api/customer-portal', {
         method: 'GET',
-        credentials: 'include', // Include cookies for auth
+        credentials: 'include', 
       })
 
       if (response.ok) {
@@ -29,7 +28,7 @@ export function CustomerPortalButton() {
           window.location.href = data.portalUrl
         }
       } else {
-        // Handle error responses
+
         const errorData = await response.json()
         
         if (response.status === 401) {

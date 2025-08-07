@@ -24,7 +24,7 @@ export default function MessageList({
       ) : (
         messages
           .slice()
-          .reverse() // Show newest messages first
+          .reverse() // show newest messages first
           .map((message, index) => <Message key={index} message={message} />)
       )}
     </div>

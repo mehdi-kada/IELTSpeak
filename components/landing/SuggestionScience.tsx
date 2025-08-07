@@ -5,7 +5,6 @@ const benefits = [
   {
     title: "Builds Active Recall",
     icon: (
-      // Custom creative brain SVG icon
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 64 64"
@@ -22,7 +21,6 @@ const benefits = [
   {
     title: "Reduces Speaking Anxiety",
     icon: (
-      // Custom speaking anxiety SVG icon
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="#E91E63"

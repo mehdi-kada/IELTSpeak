@@ -1,4 +1,3 @@
-// Database operations for Polar subscriptions
 
 import { createClient } from "@supabase/supabase-js";
 import { polar } from "./polar";
@@ -21,7 +20,6 @@ export interface PolarSubscriptionData {
   renews_at: string;
 }
 
-// Get the user subscription details
 export const getUserSubscription = async (userId: string | null) : Promise<SubscriptionSchema | null>=> {
   try {
     const { data, error } = await supabase
@@ -29,7 +27,7 @@ export const getUserSubscription = async (userId: string | null) : Promise<Subsc
       .select("*")
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
-      .limit(1) // get most recent sub
+      .limit(1) 
       .single();
 
     if (error || !data) {
@@ -47,7 +45,6 @@ export const upsertSubscription = async (
   subscriptionData: PolarSubscriptionData
 ): Promise<Boolean | null> => {
   try {
-    // Insert the webhook payload to database
     const { error: subscriptionError } = await supabase
       .from("subscriptions")
       .upsert(subscriptionData, {
@@ -59,7 +56,6 @@ export const upsertSubscription = async (
       return false;
     }
 
-    // Update the user's profile premium status
     const premiumStatus =
       subscriptionData.status === "active" ||
       subscriptionData.status === "cancelled";
@@ -78,7 +74,7 @@ export const upsertSubscription = async (
   }
 };
 
-// Update the user premium status in profiles table
+
 export const updateUserStatus = async (
   userId: string,
   isPremium: boolean
@@ -101,12 +97,12 @@ export const updateUserStatus = async (
   }
 };
 
-// Cancel subscription from db
+
 export const cancelSubFromDB = async (
   subscriptionId: string
 ): Promise<Boolean> => {
   try {
-    // Update the database
+
     const { data, error } = await supabase
       .from("subscriptions")
       .update({
@@ -129,7 +125,6 @@ export const cancelSubFromDB = async (
   }
 };
 
-// Check user's premium status
 export async function checkUserPremiumStatus(userId: string): Promise<boolean> {
   try {
     const { data, error } = await supabase
@@ -147,21 +142,18 @@ export async function checkUserPremiumStatus(userId: string): Promise<boolean> {
       return true;
     }
 
-    // If profile says not premium, check if they have a cancelled subscription
-    // that's still valid until period end
     const { data: subscription, error: subError } = await supabase
       .from("subscriptions")
       .select("status, current_period_end")
       .eq("user_id", userId)
-      .in("status", ["cancelled"]) // Only check cancelled subs
-      .gt("current_period_end", new Date().toISOString()) // Still valid
+      .in("status", ["cancelled"]) 
+      .gt("current_period_end", new Date().toISOString()) 
       .single();
 
     if (subError || !subscription) {
       return false;
     }
 
-    // They have a cancelled subscription that's still valid
     return true;
   } catch (error) {
     console.error("Error in checkUserPremiumStatus:", error);

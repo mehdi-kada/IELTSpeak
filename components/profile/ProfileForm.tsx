@@ -60,13 +60,12 @@ export function ProfileForm({ userId }: { userId: string }) {
     },
   });
 
-  // Load profile data from local storage or database
+  // load profile data from local storage or database
   useEffect(() => {
     if (!userId || !profileData) return;
-
     const loadProfileData = async () => {
       try {
-        // Define default values to merge with loaded data
+        // default values to merge with loaded data
         const defaultValues = {
           name: "",
           age: 0,
@@ -81,8 +80,7 @@ export function ProfileForm({ userId }: { userId: string }) {
           favorite_food: "",
           life_goal: "",
         };
-
-        // Merge with defaults to ensure all fields have values
+        // merge with defaults so all fields have values
         const mergedData = {
           ...defaultValues,
           ...(profileData ?? {}),
@@ -91,8 +89,7 @@ export function ProfileForm({ userId }: { userId: string }) {
               ? profileData.hobbies
               : [],
         };
-
-        // Use setTimeout to ensure the form is properly initialized before resetting
+        // use setTimeout to make sure form is ready before resetting
         setTimeout(() => {
           form.reset(mergedData);
         }, 0);
@@ -101,11 +98,10 @@ export function ProfileForm({ userId }: { userId: string }) {
         toast.error("Failed to load profile data. Please try again.");
       }
     };
-
     loadProfileData();
   }, [userId, form, profileData]);
 
-  // Show toast notification only once for empty profile
+  // show toast notification only once for empty profile
   useEffect(() => {
     if (emptyProfile && !toastShown.current) {
       toast.info(
@@ -115,7 +111,7 @@ export function ProfileForm({ userId }: { userId: string }) {
     }
   }, [emptyProfile]);
 
-  // Handle form submission
+  // handle form submission
   const onSubmit = async (data: profileValues) => {
     setIsSubmitting(true);
     console.log(" the data to use for update is : ", data);
@@ -146,7 +142,7 @@ export function ProfileForm({ userId }: { userId: string }) {
       <div className="bg-[#374151] p-5 rounded-lg">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Name */}
+            {/* name */}
             <FormField
               control={form.control}
               name="name"
@@ -167,7 +163,7 @@ export function ProfileForm({ userId }: { userId: string }) {
               )}
             />
 
-            {/* Age */}
+            {/* age */}
             <FormField
               control={form.control}
               name="age"
@@ -200,7 +196,7 @@ export function ProfileForm({ userId }: { userId: string }) {
             />
 
             <div className="flex gap-10">
-              {/* Education Level */}
+              {/* education level */}
               <FormField
                 control={form.control}
                 name="education_level"
@@ -233,7 +229,7 @@ export function ProfileForm({ userId }: { userId: string }) {
                 )}
               />
 
-              {/* Gender */}
+              {/* gender */}
               <FormField
                 control={form.control}
                 name="gender"
@@ -267,7 +263,7 @@ export function ProfileForm({ userId }: { userId: string }) {
               />
             </div>
 
-            {/* Country */}
+            {/* country */}
             <FormField
               control={form.control}
               name="country"
@@ -288,7 +284,7 @@ export function ProfileForm({ userId }: { userId: string }) {
               )}
             />
 
-            {/* Hometown */}
+            {/* hometown */}
             <FormField
               control={form.control}
               name="hometown"
@@ -309,7 +305,7 @@ export function ProfileForm({ userId }: { userId: string }) {
               )}
             />
 
-            {/* Occupation */}
+            {/* occupation */}
             <FormField
               control={form.control}
               name="occupation"
@@ -330,7 +326,7 @@ export function ProfileForm({ userId }: { userId: string }) {
               )}
             />
 
-            {/* Favorite Subject */}
+            {/* favorite subject */}
             <FormField
               control={form.control}
               name="favorite_subject"
@@ -351,7 +347,7 @@ export function ProfileForm({ userId }: { userId: string }) {
               )}
             />
 
-            {/* Hobbies */}
+            {/* hobbies */}
             <FormField
               control={form.control}
               name="hobbies"
@@ -401,7 +397,7 @@ export function ProfileForm({ userId }: { userId: string }) {
               )}
             />
 
-            {/* Travel Experience */}
+            {/* travel experience */}
             <FormField
               control={form.control}
               name="travel_experience"
@@ -425,7 +421,7 @@ export function ProfileForm({ userId }: { userId: string }) {
               )}
             />
 
-            {/* Favorite Food */}
+            {/* favorite food */}
             <FormField
               control={form.control}
               name="favorite_food"
@@ -446,7 +442,7 @@ export function ProfileForm({ userId }: { userId: string }) {
               )}
             />
 
-            {/* Life Goal */}
+            {/* life goal */}
             <FormField
               control={form.control}
               name="life_goal"

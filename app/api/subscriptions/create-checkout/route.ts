@@ -1,4 +1,4 @@
-// Create Polar checkout session
+
 import { createPolarCheckout } from "@/lib/polar/polar";
 import { getUserSubscription } from "@/lib/polar/subscription-helpers";
 import { createClient } from "@/lib/supabase/server";
@@ -6,7 +6,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    // Get the current user
     const supabase = await createClient();
     const {
       data: { user },
@@ -18,7 +17,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get the product id from the request body
     const data = await request.json();
     const productId = data.productId;
 
@@ -30,7 +28,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if the user has already an active subscription
     const userSubscribed = await getUserSubscription(user.id);
     if (userSubscribed && userSubscribed.status === "active") {
       return NextResponse.json(
@@ -39,7 +36,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create a new Polar checkout session
     const checkoutUrl = await createPolarCheckout(
       productId,
       user.id,
@@ -53,7 +49,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Return the checkout url to the frontend
     return NextResponse.json({
       checkoutUrl,
       message: "checkout url created successfully",

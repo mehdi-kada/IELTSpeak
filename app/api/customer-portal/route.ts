@@ -8,8 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient()
-    
-    // Get the authenticated user
+
     const { data: { user }, error: authError } = await  supabase.auth.getUser()
     
     if (authError || !user) {
@@ -19,7 +18,6 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Get the user's Polar customer ID
     const userSubData = await getUserSubscription(user.id);
 
     if (!userSubData) {
@@ -38,10 +36,8 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Create authenticated portal session
     const portalUrl = await createCustomerSession(customerId)
-    
-    // Return the portal URL for client-side redirect
+
     return NextResponse.json({ portalUrl })
     
   } catch (error) {

@@ -31,20 +31,17 @@ function Session() {
   const level = searchParams.get("level") || "6.5";
   const route = useRouter();
 
-  // get the user id
   const { userId, loading: authLoading, error: authError } = useAuth();
 
-  // getting profile data either from localstorage or database
   const {
     profileData,
     loading: profileDataLoading,
     error,
   } = useUserProfile(userId);
 
-  // for updating session and processing conversation
+
   const { isSavingResults, sendConversationToAPI } = useSessionRating();
 
-  // streamed suggestions from gemini , use the function inside the messages webhook
   const {
     suggestions,
     streamedResponse,
@@ -52,7 +49,7 @@ function Session() {
     generateSuggestion,
   } = useSuggestions();
 
-  // Handle end call with conversation evaluation
+
   const handleEndCall = async () => {
    
     try {
@@ -98,7 +95,6 @@ function Session() {
   );
 
   const sessionTime = useSessionTimer(callStatus);
-  // ref for scrolling to the top of the messages
   useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = 0;
@@ -107,7 +103,6 @@ function Session() {
 
   return (
     <div className="bg-[#1F2937] text-white flex flex-col h-screen overflow-hidden">
-      {/* Session Navigation */}
       <SessionNavigation
         isMuted={isMuted}
         callStatus={callStatus}
@@ -118,9 +113,7 @@ function Session() {
         vapiRef={vapiRef}
       />
 
-      {/* main Content Area */}
       <div className="flex-grow flex flex-col overflow-hidden">
-        {/* AI Agent Status */}
         <AIAgentStatus
           callStatus={callStatus}
           isSpeaking={isSpeaking}
@@ -128,9 +121,8 @@ function Session() {
           sessionTime={sessionTime}
         />
 
-        {/* Suggestions and Transcript */}
         <div className="flex-grow flex flex-col sm:flex-row overflow-hidden">
-          {/* Mobile Tabs - only show on screens smaller than sm */}
+
           <div className="sm:hidden flex border-b border-white/10">
             <button
               onClick={() => setSuggestionsVisible(true)}
@@ -154,9 +146,8 @@ function Session() {
             </button>
           </div>
 
-          {/* Desktop Layout */}
+
           <div className="hidden sm:flex flex-grow overflow-hidden">
-            {/* Suggestions Panel - Desktop */}
             <div className="w-1/3 flex flex-col overflow-hidden">
               <div
                 className={`${
@@ -181,7 +172,6 @@ function Session() {
               </div>
             </div>
 
-            {/* Transcript Panel - Desktop */}
             <div className="w-2/3 flex flex-col p-4 overflow-hidden">
               <h2 className="text-xl font-bold mb-4 flex-shrink-0">
                 Live Transcript
@@ -193,7 +183,6 @@ function Session() {
             </div>
           </div>
 
-          {/* Mobile Layout */}
           <div className="sm:hidden flex-grow overflow-hidden">
             {suggestionsVisible ? (
               <MobileSuggestionList

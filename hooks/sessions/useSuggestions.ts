@@ -64,7 +64,7 @@ export function useSuggestions() {
     generateSuggestions();
   }, [prompt]);
 
-  // auto scroll to the top of the dic for the suggestions
+  // auto scroll to the top of the dict for the suggestions
   useEffect(() => {
     if (suggestionsContainerRef.current && suggestions.length > 0) {
       suggestionsContainerRef.current.scrollTop = 0;

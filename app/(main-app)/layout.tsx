@@ -1,4 +1,4 @@
-import NavBar from "@/components/NavBar"; // Adjust path to your component
+import NavBar from "@/components/NavBar"; 
 
 export default function DashboardLayout({
   children,
@@ -7,10 +7,7 @@ export default function DashboardLayout({
 }) {
   return (
     <section>
-      {/* The NavBar goes here, in the sub-layout */}
       <NavBar />
-
-      {/* The 'children' will be the pages inside the (main-app) group */}
       {children}
     </section>
   );

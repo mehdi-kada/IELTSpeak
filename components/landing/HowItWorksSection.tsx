@@ -19,12 +19,10 @@ const HowItWorksSection = () => {
       { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
     );
 
-    // Observe header
     if (headerRef.current) {
       observer.observe(headerRef.current);
     }
 
-    // Observe each step
     stepsRefs.current.forEach((stepRef) => {
       if (stepRef) {
         observer.observe(stepRef);

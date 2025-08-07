@@ -21,12 +21,12 @@ export interface EvaluationData {
   };
 }
 
-// Dashboard types that match the actual Supabase database structure
+
 export interface DashboardSession {
-  id: string; // UUID from database
+  id: string; 
   user_id: string;
   created_at: string;
-  level: string; // proficiency_level enum
+  level: string; 
   ielts_rating: {
     fluency: number;
     grammar: number;
@@ -40,7 +40,6 @@ export interface DashboardSession {
   } | null;
 }
 
-// Transformed session for dashboard display
 export interface TransformedDashboardSession {
   id: string;
   date: string;
@@ -48,7 +47,6 @@ export interface TransformedDashboardSession {
   ieltsScore: number;
 
   scores: {
-    // IELTS scores
     fluency: number;
     grammar: number;
     vocabulary: number;
@@ -129,16 +127,16 @@ export interface PracticeHistoryProps {
 }
 
 export interface SubscriptionSchema {
-  id: string; // UUID
+  id: string; 
   user_id: string | null;
   status: "active" | "cancelled" | "expired" | "on_trial" | "paused" | "unpaid";
   plan_name: string;
-  current_period_start: string | null; // ISO timestamp
-  current_period_end: string | null;   // ISO timestamp
+  current_period_start: string | null; 
+  current_period_end: string | null;   
   cancel_at_period_end: boolean | null;
-  created_at: string | null;           // ISO timestamp
-  updated_at: string | null;           // ISO timestamp
-  renews_at: string | null;            // ISO timestamp
+  created_at: string | null;           
+  updated_at: string | null;           
+  renews_at: string | null;            
   polar_subscription_id: string | null;
   polar_customer_id: string | null;
 }

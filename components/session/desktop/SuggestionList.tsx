@@ -62,7 +62,6 @@ export default function SuggestionsList({
     );
   }
 
-  // Ready state or has suggestions
   if (suggestions.length > 0) {
     return (
       <>
@@ -85,7 +84,6 @@ export default function SuggestionsList({
     );
   }
 
-  // No suggestions available
   return (
     <div className="bg-[#374151] p-4 rounded-lg border border-transparent text-center">
       <h4 className="font-bold text-gray-300">No suggestions available</h4>

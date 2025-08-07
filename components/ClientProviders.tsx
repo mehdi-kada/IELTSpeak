@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-// Dynamically import the PostHog provider to prevent SSR issues
+// Import PostHogProvider dynamically to avoid SSR problems
 const DynamicPostHogProvider = dynamic(
   () => import("../app/providers").then((mod) => ({ default: mod.PostHogProvider })),
   { ssr: false }

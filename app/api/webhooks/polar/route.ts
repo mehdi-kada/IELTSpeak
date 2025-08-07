@@ -1,6 +1,8 @@
-// Polar webhook handler
 import { NextRequest, NextResponse } from "next/server";
-import { validateEvent, WebhookVerificationError } from '@polar-sh/sdk/webhooks';
+import {
+  validateEvent,
+  WebhookVerificationError,
+} from "@polar-sh/sdk/webhooks";
 import {
   upsertSubscription,
   updateUserStatus,
@@ -14,16 +16,15 @@ export async function POST(request: NextRequest) {
     const bodyBuffer = await request.arrayBuffer();
     const body = Buffer.from(bodyBuffer);
     const headers = Object.fromEntries(request.headers.entries());
-    
+
     // Validate the webhook using Polar's official SDK
     let event;
     try {
       event = validateEvent(
         body,
         headers,
-        process.env.POLAR_WEBHOOK_SECRET ?? ''
+        process.env.POLAR_WEBHOOK_SECRET ?? ""
       );
-
     } catch (error) {
       if (error instanceof WebhookVerificationError) {
         console.error("Webhook verification failed:", error.message);
@@ -34,41 +35,27 @@ export async function POST(request: NextRequest) {
       }
       throw error;
     }
-
-    // Get event type and data
     const eventType = event.type;
     const eventData = event.data;
-
-
-
-
-
-    // Handle subscription events
     switch (eventType) {
       case "checkout.created":
         await handleCheckoutCreated(eventData);
         break;
-
       case "order.paid":
         await handleOrderPaid(eventData);
         break;
-
       case "subscription.created":
         await handleSubscriptionCreated(eventData);
         break;
-
       case "subscription.updated":
         await handleSubscriptionUpdate(eventData);
         break;
-
       case "subscription.canceled":
         await handleSubscriptionCancellation(eventData);
         break;
-
       default:
         console.log(`Unhandled event type: ${eventType}`);
     }
-
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error("Error processing Polar webhook:", error);
@@ -81,8 +68,6 @@ export async function POST(request: NextRequest) {
 
 const handleCheckoutCreated = async (checkoutData: any) => {
   try {
-
-
   } catch (error) {
     console.error("Error handling checkout created:", error);
   }
@@ -90,39 +75,31 @@ const handleCheckoutCreated = async (checkoutData: any) => {
 
 const handleOrderPaid = async (orderData: any) => {
   try {
-
-    
-    // Extract user_id from the order metadata
     const userId = orderData.metadata?.user_id;
     if (!userId) {
       console.error("No user_id in order metadata");
       return;
     }
-
-    // Check if this order has a subscription (for recurring payments)
     if (!orderData.subscription) {
       console.log("Order doesn't contain subscription data, skipping");
       return;
     }
-
     const subscriptionData = orderData.subscription;
     const productData = orderData.product;
-
-    // Create subscription record from order data
     const subscriptionUpdate = {
       user_id: userId,
       polar_subscription_id: subscriptionData.id,
       polar_customer_id: subscriptionData.customerId,
       status: subscriptionData.status,
-      plan_name: subscriptionData.product?.name || orderData.product?.name || "Polar Subscription",
+      plan_name:
+        subscriptionData.product?.name ||
+        orderData.product?.name ||
+        "Polar Subscription",
       current_period_start: subscriptionData.currentPeriodStart,
       current_period_end: subscriptionData.currentPeriodEnd,
       cancel_at_period_end: subscriptionData.cancelAtPeriodEnd || false,
-      renews_at: subscriptionData.currentPeriodEnd
+      renews_at: subscriptionData.currentPeriodEnd,
     };
-
-
-
     const success = await upsertSubscription(subscriptionUpdate);
     if (!success) {
       console.error("Error upserting subscription data from order");
@@ -136,13 +113,11 @@ const handleOrderPaid = async (orderData: any) => {
 
 const handleSubscriptionCreated = async (subscriptionData: any) => {
   try {
-
     const userId = subscriptionData.metadata?.user_id;
     if (!userId) {
       console.error("No user_id in subscription metadata");
       return;
     }
-
     const subscriptionUpdate = {
       user_id: userId,
       polar_subscription_id: subscriptionData.id,
@@ -152,10 +127,8 @@ const handleSubscriptionCreated = async (subscriptionData: any) => {
       current_period_start: subscriptionData.currentPeriodStart,
       current_period_end: subscriptionData.currentPeriodEnd,
       cancel_at_period_end: subscriptionData.cancelAtPeriodEnd || false,
-      renews_at: subscriptionData.currentPeriodEnd
+      renews_at: subscriptionData.currentPeriodEnd,
     };
-
-
     const success = await upsertSubscription(subscriptionUpdate);
     if (!success) {
       console.error("Error upserting subscription data");
@@ -169,14 +142,11 @@ const handleSubscriptionCreated = async (subscriptionData: any) => {
 
 const handleSubscriptionUpdate = async (subscriptionData: any) => {
   try {
-
-    
     const userId = subscriptionData.metadata?.user_id;
     if (!userId) {
       console.error("No user_id in subscription metadata");
       return;
     }
-
     const subscriptionUpdate = {
       user_id: userId,
       polar_subscription_id: subscriptionData.id,
@@ -185,10 +155,9 @@ const handleSubscriptionUpdate = async (subscriptionData: any) => {
       plan_name: subscriptionData.product?.name || "Polar Subscription",
       current_period_start: subscriptionData.currentPeriodStart,
       current_period_end: subscriptionData.currentPeriodEnd,
-      cancel_at_period_end: subscriptionData.cancelAtPeriodEnd|| false,
+      cancel_at_period_end: subscriptionData.cancelAtPeriodEnd || false,
       renews_at: subscriptionData.cancelAtPeriodEnd,
     };
-
     const success = await upsertSubscription(subscriptionUpdate);
     if (!success) {
       console.error("Error upserting subscription data");
@@ -215,13 +184,13 @@ const handleSubscriptionCancellation = async (subscriptionData: any) => {
         current_period_end: subscriptionData.current_period_end,
       })
       .eq("polar_subscription_id", subscriptionData.id);
-
     if (error) {
       console.error("Error updating cancelled subscription:", error);
       return false;
     }
-
-    console.log("Subscription marked as cancelled, user retains access until period ends");
+    console.log(
+      "Subscription marked as cancelled, user retains access until period ends"
+    );
     return true;
   } catch (error) {
     console.error("Error handling subscription cancellation:", error);

@@ -7,8 +7,6 @@ import { profileValues } from "@/types/schemas";
 import { requiredFields } from "@/constants/constants";
 
 export const insertSession = async ({ level }: { level: string }) => {
-  // get the user id insert it , return the session id for future update and redirect
-
   const supabase = await createClient();
   const {
     data: { user },
@@ -57,7 +55,6 @@ export const insertSession = async ({ level }: { level: string }) => {
     throw new Error("error");
   }
 
-  // Return the session data instead of redirecting
   return {
     sessionId: newSession.id,
     redirectUrl: `/levels/${newSession.id}?level=${level}`,
@@ -129,7 +126,6 @@ export const fetchUserProfileData = async (
       .single();
 
     if (error) {
-      // If no rows found, return null instead of throwing
       if (error.code === "PGRST116") {
         return null;
       }
@@ -137,7 +133,6 @@ export const fetchUserProfileData = async (
       return null;
     }
 
-    // Ensure we have valid data before returning
     if (!data) {
       return null;
     }

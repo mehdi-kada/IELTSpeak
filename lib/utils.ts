@@ -10,11 +10,11 @@ export const configureAssistant = () => {
   const vapiAssistant: CreateAssistantDTO = {
     name: "Instructor",
     backgroundSpeechDenoisingPlan: {
-      // Enable Smart Denoising
+      // enable smart denoising
       smartDenoisingPlan: {
         enabled: true,
       },
-      // Enable Fourier Denoising (optional)
+      // enable fourier denoising (optional)
     },
     startSpeakingPlan: {
       transcriptionEndpointingPlan: {
@@ -24,25 +24,20 @@ export const configureAssistant = () => {
       },
       waitSeconds: 1,
     },
-
     firstMessage: 
       "Hello, I'm your AI examiner for this English speaking practice session. I'll guide you through a simulation of the International English Language speaking test based on your level: {{level}}. I'll ask you questions and listen to your responses. Let's start with a quick introduction—what's your name?",
     firstMessageInterruptionsEnabled: false,
-    
-
-    // Silence timeout configuration (in seconds)
-    silenceTimeoutSeconds: 120, // How long to wait for user speech before timing out
-    maxDurationSeconds: 900, // Maximum call duration (15 minutes)
-
+    // silence timeout configuration (in seconds)
+    silenceTimeoutSeconds: 120,  
+    maxDurationSeconds: 900, 
     transcriber: {
       provider: "11labs",
       model: "scribe_v1",
       language: "en",
     },
-
     voice: {
       provider: "11labs",
-      voiceId: "aTbnroHRGIomiKpqAQR8", // Using a valid voice ID from constants
+      voiceId: "aTbnroHRGIomiKpqAQR8",
       speed: 0.9,
       stability: 0.4,
       similarityBoost: 0.2,
@@ -50,8 +45,8 @@ export const configureAssistant = () => {
     model: {
       provider: "openai",
       model: "gpt-4o",
-      maxTokens: 500, // Control max tokens for AI responses
-      temperature: 0.7, // Add some variability to responses
+      maxTokens: 500, 
+      temperature: 0.7, 
       messages: [
         {
           role: "system",
@@ -87,10 +82,9 @@ export const configureAssistant = () => {
         },
       ],
     },
-
     clientMessages: undefined,
     serverMessages: undefined,
-    // Allow assistant to signal end of call
+    // allow assistant to signal end of call
     endCallPhrases: ["This concludes the examination."],
   };
   return vapiAssistant;

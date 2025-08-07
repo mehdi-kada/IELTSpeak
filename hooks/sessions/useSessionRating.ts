@@ -33,7 +33,6 @@ export function useSessionRating() {
 
       const result = await res.json();
 
-      // store result for results page
       localStorage.setItem(`evaluation_${sessionId}`, JSON.stringify(result));
 
       return result;

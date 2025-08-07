@@ -4,10 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    // create supabase client
     const supabase = await createClient();
 
-    // get authenticated user
     const {
       data: { user },
       error: authError,
@@ -15,7 +13,7 @@ export async function GET(request: NextRequest) {
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    } // fetch all sessions for that user
+    }
 
     const { data: sessions, error } = await supabase
       .from("sessions")
@@ -32,7 +30,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Handle case where sessions is null or empty
     if (!sessions) {
       return NextResponse.json({
         success: true,
@@ -44,7 +41,6 @@ export async function GET(request: NextRequest) {
     let isPremium =
       sessions.length > 3 ? true : await checkUserPremiumStatus(user.id);
 
-    //transform all data for dashboard use
     const transformedSessions = sessions.map((session) => ({
       id: session.id,
       date: new Date(session.created_at).toLocaleDateString(),
