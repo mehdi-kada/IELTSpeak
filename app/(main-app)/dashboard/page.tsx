@@ -11,12 +11,11 @@ import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 function Dashboard() {
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
-    null
-  );
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isPremium, setIsPremium] = useState(false);
+
   useEffect(() => {
     checkUserAndFetchData();
   }, []);
@@ -63,7 +62,11 @@ function Dashboard() {
   };
 
   if (loading) {
-    return <LoadingSpinner message="Loading history data..." />;
+    return (
+      <div className="min-h-screen bg-[#374151] flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (error) {
@@ -71,113 +74,60 @@ function Dashboard() {
       <>
         <Head>
           <title>Dashboard</title>
-          <meta
-            name="description"
-            content="View your IELTS speaking practice progress and performance analytics"
-          />
         </Head>
-        <div className="min-h-screen p-4 md:p-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-center min-h-[60vh]">
-              <div className="text-center p-8 rounded-xl shadow-sm border border-[#E91E63]">
-                <div className="text-[#E91E63] mb-4">
-                  <svg
-                    className="h-12 w-12 mx-auto"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">
-                  Something went wrong
-                </h3>
-                <p className="text-gray-400 mb-6">if this error persist please contact us </p>
-                <button
-                  onClick={checkUserAndFetchData}
-                  className="px-6 py-3 bg-[#E91E63] text-white rounded-lg hover:bg-[#374151] transition-colors font-medium"
-                >
-                  Try Again
-                </button>
+        <div className="min-h-screen bg-[#374151] flex items-center justify-center p-4">
+          <div className="bg-[#1F2937] rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+            <div className="mb-6">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.232 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
               </div>
+              <h1 className="text-2xl font-bold text-white mb-2">Something went wrong</h1>
+              <p className="text-gray-300 mb-6">If this error persists, please contact us</p>
             </div>
+            <button
+              onClick={fetchDashboardData}
+              className="w-full bg-[#E91E63] hover:bg-[#E91E63]/90 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+            >
+              Try Again
+            </button>
           </div>
         </div>
       </>
     );
   }
 
-  if (
-    !dashboardData ||
-    !dashboardData.sessions ||
-    dashboardData.sessions.length === 0
-  ) {
+  if (!dashboardData || !dashboardData.sessions || dashboardData.sessions.length === 0) {
     return (
       <>
         <Head>
           <title>Dashboard</title>
-          <meta
-            name="description"
-            content="View your IELTS speaking practice progress and performance analytics"
-          />
         </Head>
-        <div className="min-h-screen mt-8 p-4 md:p-6">
-          <div className="max-w-7xl mx-auto">
-            <header className="mb-8 text-center">
-              <h1 className="text-3xl md:text-4xl font-bold ">
-                Welcome to Your Dashboard
-              </h1>
-              <p className="text-gray-400 mt-1 ">
-                Start practicing to see your progress and get personalized
-                feedback.
-              </p>
-            </header>
-
-            <div className="flex  items-center justify-center min-h-[50vh]">
-              <div className="text-center bg-[#374151] p-8 rounded-xl shadow-sm border border-white/10 max-w-md">
-                <div className="text-[#E91E63] mb-6">
-                  <svg
-                    className="h-16 w-16 mx-auto"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold  mb-3">
-                  No Practice Sessions Yet
-                </h3>
-                <p className="text-gray-400 mb-8 leading-relaxed">
-                  Take your first practice test to get detailed feedback and
-                  track your improvement over time.
-                </p>
-                <Link
-                  href={"/levels"}
-                  className="block w-full text-center bg-[#E91E63] hover:shadow-md hover:shadow-[#E91E63]/30 hover:-translate-y-px transition-all duration-200 text-white font-bold py-2 px-2 rounded-lg"
-                >
-                  Start New Session
-                </Link>
+        <div className="min-h-screen bg-[#374151] flex items-center justify-center p-4">
+          <div className="bg-[#1F2937] rounded-2xl shadow-xl p-8 max-w-lg w-full text-center">
+            <div className="mb-8">
+              <div className="w-20 h-20 bg-[#E91E63]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-[#E91E63]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
+              <h1 className="text-3xl font-bold text-white mb-4">No Practice Sessions Yet</h1>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                Take your first practice test to get detailed feedback and track your improvement over time.
+              </p>
             </div>
+            <Link href="/practice">
+              <button className="w-full bg-[#E91E63] hover:bg-[#E91E63]/90 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
+                Start New Session
+              </button>
+            </Link>
           </div>
         </div>
       </>
     );
   }
 
-  // prepare sessions data for components
   const sessions = dashboardData.sessions.map((session) => ({
     id: session.id,
     date: session.date,
@@ -190,94 +140,37 @@ function Dashboard() {
     <>
       <Head>
         <title>Dashboard</title>
-        <meta
-          name="description"
-          content="View your IELTS speaking practice progress and performance analytics"
-        />
       </Head>
-      <main className="container mx-auto  p-8 sm:p-6 lg:p-8">
-        <div className="items-center gap-2 mb-8">
-          <header
-            className={`${
-              isPremium
-                ? "text-center"
-                : "flex flex-col lg:flex-row lg:items-center lg:justify-between"
-            }`}
-          >
-            <div className={`${isPremium ? "" : "text-center lg:text-left"}`}>
-              <h1 className="text-3xl md:text-4xl font-bold">Your Progress</h1>
-              <p className="text-gray-400 mt-1">
-                Review your scores, exams history, and get tips for improvement.
-              </p>
+      <div className="min-h-screen bg-[#374151]">
+        <div className="container mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-white mb-2">Your IELTS Dashboard</h1>
+            <p className="text-gray-300 text-lg">Track your progress and improve your English skills</p>
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Left Column: Stats and Tips */}
+            <div className="lg:col-span-2 space-y-8">
+              <OverallScores
+                ieltsAverage={dashboardData.averageIeltsScore}
+                averageFluency={dashboardData.averageFluency}
+                averageGrammar={dashboardData.averageGrammar}
+                averageVocab={dashboardData.averageVocab}
+                averagePronunciation={dashboardData.averagePronunciation}
+              />
+              
+              <TipsForImprovement tips={dashboardData.sessions[0].feedback.negativePoints} />
             </div>
 
-            {/* Session Limit Warning - Only show for non-premium users */}
-            {!isPremium && (
-              <div className="mt-4 lg:mt-0 lg:ml-8 flex-shrink-0 flex justify-center lg:justify-end ">
-                <div className="bg-[#E91E63]/10 border border-[#E91E63]/30 rounded-lg p-4 max-w-xs ">
-                  <div className="flex items-centeer gap-3">
-                    <div className="text-[#E91E63] flex-shrink-0 mt-0.5">
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z"
-                        />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-semibold text-[#E91E63] mb-1">
-                        Free Plan Limit
-                      </h3>
-                      <p className="text-xs text-[#E91E63]/80 leading-relaxed">
-                        You have{" "}
-                        {Math.max(0, 3 - (dashboardData?.totalSessions || 0))}{" "}
-                        of 3 free sessions remaining.
-                      </p>
-                      {dashboardData && dashboardData.totalSessions >= 3 && (
-                        <Link
-                          href="/subscribe?reason=limit-hit"
-                          className="inline-block mt-2 text-xs bg-[#E91E63] hover:bg-[#E91E63] text-white px-3 py-1 rounded transition-colors"
-                        >
-                          Upgrade Now
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </header>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column: Stats and Tips */}
-          <div className="lg:col-span-1 space-y-8">
-            <OverallScores
-              ieltsAverage={dashboardData.averageIeltsScore}
-              averageFluency={dashboardData.averageFluency}
-              averageGrammar={dashboardData.averageGrammar}
-              averageVocab={dashboardData.averageVocab}
-              averagePronunciation={dashboardData.averagePronunciation}
-            />
-
-            <TipsForImprovement
-              tips={dashboardData.sessions[0]?.feedback?.negativePoints}
-            />
-          </div>
-
-          {/* Right Column: Practice History */}
-          <div className="lg:col-span-2">
-            <PracticeHistory sessions={sessions} />
+            {/* Right Column: Practice History */}
+            <div className="lg:col-span-1">
+              <PracticeHistory sessions={sessions} />
+            </div>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }
