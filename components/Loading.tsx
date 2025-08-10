@@ -7,14 +7,6 @@ interface LoadingSpinnerProps {
   className?: string;
 }
 
-/**
- * A minimalist loading component with a sound wave animation.
- * @param {LoadingSpinnerProps} props - The component props.
- * @param {string} [props.message="Loading..."] - The message to display below the animation.
- * @param {boolean} [props.fullScreen=true] - Whether to take up the full screen.
- * @param {string} [props.size="md"] - Size of the loading animation.
- * @param {string} [props.className] - Additional CSS classes.
- */
 function LoadingSpinner({
   message = "Loading...",
   fullScreen = true,

@@ -58,7 +58,7 @@ export function OverallScores({
   ];
 
   return (
-    <div className="bg-[#1F2937] rounded-2xl shadow-xl p-8">
+  <div className="bg-[#374151] rounded-2xl shadow-xl p-8">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold text-white">Overall Performance</h2>
         <Link href="/practice">
@@ -68,23 +68,23 @@ export function OverallScores({
         </Link>
       </div>
 
-      {/* IELTS Average Score */}
+
       <div className="text-center mb-8 p-6 bg-[#E91E63] rounded-xl text-white">
         <h3 className="text-lg font-semibold mb-2">IELTS Average Score</h3>
         <div className="text-5xl font-bold mb-2">{ieltsAverage.toFixed(1)}</div>
         <div className="text-white/80">out of 9.0</div>
       </div>
 
-      {/* Skills Breakdown */}
+
       <div className="grid md:grid-cols-2 gap-6">
         {skills.map((skill) => (
-          <div key={skill.name} className="p-4 border border-gray-700 rounded-lg bg-[#374151]">
+          <div key={skill.name} className="p-4 border border-gray-700 rounded-lg bg-[#1F2937]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
                 {skill.icon}
                 <span className="font-semibold text-white">{skill.name}</span>
               </div>
-              <span className={`px-3 py-1 rounded-full text-sm font-bold ${getScoreColor(skill.score)}`}>
+              <span className={`px-3 py-1 rounded-full text-sm font-bold bg-[#374151] text-[#E91E63]`}>
                 {skill.score.toFixed(1)}
               </span>
             </div>

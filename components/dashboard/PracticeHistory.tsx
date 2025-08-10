@@ -2,11 +2,7 @@ import { PracticeHistoryProps } from "@/types/types";
 import Link from "next/link";
 
 export function PracticeHistory({ sessions }: PracticeHistoryProps) {
-  const getScoreColor = (score: number) => {
-    if (score >= 7) return "bg-green-100 text-green-800 border-green-200";
-    if (score >= 5.5) return "bg-yellow-100 text-yellow-800 border-yellow-200";
-    return "bg-red-100 text-red-800 border-red-200";
-  };
+
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -18,7 +14,7 @@ export function PracticeHistory({ sessions }: PracticeHistoryProps) {
   };
 
   return (
-    <div className="bg-[#1F2937] rounded-2xl shadow-xl p-6">
+  <div className="bg-[#374151] rounded-2xl shadow-xl p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-white">Practice History</h2>
         <span className="text-sm text-gray-400">{sessions.length} sessions</span>
@@ -27,7 +23,7 @@ export function PracticeHistory({ sessions }: PracticeHistoryProps) {
       <div className="space-y-4 max-h-96 overflow-y-auto">
         {sessions.map((session) => (
           <Link key={session.id} href={session.resultsUrl}>
-            <div className="p-4 border border-gray-700 rounded-lg hover:border-[#E91E63] hover:shadow-md transition-all duration-200 cursor-pointer bg-[#374151]">
+            <div className="p-4 border border-gray-700 rounded-lg hover:border-[#E91E63] hover:shadow-md transition-all duration-200 cursor-pointer bg-[#1F2937]">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-[#E91E63] rounded-full"></div>
@@ -38,7 +34,7 @@ export function PracticeHistory({ sessions }: PracticeHistoryProps) {
               
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-300">IELTS Band Score</span>
-                <span className={`px-3 py-1 rounded-full text-sm font-bold border ${getScoreColor(session.ieltsScore)}`}>
+                <span className={`px-3 py-1 rounded-full text-sm font-bold border bg-[#374151] text-[#E91E63]`}>
                   {session.ieltsScore.toFixed(1)}
                 </span>
               </div>

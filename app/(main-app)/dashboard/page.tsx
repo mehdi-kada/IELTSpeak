@@ -63,8 +63,8 @@ function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#374151] flex items-center justify-center">
-        <LoadingSpinner />
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
@@ -75,8 +75,8 @@ function Dashboard() {
         <Head>
           <title>Dashboard</title>
         </Head>
-        <div className="min-h-screen bg-[#374151] flex items-center justify-center p-4">
-          <div className="bg-[#1F2937] rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+        <div className="min-h-screen bg-[#1F2937] flex items-center justify-center p-4">
+          <div className="bg-[#374151] rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
             <div className="mb-6">
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,8 +104,8 @@ function Dashboard() {
         <Head>
           <title>Dashboard</title>
         </Head>
-        <div className="min-h-screen bg-[#374151] flex items-center justify-center p-4">
-          <div className="bg-[#1F2937] rounded-2xl shadow-xl p-8 max-w-lg w-full text-center">
+        <div className="min-h-screen bg-[#1F2937] flex items-center justify-center p-4">
+          <div className="bg-[#374151] rounded-2xl shadow-xl p-8 max-w-lg w-full text-center">
             <div className="mb-8">
               <div className="w-20 h-20 bg-[#E91E63]/20 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg className="w-10 h-10 text-[#E91E63]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,17 +141,14 @@ function Dashboard() {
       <Head>
         <title>Dashboard</title>
       </Head>
-      <div className="min-h-screen bg-[#374151]">
+  <div className="min-h-screen bg-[#1F2937]">
         <div className="container mx-auto px-4 py-8">
-          {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-white mb-2">Your IELTS Dashboard</h1>
             <p className="text-gray-300 text-lg">Track your progress and improve your English skills</p>
           </div>
 
-          {/* Main Content Grid */}
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Left Column: Stats and Tips */}
             <div className="lg:col-span-2 space-y-8">
               <OverallScores
                 ieltsAverage={dashboardData.averageIeltsScore}
